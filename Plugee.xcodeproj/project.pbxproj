@@ -7,21 +7,47 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A292EE31E79E52000A1BDFB /* SectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A292EE21E79E52000A1BDFB /* SectionsController.swift */; };
+		6A292EE51E79F73400A1BDFB /* SectionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A292EE41E79F73400A1BDFB /* SectionsCell.swift */; };
+		6A2C7A6B1E7ED05700E3FB0C /* viewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2C7A6A1E7ED05700E3FB0C /* viewerController.swift */; };
+		6A3599D41E7D6CD400D313DE /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599D31E7D6CD400D313DE /* TabBarController.swift */; };
+		6A3599D61E7D6FE900D313DE /* NewsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599D51E7D6FE900D313DE /* NewsController.swift */; };
+		6A3599D81E7D700200D313DE /* TopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599D71E7D700200D313DE /* TopController.swift */; };
+		6A3599DE1E7D7DB400D313DE /* Extension+Protocoles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599DD1E7D7DB400D313DE /* Extension+Protocoles.swift */; };
+		6A3599E01E7D856D00D313DE /* PlugsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599DF1E7D856D00D313DE /* PlugsController.swift */; };
+		6A3599E21E7D88D300D313DE /* PlugsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599E11E7D88D300D313DE /* PlugsCell.swift */; };
+		6A3599E41E7DA6C100D313DE /* Structures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599E31E7DA6C100D313DE /* Structures.swift */; };
+		6A3599E61E7DC65C00D313DE /* addPlugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599E51E7DC65C00D313DE /* addPlugController.swift */; };
 		6A75D64E1E75655100AD92C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A75D64D1E75655100AD92C5 /* AppDelegate.swift */; };
-		6A75D6501E75655100AD92C5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A75D64F1E75655100AD92C5 /* ViewController.swift */; };
-		6A75D6531E75655100AD92C5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A75D6511E75655100AD92C5 /* Main.storyboard */; };
 		6A75D6551E75655100AD92C5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A75D6541E75655100AD92C5 /* Assets.xcassets */; };
 		6A75D6581E75655100AD92C5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A75D6561E75655100AD92C5 /* LaunchScreen.storyboard */; };
+		6A952B0D1E7B0524004FAE96 /* addTheme+SectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A952B0C1E7B0524004FAE96 /* addTheme+SectionController.swift */; };
+		6A952B0F1E7B0871004FAE96 /* myViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A952B0E1E7B0871004FAE96 /* myViews.swift */; };
+		6AE2972B1E7864D30057F6EE /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE2972A1E7864D30057F6EE /* HomeController.swift */; };
+		6AFA8F501E789959001A84D3 /* ThemeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFA8F4F1E789959001A84D3 /* ThemeCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6A292EE21E79E52000A1BDFB /* SectionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionsController.swift; sourceTree = "<group>"; };
+		6A292EE41E79F73400A1BDFB /* SectionsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionsCell.swift; sourceTree = "<group>"; };
+		6A2C7A6A1E7ED05700E3FB0C /* viewerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = viewerController.swift; sourceTree = "<group>"; };
+		6A3599D31E7D6CD400D313DE /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		6A3599D51E7D6FE900D313DE /* NewsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsController.swift; sourceTree = "<group>"; };
+		6A3599D71E7D700200D313DE /* TopController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopController.swift; sourceTree = "<group>"; };
+		6A3599DD1E7D7DB400D313DE /* Extension+Protocoles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Extension+Protocoles.swift"; sourceTree = "<group>"; };
+		6A3599DF1E7D856D00D313DE /* PlugsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlugsController.swift; sourceTree = "<group>"; };
+		6A3599E11E7D88D300D313DE /* PlugsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlugsCell.swift; sourceTree = "<group>"; };
+		6A3599E31E7DA6C100D313DE /* Structures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Structures.swift; sourceTree = "<group>"; };
+		6A3599E51E7DC65C00D313DE /* addPlugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = addPlugController.swift; sourceTree = "<group>"; };
 		6A75D64A1E75655100AD92C5 /* Plugee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Plugee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A75D64D1E75655100AD92C5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6A75D64F1E75655100AD92C5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		6A75D6521E75655100AD92C5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6A75D6541E75655100AD92C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A75D6571E75655100AD92C5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6A75D6591E75655100AD92C5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6A952B0C1E7B0524004FAE96 /* addTheme+SectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "addTheme+SectionController.swift"; sourceTree = "<group>"; };
+		6A952B0E1E7B0871004FAE96 /* myViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myViews.swift; sourceTree = "<group>"; };
+		6AE2972A1E7864D30057F6EE /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
+		6AFA8F4F1E789959001A84D3 /* ThemeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +61,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6A3599D91E7D75B600D313DE /* Plugs */ = {
+			isa = PBXGroup;
+			children = (
+				6AE2972A1E7864D30057F6EE /* HomeController.swift */,
+				6A292EE21E79E52000A1BDFB /* SectionsController.swift */,
+				6A3599DF1E7D856D00D313DE /* PlugsController.swift */,
+				6A3599E51E7DC65C00D313DE /* addPlugController.swift */,
+				6A952B0C1E7B0524004FAE96 /* addTheme+SectionController.swift */,
+			);
+			name = Plugs;
+			sourceTree = "<group>";
+		};
+		6A3599DA1E7D75C300D313DE /* News */ = {
+			isa = PBXGroup;
+			children = (
+				6A3599D51E7D6FE900D313DE /* NewsController.swift */,
+			);
+			name = News;
+			sourceTree = "<group>";
+		};
+		6A3599DC1E7D75D500D313DE /* Top */ = {
+			isa = PBXGroup;
+			children = (
+				6A3599D71E7D700200D313DE /* TopController.swift */,
+			);
+			name = Top;
+			sourceTree = "<group>";
+		};
 		6A75D6411E75655100AD92C5 = {
 			isa = PBXGroup;
 			children = (
@@ -55,13 +109,46 @@
 			isa = PBXGroup;
 			children = (
 				6A75D64D1E75655100AD92C5 /* AppDelegate.swift */,
-				6A75D64F1E75655100AD92C5 /* ViewController.swift */,
-				6A75D6511E75655100AD92C5 /* Main.storyboard */,
 				6A75D6541E75655100AD92C5 /* Assets.xcassets */,
+				6AFA8F551E789988001A84D3 /* Controllers */,
+				6AFA8F541E789982001A84D3 /* Views */,
+				6AFA8F521E789977001A84D3 /* Models */,
 				6A75D6561E75655100AD92C5 /* LaunchScreen.storyboard */,
 				6A75D6591E75655100AD92C5 /* Info.plist */,
 			);
 			path = Plugee;
+			sourceTree = "<group>";
+		};
+		6AFA8F521E789977001A84D3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6A3599E31E7DA6C100D313DE /* Structures.swift */,
+				6A3599DD1E7D7DB400D313DE /* Extension+Protocoles.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		6AFA8F541E789982001A84D3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6A952B0E1E7B0871004FAE96 /* myViews.swift */,
+				6AFA8F4F1E789959001A84D3 /* ThemeCell.swift */,
+				6A3599E11E7D88D300D313DE /* PlugsCell.swift */,
+				6A292EE41E79F73400A1BDFB /* SectionsCell.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		6AFA8F551E789988001A84D3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				6A3599DA1E7D75C300D313DE /* News */,
+				6A3599D91E7D75B600D313DE /* Plugs */,
+				6A3599DC1E7D75D500D313DE /* Top */,
+				6A3599D31E7D6CD400D313DE /* TabBarController.swift */,
+				6A2C7A6A1E7ED05700E3FB0C /* viewerController.swift */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,7 +213,6 @@
 			files = (
 				6A75D6581E75655100AD92C5 /* LaunchScreen.storyboard in Resources */,
 				6A75D6551E75655100AD92C5 /* Assets.xcassets in Resources */,
-				6A75D6531E75655100AD92C5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,22 +223,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A75D6501E75655100AD92C5 /* ViewController.swift in Sources */,
+				6A3599DE1E7D7DB400D313DE /* Extension+Protocoles.swift in Sources */,
+				6A3599E61E7DC65C00D313DE /* addPlugController.swift in Sources */,
+				6A3599E41E7DA6C100D313DE /* Structures.swift in Sources */,
+				6AE2972B1E7864D30057F6EE /* HomeController.swift in Sources */,
+				6A3599D81E7D700200D313DE /* TopController.swift in Sources */,
+				6A3599D41E7D6CD400D313DE /* TabBarController.swift in Sources */,
 				6A75D64E1E75655100AD92C5 /* AppDelegate.swift in Sources */,
+				6A2C7A6B1E7ED05700E3FB0C /* viewerController.swift in Sources */,
+				6A292EE51E79F73400A1BDFB /* SectionsCell.swift in Sources */,
+				6A3599E21E7D88D300D313DE /* PlugsCell.swift in Sources */,
+				6A952B0D1E7B0524004FAE96 /* addTheme+SectionController.swift in Sources */,
+				6A3599E01E7D856D00D313DE /* PlugsController.swift in Sources */,
+				6A952B0F1E7B0871004FAE96 /* myViews.swift in Sources */,
+				6A3599D61E7D6FE900D313DE /* NewsController.swift in Sources */,
+				6AFA8F501E789959001A84D3 /* ThemeCell.swift in Sources */,
+				6A292EE31E79E52000A1BDFB /* SectionsController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		6A75D6511E75655100AD92C5 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6A75D6521E75655100AD92C5 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		6A75D6561E75655100AD92C5 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -263,6 +355,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = R4Q4T5UMG8;
 				INFOPLIST_FILE = Plugee/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wathis.Plugee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -276,6 +369,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = R4Q4T5UMG8;
 				INFOPLIST_FILE = Plugee/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wathis.Plugee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -302,6 +396,7 @@
 				6A75D65E1E75655100AD92C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
