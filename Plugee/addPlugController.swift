@@ -16,6 +16,8 @@ class addPlugController: UIViewController {
     var newPlug : Plug?
     let labelNew = myLabel(myText : "Nouveau")
     
+    /*--------------------------------------- VARIABLES ---------------------------------------------*/
+    
     let textField : UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false

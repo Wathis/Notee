@@ -11,8 +11,11 @@ import UIKit
 
 
 class addThemeController: UIViewController {
+    
+    /*--------------------------------------- VARIABLES ---------------------------------------------*/
 
     var delegate:AddingSectionThemeDelegate!
+    
     
     let labelNew = myLabel(myText : "Nouveau")
     
