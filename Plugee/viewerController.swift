@@ -39,6 +39,7 @@ class viewerController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handlePlus))
         setupImage()
         setupTabBar()
+        tabBar.commentButton.addTarget(self, action: #selector(handleComment), for: .touchUpInside)
     }
     
 /*------------------------------------- HANDLE BUTTONS --------------------------------------------*/
@@ -49,6 +50,12 @@ class viewerController: UIViewController {
     
     func handlePlus() {
         print("Handle plus")
+    }
+    
+    func handleComment() {
+        let controller = CommentsController()
+        let navController = UINavigationController(rootViewController: controller)
+        present(navController, animated: true, completion: nil)
     }
 
 /*------------------------------------ CONSTRAINT --------------------------------------------------*/

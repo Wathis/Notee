@@ -80,10 +80,6 @@ class PLTabBar : UIView {
     func handleFavorite() {
         changeFavoriteButtonStatus()
     }
-    
-    func handleComment() {
-        
-    }
 
 /*------------------------------------ USEFULL FUNCTIONS --------------------------------------------------*/
     

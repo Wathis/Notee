@@ -10,26 +10,37 @@ import UIKit
 
 class CommentsController: UIViewController {
 
+    
+    let oneComment : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 15, weight: UIFontWeightThin)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.text = "Pas de commentaires pour le moment..."
+        label.numberOfLines = 2
+        return label
+    }()
+    
+    /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        self.view.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.navigationItem.title = "Comments"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
+        self.view.addSubview(oneComment)
+        setupOneComment()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+     /*------------------------------------ HANDLE BUTTONS ---------------------------------------------*/
+    func handleCancel() {
+        dismiss(animated: true, completion: nil)
     }
-    */
-
+    
+    func setupOneComment() {
+        oneComment.topAnchor.constraint(equalTo: view.topAnchor, constant: 120).isActive = true
+        oneComment.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
+        oneComment.widthAnchor.constraint(equalTo: self.view.widthAnchor ).isActive = true
+        oneComment.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
 }
