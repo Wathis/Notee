@@ -21,6 +21,12 @@ class viewerController: UIViewController {
         return image
     }()
     
+    lazy var tabBar : PLTabBar = {
+        let tabBar = PLTabBar()
+        tabBar.translatesAutoresizingMaskIntoConstraints = false
+        return tabBar
+    }()
+    
     /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
 
     override func viewDidLoad() {
@@ -28,9 +34,11 @@ class viewerController: UIViewController {
         self.view.backgroundColor = .white
         self.navigationItem.title = "Plug"
         self.view.addSubview(image)
+        self.view.addSubview(tabBar)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "BackButton"), style: .plain, target: self, action: #selector(handleBack))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handlePlus))
         setupImage()
+        setupTabBar()
     }
     
 /*------------------------------------- HANDLE BUTTONS --------------------------------------------*/
@@ -59,5 +67,15 @@ class viewerController: UIViewController {
         image.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         
     }
-
+    
+    func setupTabBar() {
+        tabBar.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        tabBar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        tabBar.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+        if let heightOfNavBar = self.navigationController?.navigationBar.frame.height {
+            tabBar.heightAnchor.constraint(equalToConstant: heightOfNavBar).isActive = true
+        } else {
+            tabBar.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        }
+    }
 }

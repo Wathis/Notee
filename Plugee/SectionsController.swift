@@ -111,7 +111,7 @@ class SectionsController: UIViewController, UITableViewDataSource,UITableViewDel
         let cell:SectionsCell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier)! as! SectionsCell
         cell.labelSection.text = self.section[indexPath.row]
         if (indexPath.row % 2 == 0) {
-            cell.viewInContentView.backgroundColor =  UIColor(red: 141 / 255, green: 145 / 255, blue: 145 / 255, alpha: 1)
+            cell.viewInContentView.backgroundColor =  UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
             cell.labelSection.textColor = .white
         }else {
             cell.backgroundColor = .white
