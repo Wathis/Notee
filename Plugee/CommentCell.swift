@@ -15,9 +15,9 @@ class CommentCell: UITableViewCell {
     let profilImage : UIImageView = {
         let imgview = UIImageView()
         imgview.image = #imageLiteral(resourceName: "mathisProfilImage")
-        imgview.layer.cornerRadius = 15
+        imgview.layer.cornerRadius = 20
         imgview.translatesAutoresizingMaskIntoConstraints = false
-        imgview.contentMode = .scaleAspectFit
+//        imgview.contentMode = .scaleAspectFit
         imgview.layer.masksToBounds = true
         return imgview
     }()
@@ -25,8 +25,29 @@ class CommentCell: UITableViewCell {
     let separatorLine : UIView = {
         let view = UIView()
         view.backgroundColor =  UIColor(r: 75, b: 214, g: 199)
+        view.layer.opacity = 0.5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    let nameLabel : UILabel = {
+        let label = UILabel()
+        label.text = "@MathisDelaunay"
+        label.font = UIFont.systemFont(ofSize: 15, weight : UIFontWeightBold)
+        label.textColor = UIColor(r: 75, b: 214, g: 199)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let commentLabel : UITextView = {
+        let tv = UITextView()
+        tv.textAlignment = .left
+        tv.backgroundColor = .clear
+        tv.isUserInteractionEnabled = false
+        tv.text = "This comment had been post by me in the comment section"
+        tv.font = UIFont.systemFont(ofSize: 13, weight: UIFontWeightThin)
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
     }()
 
     
@@ -34,25 +55,44 @@ class CommentCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.backgroundColor = UIColor(r: 227, b: 228, g: 231)
         self.addSubview(profilImage)
+        self.addSubview(nameLabel)
         self.addSubview(separatorLine)
+        self.addSubview(commentLabel)
+        self.selectionStyle = .none
         setupProfilImage()
         setupSeparatorLine()
+        setupLabelName()
+        setupCommentLabel()
     }
     
     /*------------------------------------ CONSTRAINT ---------------------------------------------*/
     
+    func setupCommentLabel() {
+        commentLabel.leftAnchor.constraint(equalTo: nameLabel.leftAnchor).isActive = true
+        commentLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 0).isActive = true
+        commentLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+        commentLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 3/5).isActive = true
+    }
+    
+    func setupLabelName(){
+        nameLabel.leftAnchor.constraint(equalTo: profilImage.rightAnchor, constant: 12).isActive = true
+        nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
+        nameLabel.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+        nameLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 1/5).isActive = true
+    }
+    
     func setupProfilImage() {
         profilImage.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
         profilImage.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 10).isActive = true
-        profilImage.widthAnchor.constraint(equalToConstant: 20).isActive = true
-        profilImage.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        profilImage.widthAnchor.constraint(equalTo: self.heightAnchor, multiplier: 2/5).isActive = true
+        profilImage.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 2/5).isActive = true
     }
     
     func setupSeparatorLine(){
         separatorLine.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor,constant : -5).isActive  = true
         separatorLine.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor).isActive = true
         separatorLine.widthAnchor.constraint(equalTo: self.contentView.widthAnchor).isActive = true
-        separatorLine.heightAnchor.constraint(equalToConstant: 1 ).isActive = true
+        separatorLine.heightAnchor.constraint(equalToConstant: 1/2 ).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {

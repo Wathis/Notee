@@ -20,4 +20,10 @@ struct Member {
     var nom : String?
     var prenom : String?
     var pseudo : String?
+    var profilImage : UIImage?
+}
+
+struct Comment {
+    var Member : Member?
+    var commentText : String?
 }
