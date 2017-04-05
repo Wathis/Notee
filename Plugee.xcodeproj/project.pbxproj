@@ -28,6 +28,8 @@
 		6A95CF221E86F3FC0030672F /* TopNewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95CF211E86F3FC0030672F /* TopNewsCell.swift */; };
 		6AE2972B1E7864D30057F6EE /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE2972A1E7864D30057F6EE /* HomeController.swift */; };
 		6AF9045D1E9507BE00FA2B75 /* ConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF9045C1E9507BE00FA2B75 /* ConnectionController.swift */; };
+		6AF9045F1E952CA200FA2B75 /* myLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF9045E1E952CA200FA2B75 /* myLabels.swift */; };
+		6AF904611E952CC300FA2B75 /* myButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF904601E952CC300FA2B75 /* myButtons.swift */; };
 		6AFA5C521E87D8FB00CBDFCF /* iCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AFA5C511E87D8FB00CBDFCF /* iCarousel.m */; };
 		6AFA5C551E883D5800CBDFCF /* newPlugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFA5C541E883D5800CBDFCF /* newPlugView.swift */; };
 		6AFA8F501E789959001A84D3 /* ThemeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AFA8F4F1E789959001A84D3 /* ThemeCell.swift */; };
@@ -57,6 +59,8 @@
 		6A95CF211E86F3FC0030672F /* TopNewsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopNewsCell.swift; sourceTree = "<group>"; };
 		6AE2972A1E7864D30057F6EE /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		6AF9045C1E9507BE00FA2B75 /* ConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionController.swift; sourceTree = "<group>"; };
+		6AF9045E1E952CA200FA2B75 /* myLabels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myLabels.swift; sourceTree = "<group>"; };
+		6AF904601E952CC300FA2B75 /* myButtons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myButtons.swift; sourceTree = "<group>"; };
 		6AFA5C4F1E87D8FA00CBDFCF /* Plugee-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Plugee-Bridging-Header.h"; sourceTree = "<group>"; };
 		6AFA5C501E87D8FB00CBDFCF /* iCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iCarousel.h; sourceTree = "<group>"; };
 		6AFA5C511E87D8FB00CBDFCF /* iCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iCarousel.m; sourceTree = "<group>"; };
@@ -167,6 +171,8 @@
 			isa = PBXGroup;
 			children = (
 				6A952B0E1E7B0871004FAE96 /* myViews.swift */,
+				6AF904601E952CC300FA2B75 /* myButtons.swift */,
+				6AF9045E1E952CA200FA2B75 /* myLabels.swift */,
 				6AFA8F4F1E789959001A84D3 /* ThemeCell.swift */,
 				6AFA5C541E883D5800CBDFCF /* newPlugView.swift */,
 				6A84B2351E8069710081F219 /* CommentCell.swift */,
@@ -278,6 +284,8 @@
 				6A292EE51E79F73400A1BDFB /* SectionsCell.swift in Sources */,
 				6A95CF221E86F3FC0030672F /* TopNewsCell.swift in Sources */,
 				6A2C7A6D1E7EFBE400E3FB0C /* CommentsController.swift in Sources */,
+				6AF904611E952CC300FA2B75 /* myButtons.swift in Sources */,
+				6AF9045F1E952CA200FA2B75 /* myLabels.swift in Sources */,
 				6A3599E21E7D88D300D313DE /* PlugsCell.swift in Sources */,
 				6A952B0D1E7B0524004FAE96 /* addTheme+SectionController.swift in Sources */,
 				6A3599E01E7D856D00D313DE /* PlugsController.swift in Sources */,

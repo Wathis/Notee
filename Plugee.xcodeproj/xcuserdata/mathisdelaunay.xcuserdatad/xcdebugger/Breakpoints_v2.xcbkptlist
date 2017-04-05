@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Plugee/myViews.swift"
-            timestampString = "511638411.873018"
+            timestampString = "513093262.41689"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
             landmarkName = "init(frame:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -619,6 +619,22 @@
             startingLineNumber = "44"
             endingLineNumber = "44"
             landmarkName = "buttonAdd"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Plugee/ConnectionController.swift"
+            timestampString = "513085347.710927"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "emailTextField"
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
