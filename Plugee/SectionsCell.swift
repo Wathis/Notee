@@ -36,7 +36,7 @@ class SectionsCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         //Remove the grey selection color
         self.selectionStyle = .none
-        contentView.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        contentView.backgroundColor = UIColor(r: 227, g: 231, b: 228)
         contentView.addSubview(viewInContentView)
         setupViewInContentView()
         setupLabel()

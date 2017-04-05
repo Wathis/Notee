@@ -17,14 +17,14 @@ class CommentCell: UITableViewCell {
         imgview.image = #imageLiteral(resourceName: "mathisProfilImage")
         imgview.layer.cornerRadius = 20
         imgview.translatesAutoresizingMaskIntoConstraints = false
-//        imgview.contentMode = .scaleAspectFit
-        imgview.layer.masksToBounds = true
+        imgview.layer.masksToBounds = false
+        imgview.clipsToBounds = true
         return imgview
     }()
     
     let separatorLine : UIView = {
         let view = UIView()
-        view.backgroundColor =  UIColor(r: 75, b: 214, g: 199)
+        view.backgroundColor =  UIColor(r: 75, g: 199, b: 214)
         view.layer.opacity = 0.5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -34,7 +34,7 @@ class CommentCell: UITableViewCell {
         let label = UILabel()
         label.text = "@MathisDelaunay"
         label.font = UIFont.systemFont(ofSize: 15, weight : UIFontWeightBold)
-        label.textColor = UIColor(r: 75, b: 214, g: 199)
+        label.textColor = UIColor(r: 75, g: 199, b: 214)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -53,7 +53,7 @@ class CommentCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.contentView.backgroundColor = UIColor(r: 227, g: 231, b: 228)
         self.addSubview(profilImage)
         self.addSubview(nameLabel)
         self.addSubview(separatorLine)

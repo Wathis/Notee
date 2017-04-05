@@ -28,7 +28,7 @@ class addPlugController: UIViewController {
     
     let bottomLineTextField : UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(r: 75, b: 214, g: 199)
+        view.backgroundColor = UIColor(r: 75, g: 199, b: 214)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -40,7 +40,7 @@ class addPlugController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("CRÉER", for: .normal)
         button.tintColor = .white
-        button.backgroundColor = UIColor(r: 75, b: 214, g: 199)
+        button.backgroundColor = UIColor(r: 75, g: 199, b: 214)
         return button
     }()
     
@@ -49,7 +49,7 @@ class addPlugController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleBack))
-        self.view.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.title = "Ajouter"
         self.view.addSubview(labelNew)
         self.view.addSubview(textField)

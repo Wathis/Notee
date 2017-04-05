@@ -60,7 +60,7 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = section
         
         //FOR TEST

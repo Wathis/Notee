@@ -63,7 +63,7 @@ class PLTabBar : UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor(r: 75, b: 214, g: 199)
+        self.backgroundColor = UIColor(r: 75, g: 199, b: 214)
         favoriteButton.addTarget(self, action: #selector(handleFavorite), for: .touchUpInside)
         self.addSubview(commentButton)
         self.addSubview(favoriteButton)

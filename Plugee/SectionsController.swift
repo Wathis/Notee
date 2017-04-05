@@ -58,7 +58,7 @@ class SectionsController: UIViewController, UITableViewDataSource,UITableViewDel
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         //Set title avec the nav bar
         self.navigationItem.title = theme
         

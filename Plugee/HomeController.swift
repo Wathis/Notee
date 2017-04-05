@@ -49,7 +49,8 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         //Setup back ground color
-        self.view.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
+        checkIfUserIsConnected()
         self.navigationItem.title = "Plugs"
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "LogoutButton"), style: .plain, target: self, action: #selector(handleLogout))
         view.addSubview(themeLabel)
@@ -62,6 +63,12 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     func handleLogout () {
         print("Logout")
+    }
+    
+/*---------------------------------- FUNCTIONS BACKEND ------------------------------------------*/
+    
+    func checkIfUserIsConnected() {
+        present(ConnectionController(), animated: true, completion: nil)
     }
     
 /*---------------------------------- PROTOCOLS FUNCTIONS ------------------------------------------*/
@@ -96,7 +103,7 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let cell:ThemeCell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier)! as! ThemeCell
         cell.labelMatiere.text = self.theme[indexPath.row]
         if (indexPath.row % 2 == 0) {
-            cell.viewInContentView.backgroundColor =  UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
+            cell.viewInContentView.backgroundColor =  UIColor(r: 75, g: 214, b: 199)
             cell.labelMatiere.textColor = .white
         }else {
             cell.backgroundColor = .white

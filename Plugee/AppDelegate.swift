@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //Mettre   -->   View controller-based status bar appearance      a   NO
         UIApplication.shared.statusBarStyle = .lightContent
         UINavigationBar.appearance().barStyle = UIBarStyle.black
-        UINavigationBar.appearance().barTintColor = UIColor(r: 75, b: 214, g: 199)
+        UINavigationBar.appearance().barTintColor = UIColor(r: 86, g: 90, b: 98)
         UINavigationBar.appearance().tintColor = .white
         UITabBar.appearance().tintColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
         

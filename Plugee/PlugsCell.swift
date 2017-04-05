@@ -50,7 +50,7 @@ class PlugsCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         //Remove the grey selection color
         self.selectionStyle = .none
-        self.contentView.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.contentView.backgroundColor = UIColor(r: 227, g: 231, b: 228)
         contentView.addSubview(plugView)
         setupPlugView()
         setupLabel()

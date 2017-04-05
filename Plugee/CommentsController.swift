@@ -22,7 +22,7 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         tv.delegate = self
         tv.translatesAutoresizingMaskIntoConstraints = false
         tv.separatorStyle = .none
-        tv.backgroundColor =  UIColor(r: 227, b: 228, g: 231)
+        tv.backgroundColor =  UIColor(r: 227, g: 231, b: 228)
         return tv
     }()
     
@@ -32,13 +32,13 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.text = "12 Favoris"
-        label.textColor = UIColor(r: 75, b: 214, g: 199)
+        label.textColor = UIColor(r: 75, g: 199, b: 214)
         return label
     }()
     
     let separatorLine : UIView = {
         let view = UIView()
-        view.backgroundColor =  UIColor(r: 75, b: 214, g: 199)
+        view.backgroundColor =  UIColor(r: 75, g: 199, b: 214)
         view.layer.opacity = 0.5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -47,7 +47,7 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     let commentTextFieldContainerView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(r: 75, b: 214, g: 199)
+        view.backgroundColor = UIColor(r: 75, g: 199, b: 214)
         return view
     }()
     
@@ -56,7 +56,7 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         tf.backgroundColor = .clear
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.textColor = .white
-        tf.attributedPlaceholder = NSAttributedString(string: "Écrire un commentaire...", attributes: [NSForegroundColorAttributeName : UIColor.white])
+        tf.attributedPlaceholder = NSAttributedString(string: "Écrire un commentaire...", attributes: [NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)])
         tf.font = UIFont.systemFont(ofSize: 16, weight: UIFontWeightLight)
         return tf
     }()
@@ -75,7 +75,7 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor(r: 227, b: 228, g: 231)
+        self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "Comments"
         hideKeyboardWhenTappedAround()
         self.commentsTableView.register(CommentCell.self, forCellReuseIdentifier: cellId)
