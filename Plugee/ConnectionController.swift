@@ -9,10 +9,17 @@
 import UIKit
 
 class ConnectionController : UIViewController {
+    
+    var labelOnTop : UILabel = {
+        var label = UILabel()
+        label.text = ""
+        return label
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor(r: 220, g: 12, b: 38)
+        self.view.backgroundColor = UIColor(r: 86, g: 90, b: 98)
+        
     }
 
 }
