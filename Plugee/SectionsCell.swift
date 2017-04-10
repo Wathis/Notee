@@ -14,7 +14,8 @@ class SectionsCell: UITableViewCell {
         let label = UILabel()
         label.text = "Null"
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 16, weight: UIFontWeightLight)
+        label.font = UIFont(name: "HelveticaNeue-Light", size: 18)
+        label.textColor = UIColor(r: 86, g: 90, b: 98)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

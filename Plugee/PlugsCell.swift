@@ -29,7 +29,8 @@ class PlugsCell: UITableViewCell {
         let label = UILabel()
         label.text = "Plug"
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 14, weight: UIFontWeightMedium)
+        label.font = UIFont(name: "HelveticaNeue-CondensedBold", size: 18)
+        label.textColor = UIColor(r: 86, g: 90, b: 98)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -38,7 +39,8 @@ class PlugsCell: UITableViewCell {
         let tf = UITextView()
         tf.isUserInteractionEnabled = false
         tf.backgroundColor = .clear
-        tf.font = UIFont.systemFont(ofSize: 13, weight: UIFontWeightThin)
+        tf.font = UIFont(name: "HelveticaNeue-Light", size: 14)
+        tf.textColor = UIColor(r: 86, g: 90, b: 98)
         tf.text = "This is a random text that i choose to represents a description of one plug."
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf

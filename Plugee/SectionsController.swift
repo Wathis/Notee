@@ -30,15 +30,7 @@ class SectionsController: UIViewController, UITableViewDataSource,UITableViewDel
         return tv
     }()
     
-    var sectionLabel : UILabel = {
-        var label = UILabel()
-        label.text = "SECTIONS"
-        label.font = UIFont(name: "Helvetica", size: 15)
-        label.font = UIFont.boldSystemFont(ofSize: 15)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    var sectionLabel : UILabel = LabelTitleFolder(myText : "SECTIONS")
     
     var addButton : UIButton = {
         var button = UIButton(type: .custom)

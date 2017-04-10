@@ -15,7 +15,7 @@ class CommentCell: UITableViewCell {
     let profilImage : UIImageView = {
         let imgview = UIImageView()
         imgview.image = #imageLiteral(resourceName: "mathisProfilImage")
-        imgview.layer.cornerRadius = 20
+        imgview.layer.cornerRadius = 10
         imgview.translatesAutoresizingMaskIntoConstraints = false
         imgview.layer.masksToBounds = false
         imgview.clipsToBounds = true
@@ -24,7 +24,7 @@ class CommentCell: UITableViewCell {
     
     let separatorLine : UIView = {
         let view = UIView()
-        view.backgroundColor =  UIColor(r: 75, g: 199, b: 214)
+        view.backgroundColor =  UIColor(r: 86, g: 90, b: 98)
         view.layer.opacity = 0.5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -34,7 +34,7 @@ class CommentCell: UITableViewCell {
         let label = UILabel()
         label.text = "@MathisDelaunay"
         label.font = UIFont.systemFont(ofSize: 15, weight : UIFontWeightBold)
-        label.textColor = UIColor(r: 75, g: 199, b: 214)
+        label.textColor = UIColor(r: 86, g: 90, b: 98)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

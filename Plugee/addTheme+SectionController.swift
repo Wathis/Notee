@@ -17,7 +17,7 @@ class addThemeController: UIViewController {
     var delegate:AddingSectionThemeDelegate!
     
     
-    let labelNew = myLabel(myText : "Nouveau")
+    let labelNew = LabelTitleFolder(myText : "Nouveau")
     
     let textField : UITextField = {
         let tf = UITextField()

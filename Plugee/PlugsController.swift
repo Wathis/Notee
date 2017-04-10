@@ -32,15 +32,7 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         return tv
     }()
     
-    var plugsLabel : UILabel = {
-        var label = UILabel()
-        label.text = "PLUGS"
-        label.font = UIFont(name: "Helvetica", size: 15)
-        label.font = UIFont.boldSystemFont(ofSize: 15)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    var plugsLabel : UILabel = LabelTitleFolder(myText : "PLUGS")
     
     var addButton : UIButton = {
         var button = UIButton(type: .custom)

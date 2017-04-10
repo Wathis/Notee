@@ -14,7 +14,7 @@ class addPlugController: UIViewController {
     
     var delegate:AddingPlugDelegate!
     var newPlug : Plug?
-    let labelNew = myLabel(myText : "Nouveau")
+    let labelNew = LabelTitleFolder(myText : "Nouveau")
     
     /*--------------------------------------- VARIABLES ---------------------------------------------*/
     

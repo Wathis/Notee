@@ -32,13 +32,13 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.text = "12 Favoris"
-        label.textColor = UIColor(r: 75, g: 199, b: 214)
+        label.textColor = UIColor(r: 86, g: 90, b: 98)
         return label
     }()
     
     let separatorLine : UIView = {
         let view = UIView()
-        view.backgroundColor =  UIColor(r: 75, g: 199, b: 214)
+        view.backgroundColor =  UIColor(r: 86, g: 90, b: 98)
         view.layer.opacity = 0.5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -47,7 +47,7 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     let commentTextFieldContainerView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(r: 75, g: 199, b: 214)
+        view.backgroundColor = UIColor(r: 86, g: 90, b: 98)
         return view
     }()
     
@@ -182,7 +182,6 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         
         commentTextField.centerYAnchor.constraint(equalTo: self.commentTextFieldContainerView.centerYAnchor).isActive = true
         commentTextField.leftAnchor.constraint(equalTo: self.commentTextFieldContainerView.leftAnchor, constant : 10).isActive = true
-        commentTextField.rightAnchor.constraint(equalTo: commentTextFieldContainerView.rightAnchor,constant : widthButtonGo).isActive = true
         commentTextField.widthAnchor.constraint(equalTo: commentTextFieldContainerView.widthAnchor, constant : -widthButtonGo).isActive = true
         commentTextField.heightAnchor.constraint(equalTo: commentTextFieldContainerView.heightAnchor).isActive = true
         

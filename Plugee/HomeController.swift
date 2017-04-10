@@ -28,7 +28,7 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         return tv
     }()
     
-    let themeLabel = myLabel(myText : "THÈMES")
+    let themeLabel = LabelTitleFolder(myText : "THÈMES")
     
     var addButton : UIButton = {
         var button = UIButton(type: .custom)
@@ -50,7 +50,6 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         super.viewDidLoad()
         //Setup back ground color
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
-        checkIfUserIsConnected()
         self.navigationItem.title = "Plugs"
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "LogoutButton"), style: .plain, target: self, action: #selector(handleLogout))
         view.addSubview(themeLabel)
@@ -61,15 +60,7 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         setupAddButton()
     }
     
-    func handleLogout () {
-        print("Logout")
-    }
-    
 /*---------------------------------- FUNCTIONS BACKEND ------------------------------------------*/
-    
-    func checkIfUserIsConnected() {
-        present(ConnectionController(), animated: true, completion: nil)
-    }
     
 /*---------------------------------- PROTOCOLS FUNCTIONS ------------------------------------------*/
     
@@ -80,6 +71,10 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
 /*------------------------------------- HANDLE BUTTONS --------------------------------------------*/
+    
+    func handleLogout () {
+        present(ConnectionController(), animated: true, completion: nil)
+    }
     
     func handleButton(){
         let controller = addThemeController()
