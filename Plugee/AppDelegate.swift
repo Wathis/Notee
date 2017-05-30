@@ -19,14 +19,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-        
+        let navigationBarAppearace = UINavigationBar.appearance()
+        navigationBarAppearace.isTranslucent = false
+        navigationBarAppearace.tintColor = .white
+        navigationBarAppearace.barTintColor = UIColor(r: 86, g: 90, b: 98)
+        navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white, NSFontAttributeName : UIFont(name: "HelveticaNeue-CondensedBlack", size: 20) as Any]
         //GENERAL SETUPS 
         //Mettre   -->   View controller-based status bar appearance      a   NO
         UIApplication.shared.statusBarStyle = .lightContent
-        UINavigationBar.appearance().barStyle = UIBarStyle.blackOpaque
-        UINavigationBar.appearance().barTintColor = UIColor(r: 86, g: 90, b: 98)
-        UINavigationBar.appearance().tintColor = .white
         UITabBar.appearance().tintColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
+        
+        //Modify KeyBoard color 
+        UITextField.appearance().keyboardAppearance = .dark
         
         window?.rootViewController = TabBarController()
         return true

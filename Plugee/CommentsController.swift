@@ -208,7 +208,7 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     }
     
     func setupNumberOfFavorite() {
-        numberOfFavorite.topAnchor.constraint(equalTo: view.topAnchor, constant: (self.navigationController?.navigationBar.frame.height)! + 20).isActive = true
+        numberOfFavorite.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         numberOfFavorite.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 20).isActive = true
         numberOfFavorite.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1/3).isActive = true
         numberOfFavorite.heightAnchor.constraint(equalToConstant: 50).isActive = true

@@ -12,6 +12,8 @@ class viewerController: UIViewController {
     
     /*------------------------------------ CONSTANTS ---------------------------------------------*/
     
+    let heightOfTabBar: CGFloat = 45
+    
     /*------------------------------------ VARIABLES ---------------------------------------------*/
     
     var image : UIImageView = {
@@ -37,8 +39,8 @@ class viewerController: UIViewController {
         self.view.addSubview(tabBar)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "BackButton"), style: .plain, target: self, action: #selector(handleBack))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handlePlus))
-        setupImage()
         setupTabBar()
+        setupImage()
         tabBar.commentButton.addTarget(self, action: #selector(handleComment), for: .touchUpInside)
     }
     
@@ -61,28 +63,16 @@ class viewerController: UIViewController {
 /*------------------------------------ CONSTRAINT --------------------------------------------------*/
 
     func setupImage() {
-        let heightOfStatusBar = UIApplication.shared.statusBarFrame.height
-        if let heightOfNavbar = self.navigationController?.navigationBar.frame.height {
-            image.topAnchor.constraint(equalTo: view.topAnchor,constant: heightOfNavbar + heightOfStatusBar).isActive = true
-            image.heightAnchor.constraint(equalTo: view.heightAnchor,constant: -heightOfNavbar - heightOfStatusBar).isActive = true
-            
-        }else {
-            image.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            image.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        }
+        image.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        image.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant : -heightOfTabBar).isActive = true
         image.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         image.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        
     }
     
     func setupTabBar() {
         tabBar.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         tabBar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         tabBar.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-        if let heightOfNavBar = self.navigationController?.navigationBar.frame.height {
-            tabBar.heightAnchor.constraint(equalToConstant: heightOfNavBar).isActive = true
-        } else {
-            tabBar.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        }
+        tabBar.heightAnchor.constraint(equalToConstant: heightOfTabBar).isActive = true
     }
 }

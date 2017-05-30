@@ -29,21 +29,12 @@ class addThemeController: UIViewController {
     
     let bottomLineTextField : UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(r: 75, g: 199, b: 214)
+        view.backgroundColor = UIColor(r: 86, g: 90, b: 98)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    let buttonValidate : UIButton = {
-        let button = UIButton()
-        button.layer.masksToBounds = true
-        button.layer.cornerRadius = 10
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("CRÉER", for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = UIColor(r: 75, g: 214, b: 199)
-        return button
-    }()
+    let buttonValidate = ButtonInMenus(text: "CRÉER", backgroundColor: UIColor(r: 75, g: 214, b: 199))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +84,7 @@ class addThemeController: UIViewController {
     }
     
     func setupLabelNew(){
-        labelNew.topAnchor.constraint(equalTo: view.topAnchor, constant: 120).isActive = true
+        labelNew.topAnchor.constraint(equalTo: view.topAnchor, constant: 40).isActive = true
         labelNew.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
         labelNew.widthAnchor.constraint(equalToConstant: 100).isActive = true
         labelNew.heightAnchor.constraint(equalToConstant: 50).isActive = true

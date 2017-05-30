@@ -39,10 +39,10 @@ class CopyrightWathisLabel : UILabel {
 }
 
 class LabelTitleConnectionScreen : UILabel {
-    init(text : String) {
+    init(text : String,size : CGFloat) {
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        self.text = "Plugee"
-        self.font = UIFont(name: "HelveticaNeue-CondensedBlack", size: 80)
+        self.text = text
+        self.font = UIFont(name: "HelveticaNeue-CondensedBlack", size: size)
         self.translatesAutoresizingMaskIntoConstraints = false
         self.textAlignment = .center
         self.textColor = .white

@@ -12,9 +12,10 @@ class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        let controller = NewsController()
+        controller.tabBarItem.image = #imageLiteral(resourceName: "IconeTabBar")
         var arrayViews : [UIViewController] = [createAViewController(controller: NewsController(), image: #imageLiteral(resourceName: "IconeTabBar"))]
-        
+//        createAViewController(controller: NewsController(), image: #imageLiteral(resourceName: "IconeTabBar"))
         arrayViews.append(createAViewController(controller: HomeController(), image: #imageLiteral(resourceName: "IconeTabBar")))
         arrayViews.append(createAViewController(controller: TopController(), image: #imageLiteral(resourceName: "IconeTabBar")))
         
@@ -31,6 +32,4 @@ class TabBarController: UITabBarController {
         navController.tabBarItem.title = nil
         return navController
     }
-    
-
 }

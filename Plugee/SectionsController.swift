@@ -142,7 +142,7 @@ class SectionsController: UIViewController, UITableViewDataSource,UITableViewDel
         sectionTableView.separatorStyle = .none
     }
     func setupsectionLabel() {
-        sectionLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 120).isActive = true
+        sectionLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 40).isActive = true
         sectionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         sectionLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         sectionLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true

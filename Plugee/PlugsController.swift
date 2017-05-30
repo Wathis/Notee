@@ -147,7 +147,7 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
     }
     
     func setupPlugsLabel() {
-        plugsLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 120).isActive = true
+        plugsLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 40).isActive = true
         plugsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         plugsLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         plugsLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true

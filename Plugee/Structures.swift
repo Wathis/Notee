@@ -11,6 +11,10 @@ import UIKit
 struct Plug {
     var id : Int?
     var description = ""
+    var version : Int?
+    var theme : String?
+    var section : String?
+    var subject : String?
     var title = ""
     var photo : UIImage?
     var member : Member?

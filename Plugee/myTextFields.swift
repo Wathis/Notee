@@ -17,6 +17,7 @@ class TextFieldLoginRegister : UIView, UITextFieldDelegate {
         tf.font = UIFont(name: "Helvetica-Light",size: 20)
         tf.textColor = .white
         tf.delegate = self
+        tf.autocapitalizationType = .none
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()

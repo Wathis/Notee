@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6A75D6491E75655100AD92C5"
-               BuildableName = "Plugee.app"
-               BlueprintName = "Plugee"
-               ReferencedContainer = "container:Plugee.xcodeproj">
+               BuildableName = "Notee.app"
+               BlueprintName = "Notee"
+               ReferencedContainer = "container:Notee.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6A75D6491E75655100AD92C5"
-            BuildableName = "Plugee.app"
-            BlueprintName = "Plugee"
-            ReferencedContainer = "container:Plugee.xcodeproj">
+            BuildableName = "Notee.app"
+            BlueprintName = "Notee"
+            ReferencedContainer = "container:Notee.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6A75D6491E75655100AD92C5"
-            BuildableName = "Plugee.app"
-            BlueprintName = "Plugee"
-            ReferencedContainer = "container:Plugee.xcodeproj">
+            BuildableName = "Notee.app"
+            BlueprintName = "Notee"
+            ReferencedContainer = "container:Notee.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6A75D6491E75655100AD92C5"
-            BuildableName = "Plugee.app"
-            BlueprintName = "Plugee"
-            ReferencedContainer = "container:Plugee.xcodeproj">
+            BuildableName = "Notee.app"
+            BlueprintName = "Notee"
+            ReferencedContainer = "container:Notee.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

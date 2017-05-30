@@ -18,12 +18,12 @@ class ConnectionController : UIViewController {
     
     var copyrightLabel = CopyrightWathisLabel()
     
-    var labelOnTop = LabelTitleConnectionScreen(text : "Plugee")
-    var usernameTextField = TextFieldLoginRegister(placeholderText: "Email", isSecureEntry: false)
-    var emailTextField = TextFieldLoginRegister(placeholderText: "Mot de passe",isSecureEntry : false)
-    var passwordTextField = TextFieldLoginRegister(placeholderText: "Vérification",isSecureEntry : true)
-    let loginButton = ButtonLoginRegister(text: "CONNEXION", backgroundColor: UIColor(r: 75, g: 214, b: 199),textColor: .white)
-    let registerButton = ButtonLoginRegister(text: "INSCRIPTION",backgroundColor: .white, textColor: .gray)
+    var labelOnTop = LabelTitleConnectionScreen(text : "Plugee",size: 80)
+    var emailTextField = TextFieldLoginRegister(placeholderText: "Email", isSecureEntry: false)
+    var passwordTextField = TextFieldLoginRegister(placeholderText: "Mot de passe",isSecureEntry : true)
+    var passwordVerificationTextField = TextFieldLoginRegister(placeholderText: "Vérification",isSecureEntry : true)
+    let firstButton = ButtonLoginRegister(text: "CONNEXION", backgroundColor: UIColor(r: 75, g: 214, b: 199),textColor: .white)
+    let secondButton = ButtonLoginRegister(text: "INSCRIPTION",backgroundColor: .white, textColor: .gray)
     
     /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
@@ -32,21 +32,24 @@ class ConnectionController : UIViewController {
         self.view.backgroundColor = UIColor(r: 86, g: 90, b: 98)
         hideKeyboardWhenTappedAround()
         setupViews()
-        loginButton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
-        registerButton.addTarget(self, action: #selector(handleRegister), for: .touchUpInside)
+        firstButton.addTarget(self, action: #selector(handleFirstButton), for: .touchUpInside)
+        secondButton.addTarget(self, action: #selector(handleSecondButton), for: .touchUpInside)
     }
     
     /*------------------------------------ FUNCTIONS HANDLE ---------------------------------------------*/
     
-    func handleLogin() {
+    func handleFirstButton() {
         if (isOnConnectionScreen){
+            //So the button is "CONNEXION"
             if (emailTextField.text == EMAIL && passwordTextField.text == PASSWORD){
                 dismiss(animated: true, completion: nil)
             }
+            
         } else {
+            
             isOnConnectionScreen = true
-            usernameTextField.isUserInteractionEnabled = false
-            usernameTextField.isHidden = true
+            passwordVerificationTextField.isUserInteractionEnabled = false
+            passwordVerificationTextField.isHidden = true
             
             constraintOfEmailTextField?.isActive = false
             constraintOfEmailTextField = emailTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : -2*shiftOfTextFiels)
@@ -55,37 +58,42 @@ class ConnectionController : UIViewController {
             constraintOfPasswordTextField?.isActive = false
             constraintOfPasswordTextField = passwordTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : 0)
             constraintOfPasswordTextField?.isActive = true
-            
         }
     }
     
-    func handleRegister() {
-        if !(isOnConnectionScreen) && (usernameTextField.text != nil && passwordTextField.text != nil && emailTextField.text != nil){
-            present(EnterNameController(), animated: true, completion: nil)
+    func handleSecondButton() {
+        if !(isOnConnectionScreen) && (emailTextField.text != nil && passwordVerificationTextField.text != nil && passwordTextField.text != nil){
+            let transition = CATransition()
+            transition.duration = 0.2
+            transition.type = kCATransitionPush
+            transition.subtype = kCATransitionFromRight
+            view.window!.layer.add(transition, forKey: kCATransition)
+            present(EnterNameController(), animated: false, completion: nil)
         }else {
-            isOnConnectionScreen = false
-            usernameTextField.isUserInteractionEnabled = true
-            usernameTextField.isHidden = false
             
-            constraintOfUsernameTextField?.isActive = false
-            constraintOfUsernameTextField = usernameTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : CGFloat(-3.5*shiftOfTextFiels))
-            constraintOfUsernameTextField?.isActive = true
+            isOnConnectionScreen = false
+            passwordVerificationTextField.isUserInteractionEnabled = true
+            passwordVerificationTextField.isHidden = false
             
             constraintOfEmailTextField?.isActive = false
-            constraintOfEmailTextField = emailTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : -1.5*shiftOfTextFiels)
+            constraintOfEmailTextField = emailTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : CGFloat(-2.5*shiftOfTextFiels))
             constraintOfEmailTextField?.isActive = true
             
             constraintOfPasswordTextField?.isActive = false
-            constraintOfPasswordTextField = passwordTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : 1/2*shiftOfTextFiels)
+            constraintOfPasswordTextField = passwordTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : -1/2*shiftOfTextFiels)
             constraintOfPasswordTextField?.isActive = true
+            
+            constraintOfPasswordVerificationTextField?.isActive = false
+            constraintOfPasswordVerificationTextField = passwordVerificationTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : 1.5*shiftOfTextFiels)
+            constraintOfPasswordVerificationTextField?.isActive = true
         }
     }
     
     /*------------------------------------ CONSTRAINTS ---------------------------------------------*/
     
-    var constraintOfEmailTextField : NSLayoutConstraint?
     var constraintOfPasswordTextField : NSLayoutConstraint?
-    var constraintOfUsernameTextField : NSLayoutConstraint?
+    var constraintOfPasswordVerificationTextField : NSLayoutConstraint?
+    var constraintOfEmailTextField : NSLayoutConstraint?
     
     func setupViews() {
         self.view.addSubview(labelOnTop)
@@ -94,17 +102,6 @@ class ConnectionController : UIViewController {
         labelOnTop.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 50).isActive = true
         labelOnTop.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         labelOnTop.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        self.view.addSubview(usernameTextField)
-        
-        usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        constraintOfUsernameTextField = usernameTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : CGFloat(-2*shiftOfTextFiels))
-        constraintOfUsernameTextField?.isActive = true
-        usernameTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 8/10).isActive = true
-        usernameTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
-        usernameTextField.isHidden = true
-        usernameTextField.isUserInteractionEnabled = false
         
         self.view.addSubview(emailTextField)
         
@@ -122,26 +119,37 @@ class ConnectionController : UIViewController {
         passwordTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 8/10).isActive = true
         passwordTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
+        self.view.addSubview(passwordVerificationTextField)
+        
+        passwordVerificationTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        constraintOfPasswordVerificationTextField = passwordVerificationTextField.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant : 0)
+        constraintOfPasswordVerificationTextField?.isActive = true
+        passwordVerificationTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 8/10).isActive = true
+        passwordVerificationTextField.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        
+        passwordVerificationTextField.isHidden = true
+        passwordVerificationTextField.isUserInteractionEnabled = false
+        
         self.view.addSubview(copyrightLabel)
         
         copyrightLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         copyrightLabel.topAnchor.constraint(equalTo: view.bottomAnchor,constant : -30).isActive = true
-        copyrightLabel.widthAnchor.constraint(equalTo: passwordTextField.widthAnchor).isActive = true
+        copyrightLabel.widthAnchor.constraint(equalTo: passwordVerificationTextField.widthAnchor).isActive = true
         copyrightLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
-        self.view.addSubview(registerButton)
+        self.view.addSubview(secondButton)
         
-        registerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        registerButton.bottomAnchor.constraint(equalTo: copyrightLabel.topAnchor,constant : -30).isActive = true
-        registerButton.widthAnchor.constraint(equalTo: passwordTextField.widthAnchor).isActive = true
-        registerButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        secondButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        secondButton.bottomAnchor.constraint(equalTo: copyrightLabel.topAnchor,constant : -30).isActive = true
+        secondButton.widthAnchor.constraint(equalTo: passwordVerificationTextField.widthAnchor).isActive = true
+        secondButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        self.view.addSubview(loginButton)
+        self.view.addSubview(firstButton)
         
-        loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loginButton.bottomAnchor.constraint(equalTo: registerButton.topAnchor,constant : -10).isActive = true
-        loginButton.widthAnchor.constraint(equalTo: passwordTextField.widthAnchor).isActive = true
-        loginButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        firstButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        firstButton.bottomAnchor.constraint(equalTo: secondButton.topAnchor,constant : -10).isActive = true
+        firstButton.widthAnchor.constraint(equalTo: passwordVerificationTextField.widthAnchor).isActive = true
+        firstButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
     }
 

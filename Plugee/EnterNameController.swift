@@ -12,7 +12,7 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
 
     var copyrightLabel = CopyrightWathisLabel()
     
-    var labelOnTop = LabelTitleConnectionScreen(text: "INSCRIPTION")
+    var labelOnTop = LabelTitleConnectionScreen(text: "Plugee",size: 70)
     
     let nameTextField = TextFieldLoginRegister(placeholderText: "@Username", isSecureEntry: false)
     
@@ -31,7 +31,7 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
     
     func handleContinue() {
         let transition = CATransition()
-        transition.duration = 0.5
+        transition.duration = 0.2
         transition.type = kCATransitionPush
         transition.subtype = kCATransitionFromRight
         view.window!.layer.add(transition, forKey: kCATransition)

@@ -33,16 +33,8 @@ class addPlugController: UIViewController {
         return view
     }()
     
-    let buttonValidate : UIButton = {
-        let button = UIButton()
-        button.layer.masksToBounds = true
-        button.layer.cornerRadius = 10
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("CRÉER", for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = UIColor(r: 75, g: 199, b: 214)
-        return button
-    }()
+    let buttonValidate = ButtonInMenus(text: "CRÉER", backgroundColor: UIColor(r: 75, g: 214, b: 199))
+    
     
 /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
@@ -96,7 +88,7 @@ class addPlugController: UIViewController {
     }
     
     func setupLabelNew(){
-        labelNew.topAnchor.constraint(equalTo: view.topAnchor, constant: 120).isActive = true
+        labelNew.topAnchor.constraint(equalTo: view.topAnchor, constant: 40).isActive = true
         labelNew.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
         labelNew.widthAnchor.constraint(equalToConstant: 100).isActive = true
         labelNew.heightAnchor.constraint(equalToConstant: 50).isActive = true

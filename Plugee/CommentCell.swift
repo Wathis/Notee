@@ -29,7 +29,7 @@ class CommentCell: UITableViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     let nameLabel : UILabel = {
         let label = UILabel()
         label.text = "@MathisDelaunay"
@@ -49,7 +49,6 @@ class CommentCell: UITableViewCell {
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
-
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

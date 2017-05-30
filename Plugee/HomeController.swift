@@ -18,6 +18,7 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
 
     var theme : [String] = ["Français","Mathématiques","Anglais"]
     var timerAdd : Timer?
+    var isConnected = false
     
     lazy var themeTableView : UITableView = {
         var tv = UITableView()
@@ -128,7 +129,7 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         themeTableView.separatorStyle = .none
     }
     func setupThemeLabel() {
-        themeLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 120).isActive = true
+        themeLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 40).isActive = true
         themeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         themeLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         themeLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true

@@ -16,7 +16,7 @@ class TopNewsCell: UIView {
     var label : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 15, weight: UIFontWeightSemibold)
+        label.font = UIFont(name: "HelveticaNeue-Medium", size: 13)
         label.textColor = .white
         label.textAlignment = .center
         label.numberOfLines = 3
@@ -30,15 +30,7 @@ class TopNewsCell: UIView {
         super.init(frame: frame)
         self.addSubview(label)
         setupLabel()
-        setupView()
-    }
-    
-    func setupView() {
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOffset = CGSize(width: -1, height: 1)
-        self.layer.shadowOpacity = 0.5
-        self.layer.shadowRadius = 2
-        self.layer.masksToBounds = false
+//        setupView()
     }
     
     func randomBackgroundColor(number : Int) {
