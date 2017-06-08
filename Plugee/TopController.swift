@@ -1,6 +1,6 @@
 //
 //  TopController.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 18/03/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
@@ -37,7 +37,7 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
         super.viewDidLoad()
         //Setup back ground color
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
-        self.navigationItem.title = "Plugee top"
+        self.navigationItem.title = "Notee top"
         view.addSubview(themeTableView)
         themeTableView.register(ClassCell.self, forCellReuseIdentifier: reuseIdentifier)
         setupTableView()

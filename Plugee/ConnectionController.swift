@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 05/04/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
@@ -18,7 +18,7 @@ class ConnectionController : UIViewController {
     
     var copyrightLabel = CopyrightWathisLabel()
     
-    var labelOnTop = LabelTitleConnectionScreen(text : "Plugee",size: 80)
+    var labelOnTop = LabelTitleConnectionScreen(text : "Notee",size: 80)
     var emailTextField = TextFieldLoginRegister(placeholderText: "Email", isSecureEntry: false)
     var passwordTextField = TextFieldLoginRegister(placeholderText: "Mot de passe",isSecureEntry : true)
     var passwordVerificationTextField = TextFieldLoginRegister(placeholderText: "Vérification",isSecureEntry : true)

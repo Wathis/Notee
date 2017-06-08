@@ -1,6 +1,6 @@
 //
 //  WelcomeScreenController.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 10/04/2017.
 //  Copyright © 2017 Wathis. All rights reserved.

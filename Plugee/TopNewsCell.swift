@@ -1,6 +1,6 @@
 //
 //  TopNewsCell.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 25/03/2017.
 //  Copyright © 2017 Wathis. All rights reserved.

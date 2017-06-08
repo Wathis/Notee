@@ -1,6 +1,6 @@
 //
 //  CommentsController.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 19/03/2017.
 //  Copyright © 2017 Wathis. All rights reserved.

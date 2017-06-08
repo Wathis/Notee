@@ -1,6 +1,6 @@
 //
 //  EnterNameController.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 09/04/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
@@ -12,7 +12,7 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
 
     var copyrightLabel = CopyrightWathisLabel()
     
-    var labelOnTop = LabelTitleConnectionScreen(text: "Plugee",size: 70)
+    var labelOnTop = LabelTitleConnectionScreen(text: "Notee",size: 70)
     
     let nameTextField = TextFieldLoginRegister(placeholderText: "@Username", isSecureEntry: false)
     

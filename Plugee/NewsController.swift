@@ -1,6 +1,6 @@
 //
 //  NewsController.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 18/03/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
@@ -15,8 +15,8 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
     let screenSize = UIScreen.main.bounds
     let heightOfNewsCell : CGFloat = 75
     var timerForNews = Timer()
-    var plugeeNews = ["Plugee permet de partager vos fiches de révision !","Ajoutez à vos favoris les fiches de vos amis !"
-        ,"Pourquoi ne pas invitez vos amis a rejoindre Plugee ?","Vous ne savez pas comment utiliser Plugee ? Cliquez ici !"]
+    var NoteeNews = ["Notee permet de partager vos fiches de révision !","Ajoutez à vos favoris les fiches de vos amis !"
+        ,"Pourquoi ne pas invitez vos amis a rejoindre Notee ?","Vous ne savez pas comment utiliser Notee ? Cliquez ici !"]
     var myPlugs = [1,2,3,4]
     
     var heightOfNavBar : CGFloat?
@@ -101,10 +101,10 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
     
     func loadMyViewsForNewsScrollView() {
         var iSave: CGFloat = 0;
-        for i in 0 ..< plugeeNews.count {
+        for i in 0 ..< NoteeNews.count {
             let view = TopNewsCell(frame: CGRect(x: screenSize.width * CGFloat(i), y: 0, width: screenSize.width, height: heightOfNewsCell))
             newsOfPlugScrollView.addSubview(view)
-            view.label.text = plugeeNews[i]
+            view.label.text = NoteeNews[i]
             view.randomBackgroundColor(number: i)
             iSave = CGFloat(i + 1);
         }

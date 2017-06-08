@@ -1,6 +1,6 @@
 //
 //  addPlugController.swift
-//  Plugee
+//  Notee
 //
 //  Created by Mathis Delaunay on 18/03/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
