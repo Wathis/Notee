@@ -72,7 +72,7 @@
 		6AF9045C1E9507BE00FA2B75 /* ConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionController.swift; sourceTree = "<group>"; };
 		6AF9045E1E952CA200FA2B75 /* myLabels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myLabels.swift; sourceTree = "<group>"; };
 		6AF904601E952CC300FA2B75 /* myButtons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myButtons.swift; sourceTree = "<group>"; };
-		6AFA5C4F1E87D8FA00CBDFCF /* Plugee-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Plugee-Bridging-Header.h"; sourceTree = "<group>"; };
+		6AFA5C4F1E87D8FA00CBDFCF /* Notee-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Notee-Bridging-Header.h"; sourceTree = "<group>"; };
 		6AFA5C501E87D8FB00CBDFCF /* iCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iCarousel.h; sourceTree = "<group>"; };
 		6AFA5C511E87D8FB00CBDFCF /* iCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iCarousel.m; sourceTree = "<group>"; };
 		6AFA5C541E883D5800CBDFCF /* newPlugView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = newPlugView.swift; sourceTree = "<group>"; };
@@ -151,7 +151,7 @@
 				6A75D6591E75655100AD92C5 /* Info.plist */,
 			);
 			name = Notee;
-			path = Plugee;
+			path = Notee;
 			sourceTree = "<group>";
 		};
 		6AF9045B1E95079800FA2B75 /* Connection */ = {
@@ -169,10 +169,10 @@
 			children = (
 				6AFA5C501E87D8FB00CBDFCF /* iCarousel.h */,
 				6AFA5C511E87D8FB00CBDFCF /* iCarousel.m */,
-				6AFA5C4F1E87D8FA00CBDFCF /* Plugee-Bridging-Header.h */,
+				6AFA5C4F1E87D8FA00CBDFCF /* Notee-Bridging-Header.h */,
 			);
 			name = ICarousel;
-			path = Plugee;
+			path = Notee;
 			sourceTree = "<group>";
 		};
 		6AFA8F521E789977001A84D3 /* Models */ = {
@@ -231,7 +231,7 @@
 			dependencies = (
 			);
 			name = Notee;
-			productName = Plugee;
+			productName = Notee;
 			productReference = 6A75D64A1E75655100AD92C5 /* Notee.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -434,12 +434,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = R4Q4T5UMG8;
-				INFOPLIST_FILE = Plugee/Info.plist;
+				INFOPLIST_FILE = Notee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wathis.notee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Plugee/Plugee-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Notee/Notee-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -451,12 +451,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = R4Q4T5UMG8;
-				INFOPLIST_FILE = Plugee/Info.plist;
+				INFOPLIST_FILE = Notee/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wathis.notee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Plugee/Plugee-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Notee/Notee-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
