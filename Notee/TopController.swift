@@ -30,6 +30,16 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
         return tv
     }()
 
+    var commingSoon : UILabel = {
+        let label = UILabel()
+        label.text = "Bientôt disponible ..."
+        label.font = UIFont(name: "Helvetica", size: 20)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor(r: 86, g: 90, b: 97)
+        label.textAlignment = .center
+        return label
+    }()
+    
     
     /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
@@ -38,9 +48,14 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
         //Setup back ground color
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "Notee top"
-        view.addSubview(themeTableView)
-        themeTableView.register(ClassCell.self, forCellReuseIdentifier: reuseIdentifier)
-        setupTableView()
+        self.view.addSubview(commingSoon)
+        commingSoon.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        commingSoon.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -50).isActive = true
+        commingSoon.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+        commingSoon.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        view.addSubview(themeTableView)
+//        themeTableView.register(ClassCell.self, forCellReuseIdentifier: reuseIdentifier)
+//        setupTableView()
     }
     
     /*---------------------------------- FUNCTIONS BACKEND ------------------------------------------*/
@@ -82,9 +97,9 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
     /*---------------------------------- TABLE VIEW DELEGATE ----------------------------------------*/
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let controller = SectionsController()
-        controller.theme = classes[indexPath.row]
-        self.navigationController?.pushViewController(controller, animated: true)
+//        let controller = SectionsController()
+//        controller.theme = classes[indexPath.row]
+//        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     /*------------------------------------ CONSTRAINT --------------------------------------------------*/
