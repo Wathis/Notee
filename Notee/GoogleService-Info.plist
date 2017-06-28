@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>143914122809-p6sdo7qlnqdu182nd33hefdd243rqtld.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.143914122809-p6sdo7qlnqdu182nd33hefdd243rqtld</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDVBqDCsUlhNvEbGgjBwDQmIX3wPrlyxgU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>143914122809</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.wathis.notee</string>
+	<key>PROJECT_ID</key>
+	<string>notee-51292</string>
+	<key>STORAGE_BUCKET</key>
+	<string>notee-51292.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:143914122809:ios:c7eaeda92cc86e6d</string>
+	<key>DATABASE_URL</key>
+	<string>https://notee-51292.firebaseio.com</string>
+</dict>
+</plist>

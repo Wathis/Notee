@@ -8,11 +8,18 @@
 
 import UIKit
 
-protocol AddingSectionThemeDelegate {
-    func sendString(text : String)
+protocol AddingDisciplineDelegate {
+    func sendString(disciplineName : String)
 }
 protocol AddingPlugDelegate {
     func sendPlug(plug : Plug)
+}
+
+protocol AddingThemeDelegate {
+    func sendTheme(theme : String)
+}
+protocol LogoutUserDelegate {
+    func refreshPage() 
 }
 
 extension UIColor {

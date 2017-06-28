@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Firebase
 
 class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
 
@@ -57,6 +57,7 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
         setupMyViews()
         loadMyViewsForNewsScrollView()
     }
+    
     func setupMyViews() {
         self.view.addSubview(newsOfPlugScrollView)
         

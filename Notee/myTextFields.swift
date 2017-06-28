@@ -44,6 +44,22 @@ class TextFieldLoginRegister : UIView, UITextFieldDelegate {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
     
+    init(placeholderText : String,isSecureEntry : Bool, delegate : UITextFieldDelegate){
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        setupViews()
+        textField.delegate = delegate
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        if let fontName = UIFont(name: "Helvetica-Light",size: 20) {
+            textField.attributedPlaceholder = NSAttributedString(string: placeholderText, attributes: [NSForegroundColorAttributeName : UIColor(red: 1, green: 1, blue: 1, alpha: 0.5), NSFontAttributeName : fontName])
+        } else {
+            textField.placeholder = placeholderText
+        }
+        if (isSecureEntry){
+            textField.isSecureTextEntry = true
+        }
+        self.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
     func textFieldDidChange() {
         text = textField.text
     }

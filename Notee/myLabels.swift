@@ -38,6 +38,22 @@ class CopyrightWathisLabel : UILabel {
     }
 }
 
+class ForgottenPasswordLabel : UILabel {
+    init(){
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        self.text = "Mot de passe oublié ?"
+        self.font = UIFont(name: "Helvetica-Light", size: 14)
+        self.textColor = .white
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.textAlignment = .right
+        self.isUserInteractionEnabled = true
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class LabelTitleConnectionScreen : UILabel {
     init(text : String,size : CGFloat) {
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))

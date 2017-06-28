@@ -1,42 +1,39 @@
 //
-//  addPlugController.swift
+//  addThemeController.swift
 //  Notee
 //
-//  Created by Mathis Delaunay on 18/03/2017.
+//  Created by Mathis Delaunay on 27/06/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
 //
 
 import UIKit
+import Firebase
 
-
-
-class addPlugController: UIViewController {
-    
-    var delegate:AddingPlugDelegate!
-    var newPlug : Plug?
-    let labelNew = LabelTitleFolder(myText : "Nouveau")
+class addThemeController: UIViewController  {
     
     /*--------------------------------------- VARIABLES ---------------------------------------------*/
+    
+    var delegate:AddingThemeDelegate!
+    
+    var disciplineAvailables : [String] = []
+    
+    let labelNew = LabelTitleFolder(myText : "Nouveau")
     
     let textField : UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.textAlignment = .center
-        tf.placeholder = "Veuillez remplir"
+        tf.placeholder = "Cliquez ici"
         return tf
     }()
     
     let bottomLineTextField : UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(r: 75, g: 199, b: 214)
+        view.backgroundColor = UIColor(r: 86, g: 90, b: 98)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
     let buttonValidate = ButtonInMenus(text: "AJOUTER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
-    
-    
-/*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,23 +51,21 @@ class addPlugController: UIViewController {
         setupButtonValidate()
     }
     
-    func handleCreate() {
+    func handleAdd() {
         if let text = textField.text {
             if !(text.isEmpty) {
-                delegate.sendPlug(plug: newPlug!)
+                delegate.sendTheme(theme: text)
             }
         }
         dismiss(animated: true, completion: nil)
     }
-    
-
     
     func setupButtonValidate() {
         buttonValidate.topAnchor.constraint(equalTo: bottomLineTextField.bottomAnchor, constant: 60).isActive = true
         buttonValidate.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         buttonValidate.widthAnchor.constraint(equalTo: textField.widthAnchor).isActive = true
         buttonValidate.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        buttonValidate.addTarget(self, action: #selector(handleCreate), for: .touchUpInside)
+        buttonValidate.addTarget(self, action: #selector(handleAdd), for: .touchUpInside)
     }
     
     func setupBottomLineTextField() {
@@ -97,10 +92,4 @@ class addPlugController: UIViewController {
     func handleBack() {
         dismiss(animated: true, completion: nil)
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
 }

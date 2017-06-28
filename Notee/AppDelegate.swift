@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        FIRApp.configure()
+        FirebaseApp.configure()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
@@ -35,8 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //Modify KeyBoard color 
         UITextField.appearance().keyboardAppearance = .dark
         
-        window?.rootViewController = ConnectionController()
-//        window?.rootViewController = TabBarController()
+        window?.rootViewController = TabBarController()
         return true
     }
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class TabBarController: UITabBarController {
 
@@ -21,6 +22,8 @@ class TabBarController: UITabBarController {
         
         viewControllers = arrayViews
         self.selectedIndex = 1
+        
+        
     }
     
     private func createAViewController(controller : UIViewController, image : UIImage) -> UINavigationController {

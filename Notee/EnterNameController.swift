@@ -6,11 +6,14 @@
 //  Copyright © 2017 Wathis. All rights reserved.
 //
 
+import Firebase
 import UIKit
+import UITextField_Shake
 
 class EnterNameController: UIViewController, UITextFieldDelegate {
 
     var copyrightLabel = CopyrightWathisLabel()
+    var member : Member?
     
     var labelOnTop = LabelTitleConnectionScreen(text: "Notee",size: 70)
     
@@ -30,6 +33,26 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
     }
     
     func handleContinue() {
+        
+        guard let uid = member?.id, let pseudo = nameTextField.text else {
+            return
+        }
+        if (pseudo != "@"){
+            let values = ["pseudo" : pseudo]
+            let refData = Database.database().reference().child("members").child(uid)
+            refData.updateChildValues(values) { (error, ref) in
+                if error != nil {
+                    print(error!)
+                    return
+                }
+                self.goToWelcomeScreen()
+            }
+        } else {
+            nameTextField.textField.shake()
+        }
+    }
+    
+    func goToWelcomeScreen() {
         let transition = CATransition()
         transition.duration = 0.2
         transition.type = kCATransitionPush
@@ -48,6 +71,9 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
         }
         if (nameTextField.textField.text == "@"){
             nameTextField.textField.text = ""
+        }
+        if nameTextField.textField.text?.characters.first != "@" {
+            nameTextField.textField.text = "@" + nameTextField.textField.text!
         }
     }
     

@@ -8,6 +8,6 @@ target 'Notee' do
   # Pods for Notee
   pod 'Firebase/Database'
   pod 'Firebase/Auth'
-  pod 'Firebase/Storage'
-
+  pod 'Firebase/Storage' 
+  pod 'UITextField+Shake'
 end

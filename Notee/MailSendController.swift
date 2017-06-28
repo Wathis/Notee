@@ -1,19 +1,17 @@
 //
-//  WelcomeScreenController.swift
+//  MailSendController.swift
 //  Notee
 //
-//  Created by Mathis Delaunay on 10/04/2017.
+//  Created by Mathis Delaunay on 24/06/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
 //
 
-import UIKit
-import Firebase
+import Foundation
 
-class WelcomeScreenController: UIViewController {
-
+class MailSendController: UIViewController {
     var copyrightLabel = CopyrightWathisLabel()
     
-    var welcomeLabel = LabelTitleConnectionScreen(text: "Bienvenue",size: 65)
+    var emailMessage = LabelTitleConnectionScreen(text: "Email envoyé",size: 40)
     
     let continueButton = ButtonLoginRegister(text: "CONTINUER", backgroundColor: UIColor(r: 75, g: 214, b: 199),textColor: .white)
     
@@ -25,12 +23,12 @@ class WelcomeScreenController: UIViewController {
         setupViews()
     }
     
+    func setText(text : String){
+        emailMessage.text = text
+    }
+    
     func  handleContinue(){
-        if Auth.auth().currentUser?.uid != nil {
-            present(TabBarController(), animated: true, completion: nil)
-        } else {
-            present(ConnectionController(), animated: true, completion: nil)
-        }
+        present(TabBarController(), animated: false, completion: nil)
     }
     
     func setupViews() {
@@ -40,13 +38,13 @@ class WelcomeScreenController: UIViewController {
         copyrightLabel.topAnchor.constraint(equalTo: view.bottomAnchor,constant : -30).isActive = true
         copyrightLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         copyrightLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-
-        self.view.addSubview(welcomeLabel)
         
-        welcomeLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant: -70).isActive = true
-        welcomeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        welcomeLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        welcomeLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        self.view.addSubview(emailMessage)
+        
+        emailMessage.centerYAnchor.constraint(equalTo: view.centerYAnchor,constant: -70).isActive = true
+        emailMessage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        emailMessage.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        emailMessage.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         self.view.addSubview(continueButton)
         

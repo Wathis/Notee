@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddingPlugDelegate {
 
@@ -79,7 +80,6 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         let indexPath = IndexPath(row: plugs.count - 1, section: 0)
         timerAdd = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(insertRow), userInfo: indexPath, repeats: false)
     }
-    
     
 /*------------------------------------- HANDLE BUTTONS --------------------------------------------*/
 
