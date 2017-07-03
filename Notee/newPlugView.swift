@@ -10,11 +10,26 @@ import Foundation
 
 class newPlugView: UIView {
     
-    let versionText : String = "Papier\n\n"
-    let themeText : String = "Histoire\n\n"
-    let sectionText : String = "La première guerre mondiale\n\n"
-    let subjectText : String = "La bataille de verdun\n\n"
-    let descriptionText : String = "Ce plug est une prise de note de mon cours sur la bataille de Verdun."
+    var versionText : String = "Papier" {
+        didSet {
+            self.refreshAttributeString()
+        }
+    }
+    var disciplineText: String = "Histoire\n\n" {
+        didSet {
+            self.refreshAttributeString()
+        }
+    }
+    var themeText : String = "La bataille de verdun\n\n" {
+        didSet {
+            self.refreshAttributeString()
+        }
+    }
+    var descriptionText : String = "Ce plug est une prise de note de mon cours sur la bataille de Verdun." {
+        didSet {
+            self.refreshAttributeString()
+        }
+    }
     
     lazy var contentOfPlug : UITextView = {
         let tv = UITextView()
@@ -108,16 +123,18 @@ class newPlugView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func refreshAttributeString() {
+        self.contentOfPlug.attributedText = loadAttributedString()
+    }
+    
     func loadAttributedString() -> NSMutableAttributedString {
         let attributedString = NSMutableAttributedString(string: "Version : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any])
         attributedString.append(NSAttributedString(string: versionText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
-        attributedString.append(NSAttributedString(string: "Thème : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
+        attributedString.append(NSAttributedString(string: "\n\nMatière : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
+        attributedString.append(NSAttributedString(string: disciplineText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
+        attributedString.append(NSAttributedString(string: "\n\nThème : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
         attributedString.append(NSAttributedString(string: themeText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
-        attributedString.append(NSAttributedString(string: "Section : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
-        attributedString.append(NSAttributedString(string: sectionText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
-        attributedString.append(NSAttributedString(string: "Sujet : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
-        attributedString.append(NSAttributedString(string: subjectText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
-        attributedString.append(NSAttributedString(string: "Description :\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
+        attributedString.append(NSAttributedString(string: "\n\nDescription :\n\n", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
         attributedString.append(NSAttributedString(string: descriptionText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
         return attributedString
     }

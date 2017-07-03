@@ -13,12 +13,19 @@ class viewerController: UIViewController {
     /*------------------------------------ CONSTANTS ---------------------------------------------*/
     
     let heightOfTabBar: CGFloat = 45
+    var plug : Plug? {
+        didSet {
+            self.image.image = plug?.photo
+        }
+    }
     
     /*------------------------------------ VARIABLES ---------------------------------------------*/
     
     var image : UIImageView = {
         let image = UIImageView()
         image.image = #imageLiteral(resourceName: "plugExample")
+        image.contentMode = .scaleAspectFit
+        image.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
@@ -42,6 +49,10 @@ class viewerController: UIViewController {
         setupTabBar()
         setupImage()
         tabBar.commentButton.addTarget(self, action: #selector(handleComment), for: .touchUpInside)
+        guard let checkedUrl = URL(string: (plug?.urlImage!)!) else {
+            return
+        }
+        downloadImage(url: checkedUrl)
     }
     
 /*------------------------------------- HANDLE BUTTONS --------------------------------------------*/
@@ -58,6 +69,25 @@ class viewerController: UIViewController {
         let controller = CommentsController()
         let navController = UINavigationController(rootViewController: controller)
         present(navController, animated: true, completion: nil)
+    }
+    
+/*------------------------------------ DOWNLOAD --------------------------------------------------*/
+    func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
+        URLSession.shared.dataTask(with: url) {
+            (data, response, error) in
+            completion(data, response, error)
+            }.resume()
+    }
+    func downloadImage(url: URL) {
+        print("Download Started")
+        getDataFromUrl(url: url) { (data, response, error)  in
+            guard let data = data, error == nil else { return }
+            print(response?.suggestedFilename ?? url.lastPathComponent)
+            print("Download Finished")
+            DispatchQueue.main.async() { () -> Void in
+                self.plug?.photo = UIImage(data: data)
+            }
+        }
     }
 
 /*------------------------------------ CONSTRAINT --------------------------------------------------*/

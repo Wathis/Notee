@@ -1,22 +1,23 @@
 //
-//  CommentsController.swift
+//  CommandTableViewController.swift
 //  Notee
 //
-//  Created by Mathis Delaunay on 19/03/2017.
+//  Created by Mathis Delaunay on 02/07/2017.
 //  Copyright © 2017 Wathis. All rights reserved.
 //
 
 import UIKit
+import Firebase
 
-class CommentsController: UIViewController,UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate {
-
-
+class GodModeController:UIViewController,UITableViewDataSource,UITableViewDelegate, UITextFieldDelegate {
+    
+    
     /*--------------------------------------- VARIABLES ---------------------------------------------*/
     
-    let cellId = "cellComment"
-    var comments = [Comment]()
+    let cellId = "cellComand"
+    var commands = [String]()
     
-    lazy var commentsTableView : UITableView = {
+    lazy var commandTableView : UITableView = {
         let tv = UITableView()
         tv.dataSource = self
         tv.delegate = self
@@ -26,24 +27,6 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         return tv
     }()
     
-    let numberOfFavorite : UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: UIFontWeightBold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .left
-        label.text = "12 Favoris"
-        label.textColor = UIColor(r: 86, g: 90, b: 98)
-        return label
-    }()
-    
-    let separatorLine : UIView = {
-        let view = UIView()
-        view.backgroundColor =  UIColor(r: 86, g: 90, b: 98)
-        view.layer.opacity = 0.5
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     let commentTextFieldContainerView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -51,7 +34,7 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         return view
     }()
     
-    var commentTextField : UITextField = {  
+    var commentTextField : UITextField = {
         let tf = UITextField()
         tf.backgroundColor = .clear
         tf.translatesAutoresizingMaskIntoConstraints = false
@@ -76,20 +59,14 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
-        self.navigationItem.title = "Comments"
+        self.navigationItem.title = "God mode"
         hideKeyboardWhenTappedAround()
-        self.commentsTableView.register(CommentCell.self, forCellReuseIdentifier: cellId)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
-        self.view.addSubview(numberOfFavorite)
-        self.view.addSubview(separatorLine)
-        self.view.addSubview(commentsTableView)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleCancel))
+        self.view.addSubview(commandTableView)
         self.view.addSubview(commentTextFieldContainerView)
-        setupNumberOfFavorite()
-        setupSeparatorLine()
         setupTableView()
         setupContainerView()
-        appendToCemmentsArray()
-        
+        self.commands.append("Welcome in your god mode")
         buttonGo.addTarget(self, action: #selector(handleGo), for: .touchUpInside)
         
         //Observer on keyboard
@@ -101,26 +78,93 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-     /*------------------------------------ LOADING COMMENTS ARRAY ---------------------------------------------*/
-    
-    func appendToCemmentsArray() {
-        let memberEtienne = Member(nom: "Lebarillier", prenom: "Etienne", pseudo: "@lebarillierEtienne", profilImage : #imageLiteral(resourceName: "etienneProfilImage"))
-        let memberHarvey = Member(nom: "Roberts", prenom: "Harvey", pseudo: "@harveyroberts",profilImage : #imageLiteral(resourceName: "harveyProfilImage"))
-        comments.append(Comment(Member: memberEtienne, commentText: "C'est une superbe fiche de révion."))
-        comments.append(Comment(Member: memberHarvey, commentText: "Non je la trouve pas très bien moi :)"))
-    }
     
     
-     /*------------------------------------ HANDLE BUTTONS ---------------------------------------------*/
+    /*------------------------------------ HANDLE BUTTONS ---------------------------------------------*/
     
     func handleGo () {
-        if ((commentTextField.text?.characters.count)! > 0){
-            comments.append(Comment(Member: Member(nom: "Delaunay", prenom: "Mathis", pseudo: "@mathisdelaunay", profilImage: #imageLiteral(resourceName: "mathisProfilImage")), commentText: commentTextField.text))
-            let indexPath = IndexPath(row: comments.count - 1, section: 0)
-            commentsTableView.insertRows(at: [indexPath], with: .automatic)
-            commentTextField.text = nil
-            view.endEditing(true)
+        guard let command = self.commentTextField.text?.uppercased() else {
+            return
         }
+        if command == "delete all sheets".uppercased() || command == "d a s".uppercased() {
+            Database.database().reference().child("sheets").removeValue(completionBlock: { (error, refData) in
+                Database.database().reference().child("theme-sheets").removeValue(completionBlock: { (error, refD) in
+                    if error != nil {
+                        self.commands.append("Failed to delete all sheets")
+                    } else {
+                        self.commands.append("Deleted all seets successfuly")
+                    }
+                    self.commandTableView.reloadData()
+                })
+            })
+        }
+        var index = command.index(command.startIndex, offsetBy: 2)
+        var subStr = command.substring(to: index)
+        if subStr == "op".uppercased() {
+            let index = command.index(command.startIndex, offsetBy: 3)
+            let person = command.substring(from: index)
+            op(memberName: person)
+        }
+        index = command.index(command.startIndex, offsetBy: 4)
+        subStr = command.substring(to: index)
+        if subStr == "deop".uppercased() {
+            let index = command.index(command.startIndex, offsetBy: 5)
+            let person = command.substring(from: index)
+            deop(memberName : person)
+        }
+        
+        view.endEditing(true)
+    }
+    
+    func op(memberName: String) {
+        Database.database().reference().child("members").observe(.value, with: { (snapshot) in
+            guard let datas = snapshot.value as? NSDictionary else {
+                return
+            }
+            for val in datas {
+                print(val)
+                guard let member = val.value as? NSDictionary, let memberPseudo = member["pseudo"] as? String else {
+                    return
+                }
+                if(memberPseudo.uppercased() == "@" + memberName){
+                    guard let uidMember = val.key as? String else {
+                        return
+                    }
+                    self.promotUID(memberUID: uidMember, action: true, memberPseudo: memberPseudo)
+                }
+            }
+        })
+    }
+    
+    func promotUID(memberUID : String,action: Bool,memberPseudo : String) {
+        let values = ["admin" : action]
+        Database.database().reference().child("members/\(memberUID)").updateChildValues(values, withCompletionBlock: { (error, dataRef) in
+            if error != nil {
+                self.commands.append("Promotion of \(memberPseudo) refused : " + error!.localizedDescription)
+            } else {
+                self.commands.append("Acion on \(memberPseudo) successfuly done")
+            }
+            self.commandTableView.reloadData()
+        })
+    }
+    
+    func deop(memberName : String){
+        Database.database().reference().child("members").observe(.value, with: { (snapshot) in
+            guard let datas = snapshot.value as? NSDictionary else {
+                return
+            }
+            for value in datas {
+                guard let member = value.value as? NSDictionary, let memberPseudo = member["pseudo"] as? String else {
+                    return
+                }
+                if(memberPseudo.uppercased() == "@" + memberName){
+                    guard let uidMember = value.key as? String else {
+                        return
+                    }
+                    self.promotUID(memberUID: uidMember, action: false, memberPseudo: memberPseudo)
+                }
+            }
+        })
     }
     
     func handleCancel() {
@@ -147,23 +191,20 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     /*---------------------------------- TABLE VIEW DATA SOURCE ----------------------------------------*/
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return comments.count
+        return commands.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell : CommentCell = commentsTableView.dequeueReusableCell(withIdentifier: cellId) as! CommentCell
-        cell.commentLabel.text = comments[indexPath.row].commentText
-        let member = comments[indexPath.row].Member
-        cell.profilImage.image = member?.profilImage
-        cell.nameLabel.text = member?.pseudo
+        let cellIdentifier = "ElementCell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
+            ?? UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
+        cell.textLabel?.text = "\(Date().currentTimeZoneDate())"
+        cell.detailTextLabel?.text = commands[indexPath.row]
         return cell
     }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
-    }
     
-     /*---------------------------------- TEXTFIELD DELEGATE ----------------------------------------*/
-
+    /*---------------------------------- TEXTFIELD DELEGATE ----------------------------------------*/
+    
     
     
     /*------------------------------------ CONSTRAINT ---------------------------------------------*/
@@ -193,26 +234,12 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     
     
     func setupTableView() {
-        commentsTableView.topAnchor.constraint(equalTo: separatorLine.bottomAnchor).isActive = true
-        commentsTableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        commentsTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-        let heightBeforeCell = (self.navigationController?.navigationBar.frame.height)! + numberOfFavorite.frame.height + separatorLine.frame.height
-        commentsTableView.heightAnchor.constraint(equalTo: self.view.heightAnchor, constant: heightBeforeCell).isActive = true
+        commandTableView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        commandTableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        commandTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+        commandTableView.heightAnchor.constraint(equalTo: self.view.heightAnchor, constant: 0).isActive = true
     }
     
-    func setupSeparatorLine(){
-        separatorLine.topAnchor.constraint(equalTo: numberOfFavorite.bottomAnchor).isActive  = true
-        separatorLine.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        separatorLine.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-        separatorLine.heightAnchor.constraint(equalToConstant: 1/2).isActive = true
-    }
-    
-    func setupNumberOfFavorite() {
-        numberOfFavorite.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        numberOfFavorite.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 20).isActive = true
-        numberOfFavorite.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1/3).isActive = true
-        numberOfFavorite.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    }
     
     
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
@@ -49,6 +50,7 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "Notee top"
         self.view.addSubview(commingSoon)
+        isAdmin()
         commingSoon.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         commingSoon.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -50).isActive = true
         commingSoon.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
@@ -56,6 +58,28 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
 //        view.addSubview(themeTableView)
 //        themeTableView.register(ClassCell.self, forCellReuseIdentifier: reuseIdentifier)
 //        setupTableView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        isAdmin()
+    }
+    
+    func isAdmin() {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        Database.database().reference().child("members/\(uid)").observe(.value, with: { (snapshot) in
+            guard let datas = snapshot.value as? NSDictionary, let admin = datas["admin"] as? Bool else {
+                return
+            }
+            if (admin){
+                self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "godmode"), style: .plain, target: self, action: #selector(self.handleGodMode))
+            }
+        })
+    }
+    
+    func handleGodMode() {
+        present(UINavigationController(rootViewController: GodModeController()), animated: true, completion: nil)
     }
     
     /*---------------------------------- FUNCTIONS BACKEND ------------------------------------------*/

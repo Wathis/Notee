@@ -38,3 +38,12 @@ extension UIViewController { //Permet quand on tape ailleurs -> plus de clavier
         view.endEditing(true)
     }
 }
+extension Date {
+    func currentTimeZoneDate() -> String {
+        let dtf = DateFormatter()
+        dtf.timeZone = TimeZone.current
+        dtf.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        return dtf.string(from: self)
+    }
+}

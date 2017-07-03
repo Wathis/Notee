@@ -17,7 +17,7 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
     
 /*------------------------------------ VARIABLES ---------------------------------------------*/
     
-    var themes : [String] = []
+    var themes : [Theme] = []
     var timerAdd : Timer?
     var discipline : String?
 
@@ -33,7 +33,7 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
     
     var noTheme : UILabel = {
         let label = UILabel()
-        label.text = "Aucune matière"
+        label.text = "Aucun thème"
         label.font = UIFont(name: "Helvetica", size: 20)
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -68,60 +68,70 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
 /*---------------------------------- BACK END FUNCTIONS -------------------------------------------*/
     
     func loadTheme() {
-        
         guard let uid = Auth.auth().currentUser?.uid, let disciplineData = discipline else {
             return
         }
-        let ref = Database.database().reference().child("members-themes")
+        let ref = Database.database().reference().child("members-themes").child(uid).child(disciplineData)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.hasChild(uid) {
-                ref.child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-                    if snapshot.hasChild(disciplineData) {
-                        ref.child(uid).child(disciplineData).observeSingleEvent(of: .value, with: { (snapshot) in
-                            guard let values = snapshot.value as? NSDictionary else {
-                                return
-                            }
-                            for value in values {
-                                if let key = value.key as? String  {
-                                    self.themes.append(key)
-                                }
-                            }
-                            self.actualizeView(false)
-                        })
-                    } else {
-                        self.actualizeView(true)
-                    }
-                })
-            } else {
-                self.actualizeView(true)
+            guard let values = snapshot.value as? NSDictionary else {
+                self.finishLoad()
+                return
             }
+            for value in values {
+                guard let idOfTheme = value.key as? String, let valueOfKey = value.value as? NSDictionary else {
+                    self.finishLoad()
+                    return
+                }
+                for valueKey in valueOfKey {
+                    guard let nameOfTheme = valueKey.key as? String else {
+                        self.finishLoad()
+                        return
+                    }
+                    self.themes.append(Theme(name: nameOfTheme, id: idOfTheme))
+                }
+            }
+            self.finishLoad()
         })
+    }
+    
+    func finishLoad() {
+        if self.themes.count == 0 {
+            self.actualizeView(true)
+        } else {
+            self.actualizeView(false)
+        }
     }
     
     func actualizeView(_ appearLabel : Bool) {
         if appearLabel {
             noTheme.isHidden = false
+        } else {
+            noTheme.isHidden = true
         }
         self.themeTableView.reloadData()
+//        self.refreshControl.endRefreshing()
         activityIndicor.stopAnimating()
         activityIndicor.removeFromSuperview()
     }
-    
     func addNewTheme(themeName: String) {
+        
         guard let uid = Auth.auth().currentUser?.uid, let disciplineData = self.discipline else {
             return
         }
-        let ref  = Database.database().reference().child("members-themes").child(uid).child(disciplineData)
-        let value = [themeName : true]
-        ref.updateChildValues(value) { (error, refDatabase) in
-            if error != nil {
-                print(error!)
-                return
-            }
-            self.themes.append(themeName)
-            let indexPath = IndexPath(row: self.themes.count - 1, section: 0)
-            self.timerAdd = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.insertRow), userInfo: indexPath, repeats: false)
-        }
+        
+        let ref = Database.database().reference()
+        let key = ref.childByAutoId().key
+        
+        let value = [themeName : "true"]
+        
+        let childUpdates = ["/themes/\(key)": value,
+                            "/members-themes/\(uid)/\(disciplineData)/\(key)/": value]
+        
+        ref.updateChildValues(childUpdates)
+        
+        self.themes.append(Theme(name: themeName, id: key))
+        let indexPath = IndexPath(row: self.themes.count - 1, section: 0)
+        self.timerAdd = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.insertRow), userInfo: indexPath, repeats: false)
     }
     
 /*---------------------------------- PROTOCOLS FUNCTIONS ------------------------------------------*/
@@ -158,7 +168,7 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell:SectionsCell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier)! as! SectionsCell
-        cell.labelSection.text = self.themes[indexPath.row]
+        cell.labelSection.text = self.themes[indexPath.row].name
         if (indexPath.row % 2 == 0) {
             cell.viewInContentView.backgroundColor =  UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
             cell.labelSection.textColor = .white
@@ -170,13 +180,15 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
     }
     func insertRow(timer : Timer) {
         themeTableView.insertRows(at: [timer.userInfo as! IndexPath], with: .automatic)
+        finishLoad()
     }
     
 /*---------------------------------- TABLE VIEW DELEGATE ----------------------------------------*/
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = PlugsController()
-        controller.section = themes[indexPath.row]
+        controller.theme = themes[indexPath.row]
+        controller.discipline = self.discipline
         self.navigationController?.pushViewController(controller, animated: true)
     }
     

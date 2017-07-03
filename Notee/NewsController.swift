@@ -15,9 +15,10 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
     let screenSize = UIScreen.main.bounds
     let heightOfNewsCell : CGFloat = 75
     var timerForNews = Timer()
-    var NoteeNews = ["Notee permet de partager vos fiches de révision !","Ajoutez à vos favoris les fiches de vos amis !"
-        ,"Pourquoi ne pas invitez vos amis a rejoindre Notee ?","Vous ne savez pas comment utiliser Notee ? Cliquez ici !"]
+    var noteeNews : [String] = []
     var myPlugs = [1,2,3,4]
+    
+    var plugs : [Plug] = []
     
     var heightOfNavBar : CGFloat?
     var heightOfTabBar : CGFloat?
@@ -53,12 +54,64 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "News"
         //Important for the scrollView
+        loadSheets()
         self.automaticallyAdjustsScrollViewInsets = false
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(handleRefresh))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "profil"), style: .plain, target: self, action: #selector(handleProfil))
         setupMyViews()
-        loadMyViewsForNewsScrollView()
+        loadMessages()
     }
     
-    func setupMyViews() {
+    func handleProfil() {
+        
+    }
+    
+    func loadMessages() {
+        self.noteeNews.removeAll()
+        let ref = Database.database().reference().child("newsMessage")
+        ref.observe(.value, with: { (snapshot) in
+            guard let messages = snapshot.value as? NSDictionary else {
+                return
+            }
+            self.noteeNews.removeAll()
+            for message in messages {
+                guard let messageText = message.value as? String else {
+                    return
+                }
+                self.noteeNews.append(messageText)
+            }
+            self.loadMyViewsForNewsScrollView()
+        })
+    }
+    
+    func handleRefresh() {
+        loadMessages()
+        loadSheets()
+    }
+    
+    func loadSheets() {
+        self.plugs.removeAll()
+        self.newPlugCarousel.reloadData()
+        let ref = Database.database().reference().child("sheets").queryLimited(toFirst: 20)
+        ref.observe(.value, with: { (snapshot) in
+            guard let values = snapshot.value as? NSDictionary else {
+                return
+            }
+            for value in values {
+                if let keyPlug = value.key as? String, let informationOfSheet = value.value as? NSDictionary  {
+                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownlaod"] as? String else {
+                        return
+                    }
+                    self.plugs.append(Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID), urlPhoto :url ))
+                }
+            }
+            self.plugs.reverse()
+            self.newPlugCarousel.reloadData()
+        })
+    }
+    
+    func setupScrollView() {
+        self.newsOfPlugScrollView.removeFromSuperview()
         self.view.addSubview(newsOfPlugScrollView)
         
         heightOfNavBar = (self.navigationController?.navigationBar.frame.height)! + UIApplication.shared.statusBarFrame.height
@@ -67,6 +120,11 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
         newsOfPlugScrollView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         newsOfPlugScrollView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         newsOfPlugScrollView.heightAnchor.constraint(equalToConstant: heightOfNewsCell).isActive = true
+    }
+    
+    func setupMyViews() {
+        
+        setupScrollView()
         
         self.view.addSubview(newPlugCarousel)
         
@@ -83,12 +141,16 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
     }
     
     func numberOfItems(in carousel: iCarousel) -> Int {
-        return 4
+        return plugs.count
     }
     
     func carousel(_ carousel: iCarousel, viewForItemAt index: Int, reusing view: UIView?) -> UIView {
         let heightOfNewPlug = (self.view.frame.height) - heightOfNavBar! - heightOfTabBar! - heightOfNewsCell
         let view = newPlugView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width * 8 / 10, height: heightOfNewPlug))
+        view.descriptionText = plugs[index].description
+        view.titleOfNewPlug.text = plugs[index].title
+        view.themeText = plugs[index].theme
+        view.disciplineText = plugs[index].discipline
         view.buttonReport.addTarget(self, action: #selector(handleReport), for: .touchUpInside)
         return view
     }
@@ -101,11 +163,12 @@ class NewsController: UIViewController, iCarouselDataSource, iCarouselDelegate {
     }
     
     func loadMyViewsForNewsScrollView() {
+        setupScrollView()
         var iSave: CGFloat = 0;
-        for i in 0 ..< NoteeNews.count {
+        for i in 0 ..< noteeNews.count {
             let view = TopNewsCell(frame: CGRect(x: screenSize.width * CGFloat(i), y: 0, width: screenSize.width, height: heightOfNewsCell))
             newsOfPlugScrollView.addSubview(view)
-            view.label.text = NoteeNews[i]
+            view.label.text = noteeNews[i]
             view.randomBackgroundColor(number: i)
             iSave = CGFloat(i + 1);
         }

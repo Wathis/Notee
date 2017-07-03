@@ -27,7 +27,6 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         tv.delegate = self
         tv.dataSource = self
         tv.backgroundColor = .clear
-        tv.isHidden = true
         tv.refreshControl = self.refreshControl
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
@@ -77,7 +76,6 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     func handleRefresh() {
         self.discipline.removeAll()
-        self.noDiscipline.isHidden = true
         guard let uid = Auth.auth().currentUser?.uid else {
             return
         }
@@ -94,14 +92,12 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
                             self.discipline.append(key)
                         }
                     }
-                    self.disciplineTableView.reloadData()
-                    self.refreshControl.endRefreshing()
+                    self.finishLoad()
                 }) { (error) in
                     print(error.localizedDescription)
                 }
             }else{
-                self.refreshControl.endRefreshing()
-                self.noDiscipline.isHidden = false
+                self.finishLoad()
             }
         })
         
@@ -127,21 +123,34 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
                             self.discipline.append(key)
                         }
                     }
-                    self.disciplineTableView.reloadData()
-                    self.appearTableView()
+                    self.finishLoad()
                 }) { (error) in
                     print(error.localizedDescription)
                 }
             }else{
-                self.appearTableView()
-                self.noDiscipline.isHidden = false
+                self.finishLoad()
             }
         })
     }
     
-    func appearTableView() {
-        self.disciplineTableView.isHidden = false
-        self.activityIndicor.removeFromSuperview()
+    func finishLoad() {
+        if self.discipline.count == 0 {
+            self.actualizeView(true)
+        } else {
+            self.actualizeView(false)
+        }
+    }
+    
+    func actualizeView(_ appearLabel : Bool) {
+        if appearLabel {
+            noDiscipline.isHidden = false
+        } else {
+            noDiscipline.isHidden = true
+        }
+        self.disciplineTableView.reloadData()
+        self.refreshControl.endRefreshing()
+        activityIndicor.stopAnimating()
+        activityIndicor.removeFromSuperview()
     }
     
     func checkIfUserConnected() {
@@ -220,6 +229,7 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     func insertRow(timer : Timer) {
         disciplineTableView.insertRows(at: [timer.userInfo as! IndexPath], with: .automatic)
+        self.finishLoad()
     }
     
 /*---------------------------------- TABLE VIEW DELEGATE ----------------------------------------*/

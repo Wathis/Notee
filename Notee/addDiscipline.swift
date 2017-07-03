@@ -55,6 +55,7 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
         self.view.addSubview(buttonValidate)
         hideKeyboardWhenTappedAround()
         setupLabelNew()
+        createDisciplines()
         setupTextField()
         setupBottomLineTextField()
         setupButtonValidate()
@@ -78,6 +79,20 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
         }
     }
     
+    
+    
+    func createDisciplines(){
+        let ref = Database.database().reference().child("discipline")
+        
+        let values = [
+            "Français" : true , "Maths" : true, "SVT" : true , "Anglais" : true, "Informatique" : true, "Italien" : true, "Physique" : true
+        ]
+        
+        ref.updateChildValues(values)
+        
+        
+        
+    }
     
     
     func handleCreate() {

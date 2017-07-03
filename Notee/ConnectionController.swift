@@ -81,7 +81,7 @@ class ConnectionController : UIViewController, UITextFieldDelegate {
             
         } else if (emailTextField.text != nil && passwordVerificationTextField.text != nil && passwordTextField.text != nil)  {
             
-            let values = ["email" : email, "pseudo" : "Undefined"]
+            let values = ["email" : email, "pseudo" : "Undefined","admin": false] as [String : Any]
             
             Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
                 if error != nil {

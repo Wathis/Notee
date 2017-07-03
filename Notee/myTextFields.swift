@@ -84,3 +84,60 @@ class TextFieldLoginRegister : UIView, UITextFieldDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+
+class TextFieldAdding : UIView {
+    var text : String? {
+        didSet {
+            self.textField.text = text
+        }
+    }
+    
+    lazy var textField : UITextField = {
+        var tf = UITextField()
+        tf.font = UIFont(name: "Helvetica-Light",size: 20)
+        tf.textColor = UIColor(r: 86, g: 90, b: 98)
+        tf.autocapitalizationType = .none
+        tf.textAlignment = .left
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+    
+    let separatorLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(r: 86, g: 90, b: 98)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    init(placeholderText : String){
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        setupViews()
+        if let fontName = UIFont(name: "Helvetica-Light",size: 20) {
+            textField.attributedPlaceholder = NSAttributedString(string: placeholderText, attributes: [NSForegroundColorAttributeName :  UIColor(red: 86 / 255, green: 90 / 255, blue: 98 / 255, alpha: 0.5), NSFontAttributeName : fontName])
+        } else {
+            textField.placeholder = placeholderText
+        }
+        self.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupViews() {
+        self.addSubview(textField)
+        
+        textField.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        textField.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+        textField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5).isActive = true
+        textField.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
+        self.addSubview(separatorLine)
+        
+        separatorLine.topAnchor.constraint(equalTo: textField.bottomAnchor).isActive = true
+        separatorLine.widthAnchor.constraint(equalTo: textField.widthAnchor).isActive = true
+        separatorLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        separatorLine.centerXAnchor.constraint(equalTo: textField.centerXAnchor).isActive = true
+    }
+}

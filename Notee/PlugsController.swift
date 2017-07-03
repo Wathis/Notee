@@ -9,15 +9,17 @@
 import UIKit
 import Firebase
 
-class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddingPlugDelegate {
+class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddingPlugDelegate, UIImagePickerControllerDelegate , UINavigationControllerDelegate {
 
 /*------------------------------------ CONSTANTS ---------------------------------------------*/
 
-    let cellId = "plugCell"
+    let CELL_ID = "plugCell"
+    
     
 /*--------------------------------------- VARIABLES ---------------------------------------------*/
     
-    var section : String?
+    var theme : Theme?
+    var discipline : String?
     var onePlug : Plug = Plug()
     var twoPlug : Plug = Plug()
     var plugs : [Plug] = []
@@ -30,46 +32,91 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         tv.dataSource = self
         tv.backgroundColor = .clear
         tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.showsVerticalScrollIndicator = false
         return tv
     }()
     
-    var plugsLabel : UILabel = LabelTitleFolder(myText : "PLUGS")
-    
-    var addButton : UIButton = {
-        var button = UIButton(type: .custom)
-        button.setTitle("+", for: .normal)
-        button.backgroundColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
-        button.layer.masksToBounds = false
-        button.layer.cornerRadius = 15
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: -1, height: 1)
-        button.layer.shadowOpacity = 0.2
-        button.layer.shadowRadius = 1
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+    var noSheets : UILabel = {
+        let label = UILabel()
+        label.text = "Aucune fiche"
+        label.font = UIFont(name: "Helvetica", size: 20)
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor(r: 86, g: 90, b: 97)
+        label.textAlignment = .center
+        return label
     }()
     
+    let activityIndicor : UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.color = UIColor(r: 86, g: 90, b: 98)
+        return indicator
+    }()
+    
+     let pickerImage = UIImagePickerController()
 /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
-        self.navigationItem.title = section
+        self.navigationItem.title = theme?.name
         
         //FOR TEST
-        addButton.isEnabled = false
-        plugs.append(onePlug)
-        plugs.append(twoPlug)
+        setupIndicator()
+        loadRevisionSheets()
         
+        pickerImage.delegate = self
         //Setting the back button
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "BackButton"), style: .plain, target: self, action: #selector(handleBack))
-        
-        view.addSubview(addButton)
-        view.addSubview(plugsLabel)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handleAddButton))
         view.addSubview(plugsTableView)
         setupPlugsTableView()
-        setupPlugsLabel()
-        setupAddButton()
+    }
+    
+/*---------------------------------- BACKEND FUNCTIONS ------------------------------------------*/
+
+    func loadRevisionSheets() {
+        guard let idOfTheme = theme?.id else {
+            return
+        }
+        let ref = Database.database().reference().child("theme-sheets").child(idOfTheme)
+        ref.observeSingleEvent(of: .value, with: {(snapshot) in
+            guard let listOfSheets = snapshot.value as? NSDictionary else {
+                self.finishLoad()
+                return
+            }
+            
+            for oneSheet in listOfSheets {
+                guard let idOfSheet = oneSheet.key as? String, let informationOfSheet = oneSheet.value as? NSDictionary else {
+                    self.finishLoad()
+                    return
+                }
+                guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String else {
+                    self.finishLoad()
+                    return
+                }
+                self.plugs.append(Plug(id: idOfSheet, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID), urlPhoto :url ))
+            }
+            self.finishLoad()
+        })
+    }
+    
+    func finishLoad() {
+        if self.plugs.count == 0 {
+            self.actualizeView(true)
+        } else {
+            self.actualizeView(false)
+        }
+    }
+    
+    func actualizeView(_ appearLabel : Bool) {
+        if appearLabel {
+            noSheets.isHidden = false
+        }
+        self.plugsTableView.reloadData()
+        activityIndicor.stopAnimating()
+        activityIndicor.removeFromSuperview()
     }
 
 /*---------------------------------- PROTOCOLS FUNCTIONS ------------------------------------------*/
@@ -87,11 +134,30 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         _ = self.navigationController?.popViewController(animated: true)
     }
     
-    func handleAddButton() {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+        dismiss(animated:true, completion: nil)
+        
+        guard let path = info[UIImagePickerControllerReferenceURL] as? URL else {
+            return
+        }
         let controller = addPlugController()
+        controller.sheet = chosenImage
+        controller.theme = self.theme
+        controller.urlSheet = path
+        controller.discipline = self.discipline
         controller.delegate = self
         let navController = UINavigationController(rootViewController: controller)
-        present(navController, animated: true, completion: nil)
+        present(navController, animated: false, completion: nil)
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func handleAddButton() {
+        pickerImage.sourceType = .photoLibrary
+        pickerImage.mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)!
+        present(pickerImage, animated: true, completion: nil)
     }
     
 /*---------------------------------- TABLE VIEW DATA SOURCE ----------------------------------------*/
@@ -105,12 +171,14 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: PlugsCell = plugsTableView.dequeueReusableCell(withIdentifier: cellId) as! PlugsCell
+        let cell: PlugsCell = plugsTableView.dequeueReusableCell(withIdentifier: CELL_ID) as! PlugsCell
         if (indexPath.row % 2 == 0){
             cell.plugView.backgroundColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
-            cell.sujetLabel.textColor = .white
+            cell.titleSheet.textColor = .white
             cell.descriptionTextView.textColor = .white
         }
+        cell.sheetTitle = self.plugs[indexPath.row].title
+        cell.sheetDescription = self.plugs[indexPath.row].description
         return cell
     }
     func insertRow(timer : Timer) {
@@ -121,6 +189,7 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = viewerController()
+        controller.plug = plugs[indexPath.row]
         let navController = UINavigationController(rootViewController: controller)
         let myModalStyleTransition = UIModalTransitionStyle.flipHorizontal
         navController.modalTransitionStyle = myModalStyleTransition
@@ -129,28 +198,29 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
     
 /*------------------------------------ CONSTRAINT --------------------------------------------------*/
     
+    func setupIndicator() {
+        self.view.addSubview(activityIndicor)
+        activityIndicor.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        activityIndicor.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        activityIndicor.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        activityIndicor.heightAnchor.constraint(equalToConstant: 40).isActive =  true
+        
+        activityIndicor.startAnimating()
+        
+        self.view.addSubview(noSheets)
+        noSheets.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        noSheets.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -50).isActive = true
+        noSheets.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+        noSheets.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    
     func setupPlugsTableView() {
-        plugsTableView.topAnchor.constraint(equalTo: plugsLabel.bottomAnchor, constant: 20).isActive = true
+        plugsTableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 20).isActive = true
         plugsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
         plugsTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         plugsTableView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 4/5).isActive = true
-        plugsTableView.register(PlugsCell.self, forCellReuseIdentifier: cellId)
+        plugsTableView.register(PlugsCell.self, forCellReuseIdentifier: CELL_ID)
         plugsTableView.separatorStyle = .none
-    }
-    
-    func setupAddButton() {
-        addButton.lastBaselineAnchor.constraint(equalTo: plugsLabel.lastBaselineAnchor).isActive = true
-        addButton.leftAnchor.constraint(equalTo: plugsLabel.rightAnchor , constant: 0).isActive = true
-        addButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        addButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        addButton.addTarget(self, action: #selector(handleAddButton), for: .touchUpInside)
-    }
-    
-    func setupPlugsLabel() {
-        plugsLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 40).isActive = true
-        plugsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        plugsLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        plugsLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
     }
     
 }

@@ -25,7 +25,7 @@ class PlugsCell: UITableViewCell {
         return view
     }()
     
-    var sujetLabel : UILabel = {
+    var titleSheet : UILabel = {
         let label = UILabel()
         label.text = "Plug"
         label.textAlignment = .left
@@ -34,6 +34,18 @@ class PlugsCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    var sheetDescription: String? {
+        didSet {
+           self.descriptionTextView.text = sheetDescription
+        }
+    }
+    
+    var sheetTitle: String? {
+        didSet {
+            self.titleSheet.text = sheetTitle
+        }
+    }
     
     var descriptionTextView : UITextView = {
         let tf = UITextView()
@@ -63,17 +75,17 @@ class PlugsCell: UITableViewCell {
 /*------------------------------------ CONSTRAINTS ---------------------------------------------*/
     
     func setupTextView() {
-        descriptionTextView.topAnchor.constraint(equalTo: sujetLabel.bottomAnchor).isActive = true
+        descriptionTextView.topAnchor.constraint(equalTo: titleSheet.bottomAnchor).isActive = true
         descriptionTextView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor,constant : 7).isActive = true
-        descriptionTextView.widthAnchor.constraint(equalTo: sujetLabel.widthAnchor,constant: -7).isActive = true
+        descriptionTextView.widthAnchor.constraint(equalTo: titleSheet.widthAnchor,constant: -7).isActive = true
         descriptionTextView.heightAnchor.constraint(equalTo: plugView.heightAnchor, multiplier: 3/5).isActive = true
     }
     
     func setupLabel() {
-        sujetLabel.topAnchor.constraint(equalTo: plugView.topAnchor, constant: 10).isActive = true
-        sujetLabel.centerXAnchor.constraint(equalTo: plugView.centerXAnchor, constant: 10).isActive = true
-        sujetLabel.widthAnchor.constraint(equalTo: plugView.widthAnchor, constant: -30 ).isActive = true
-        sujetLabel.heightAnchor.constraint(equalTo: plugView.heightAnchor, multiplier: 1/5).isActive = true
+        titleSheet.topAnchor.constraint(equalTo: plugView.topAnchor, constant: 10).isActive = true
+        titleSheet.centerXAnchor.constraint(equalTo: plugView.centerXAnchor, constant: 10).isActive = true
+        titleSheet.widthAnchor.constraint(equalTo: plugView.widthAnchor, constant: -30 ).isActive = true
+        titleSheet.heightAnchor.constraint(equalTo: plugView.heightAnchor, multiplier: 1/5).isActive = true
     }
     
     func setupPlugView() {
@@ -81,7 +93,7 @@ class PlugsCell: UITableViewCell {
         plugView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         plugView.widthAnchor.constraint(equalTo: contentView.widthAnchor, constant: -20).isActive = true
         plugView.heightAnchor.constraint(equalTo: contentView.heightAnchor, constant : -20).isActive = true
-        plugView.addSubview(sujetLabel)
+        plugView.addSubview(titleSheet)
         plugView.addSubview(descriptionTextView)
     }
     

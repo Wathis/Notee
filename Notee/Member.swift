@@ -18,6 +18,10 @@ class Member: NSObject {
     var email : String?
     var profilImageUrl : String?
     
+    init(id : String ) {
+        self.id = id
+    }
+    
     init(id : String, email : String) {
         self.email = email
         self.id = id
