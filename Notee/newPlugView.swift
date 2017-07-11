@@ -10,6 +10,8 @@ import Foundation
 
 class newPlugView: UIView {
     
+    var sheet : Plug?
+    
     var versionText : String = "Papier" {
         didSet {
             self.refreshAttributeString()

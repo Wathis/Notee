@@ -14,7 +14,7 @@ class CommentCell: UITableViewCell {
     
     let profilImage : UIImageView = {
         let imgview = UIImageView()
-        imgview.image = #imageLiteral(resourceName: "mathisProfilImage")
+        imgview.image = #imageLiteral(resourceName: "defaultProfilImage")
         imgview.layer.cornerRadius = 10
         imgview.translatesAutoresizingMaskIntoConstraints = false
         imgview.layer.masksToBounds = false

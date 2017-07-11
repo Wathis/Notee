@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddingPlugDelegate, UIImagePickerControllerDelegate , UINavigationControllerDelegate {
+class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddingPlugDelegate, UIImagePickerControllerDelegate , UINavigationControllerDelegate, UIGestureRecognizerDelegate {
 
 /*------------------------------------ CONSTANTS ---------------------------------------------*/
 
@@ -24,6 +24,7 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
     var twoPlug : Plug = Plug()
     var plugs : [Plug] = []
     var timerAdd : Timer?
+    var starActive = false
     
     
     lazy var plugsTableView : UITableView = {
@@ -72,8 +73,25 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handleAddButton))
         view.addSubview(plugsTableView)
         setupPlugsTableView()
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        addSwipeRecognizer()
     }
     
+    func addSwipeRecognizer() {
+        let direction: UISwipeGestureRecognizerDirection = .right
+        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe))
+        gesture.direction = direction
+        self.view.addGestureRecognizer(gesture)
+    }
+    
+    func handleSwipe() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
 /*---------------------------------- BACKEND FUNCTIONS ------------------------------------------*/
 
     func loadRevisionSheets() {
@@ -86,19 +104,23 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
                 self.finishLoad()
                 return
             }
-            
             for oneSheet in listOfSheets {
-                guard let idOfSheet = oneSheet.key as? String, let informationOfSheet = oneSheet.value as? NSDictionary else {
+                guard let idOfSheet = oneSheet.key as? String else {
                     self.finishLoad()
                     return
                 }
-                guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String else {
+                let refSheets = Database.database().reference().child("sheets").child(idOfSheet)
+                refSheets.observeSingleEvent(of: .value, with: { (snapshot) in
+                    guard let informationOfSheet = snapshot.value as? NSDictionary else {return}
+                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? String, let interval = informationOfSheet["date"] as? String else {
+                        self.finishLoad()
+                        return
+                    }
+                    let date = NSDate(timeIntervalSince1970: Double(interval)!)
+                    self.plugs.append(Plug(id: idOfSheet, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID), urlPhoto :url , starsCount : Int(starsCount)!, date: date))
                     self.finishLoad()
-                    return
-                }
-                self.plugs.append(Plug(id: idOfSheet, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID), urlPhoto :url ))
+                })
             }
-            self.finishLoad()
         })
     }
     
@@ -113,6 +135,8 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
     func actualizeView(_ appearLabel : Bool) {
         if appearLabel {
             noSheets.isHidden = false
+        } else {
+            noSheets.isHidden = true
         }
         self.plugsTableView.reloadData()
         activityIndicor.stopAnimating()
@@ -126,6 +150,7 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         plugs.append(plug)
         let indexPath = IndexPath(row: plugs.count - 1, section: 0)
         timerAdd = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(insertRow), userInfo: indexPath, repeats: false)
+        self.noSheets.removeFromSuperview()
     }
     
 /*------------------------------------- HANDLE BUTTONS --------------------------------------------*/
@@ -189,10 +214,11 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = viewerController()
+        controller.starActive = starActive
         controller.plug = plugs[indexPath.row]
         let navController = UINavigationController(rootViewController: controller)
-        let myModalStyleTransition = UIModalTransitionStyle.flipHorizontal
-        navController.modalTransitionStyle = myModalStyleTransition
+//        let myModalStyleTransition = UIModalTransitionStyle.flipHorizontal
+//        navController.modalTransitionStyle = myModalStyleTransition
         present(navController, animated: true, completion: nil)
     }
     

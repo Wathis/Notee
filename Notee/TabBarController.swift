@@ -22,8 +22,6 @@ class TabBarController: UITabBarController {
         
         viewControllers = arrayViews
         self.selectedIndex = 1
-        
-        
     }
     
     private func createAViewController(controller : UIViewController, image : UIImage) -> UINavigationController {

@@ -22,6 +22,17 @@ class Member: NSObject {
         self.id = id
     }
     
+    init(id : String, pseudo : String ) {
+        self.id = id
+        self.pseudo = pseudo
+    }
+    
+    init(id : String, pseudo : String, urlImage : String ) {
+        self.id = id
+        self.pseudo = pseudo
+        self.profilImageUrl = urlImage
+    }
+    
     init(id : String, email : String) {
         self.email = email
         self.id = id

@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-
+import UITextField_Shake
 
 class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate , UIImagePickerControllerDelegate , UINavigationControllerDelegate {
     
@@ -28,6 +28,13 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             self.sheetImage.image = sheet
         }
     }
+    
+    let activityIndicor : UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView()
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.color = .white
+        return indicator
+    }()
     
     lazy var sheetImage : UIImageView = {
         let image = UIImageView()
@@ -58,8 +65,6 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
     
     let buttonValidate = ButtonInMenus(text: "AJOUTER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
     
-    
-    
 /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
     override func viewDidLoad() {
@@ -82,7 +87,7 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         sheetImage.isUserInteractionEnabled = true
         sheetImage.addGestureRecognizer(tapGestureRecognizer)
     }
-    
+
     func takePhoto() {
         if !UIImagePickerController.isSourceTypeAvailable(.camera){
             
@@ -128,8 +133,23 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         guard let title = titleTextField.textField.text ,let descriptionData =  self.descriptionTextField.textField.text, let photo = sheet else {
             return
         }
-        newPlug = Plug(title: title, description: descriptionData,photo: photo)
-        addNewSheet()
+        if title.characters.count > 0 && descriptionData.characters.count > 0 {
+            newPlug = Plug(title: title, description: descriptionData,photo: photo, starsCount : 0)
+            self.activityIndicor.startAnimating()
+            self.titleTextField.textField.isEnabled = false
+            self.descriptionTextField.textField.isEnabled = false
+            self.themeTextField.textField.isEnabled = false
+            self.disciplineTextField.textField.isEnabled = false
+            self.buttonValidate.isEnabled = false
+            addNewSheet()
+        } else {
+            if (title.characters.count == 0){
+                titleTextField.textField.shake()
+            }
+            if (descriptionData.characters.count == 0){
+                descriptionTextField.textField.shake()
+            }
+        }
     }
     func addNewSheet() {
         guard let plug = newPlug, let photo = self.sheet, let disciplineName = self.disciplineTextField.textField.text else {
@@ -156,13 +176,14 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             guard let idOfTheme = self.theme?.id, let uid = Auth.auth().currentUser?.uid, let theme = self.themeTextField.text else {
                 return
             }
-        
-            let newPlugValues = ["title" : plug.title, "theme" : theme, "discipline" : disciplineName ,"memberUID": uid, "description" : plug.description, "urlDownload" : downloadURL?.absoluteString]
+            
+            let newPlugValues = ["title" : plug.title, "theme" : theme, "discipline" : disciplineName ,"memberUID": uid, "description" : plug.description, "urlDownload" : downloadURL?.absoluteString,"starsCount" : "\(0)", "date" : "\(NSDate().timeIntervalSince1970)"]
             
             let childUpdates = ["/sheets/\(key)": newPlugValues,
-                                "/theme-sheets/\(idOfTheme)/\(key)/": newPlugValues]
+                                "/theme-sheets/\(idOfTheme)/\(key)/": "true"] as [String : Any]
             
             ref.updateChildValues(childUpdates)
+            self.newPlug?.id = key
             self.newPlug?.urlImage = downloadURL?.absoluteString
             self.delegate.sendPlug(plug: self.newPlug!)
             self.dismiss(animated: true, completion: nil)
@@ -173,7 +194,6 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
     func loadDiscipline()  {
         let ref = Database.database().reference().child("discipline")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            // Get user value
             guard let values = snapshot.value as? NSDictionary else {
                 return
             }
@@ -209,12 +229,19 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
 
     
     func setupButtonValidate() {
-        buttonValidate.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+        buttonValidate.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30).isActive = true
         buttonValidate.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         buttonValidate.widthAnchor.constraint(equalTo: titleTextField.widthAnchor).isActive = true
         buttonValidate.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         buttonValidate.addTarget(self, action: #selector(handleCreate), for: .touchUpInside)
+        
+        self.view.addSubview(activityIndicor)
+        
+        activityIndicor.centerYAnchor.constraint(equalTo: self.buttonValidate.centerYAnchor).isActive = true
+        activityIndicor.leftAnchor.constraint(equalTo: self.buttonValidate.leftAnchor, constant: 20).isActive = true
+        activityIndicor.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        activityIndicor.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
     
     func setupTextField() {
@@ -252,8 +279,6 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         buttonPhoto.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 60).isActive = true
         buttonPhoto.widthAnchor.constraint(equalToConstant: 50).isActive = true
         buttonPhoto.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        
     }
     
     func handleBack() {

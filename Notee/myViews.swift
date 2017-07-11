@@ -44,12 +44,17 @@ class PLTabBar : UIView {
         return label
     }()
     
+    var nbrOfStars : Int = 0 {
+        didSet {
+            self.numberOfFavoriteLabel.text = String(describing: nbrOfStars)
+        }
+    }
+    
 /*------------------------------------ CONSTRUCTOR -----------------------------------------------------*/
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor(r: 86, g: 90, b: 98)
-        favoriteButton.addTarget(self, action: #selector(handleFavorite), for: .touchUpInside)
         self.addSubview(commentButton)
         self.addSubview(favoriteButton)
         self.addSubview(numberOfCommentLabel)
@@ -69,14 +74,26 @@ class PLTabBar : UIView {
 /*------------------------------------ USEFULL FUNCTIONS --------------------------------------------------*/
     
     func changeFavoriteButtonStatus() {
-        if !(isFavorite){
-            numberOfFavoriteLabel.textColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
-            favoriteButton.setBackgroundImage(#imageLiteral(resourceName: "favoriteButtonColored"), for: .normal)
-            isFavorite = true
-        }else {
+        if isFavorite {
             numberOfFavoriteLabel.textColor = .white
             favoriteButton.setBackgroundImage(#imageLiteral(resourceName: "favoriteButton"), for: .normal)
             isFavorite = false
+            self.nbrOfStars -= 1
+        }else {
+            numberOfFavoriteLabel.textColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
+            favoriteButton.setBackgroundImage(#imageLiteral(resourceName: "favoriteButtonColored"), for: .normal)
+            isFavorite = true
+            self.nbrOfStars += 1
+        }
+    }
+    
+    func loadRightColorOfStar() {
+        if isFavorite {
+            numberOfFavoriteLabel.textColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
+            favoriteButton.setBackgroundImage(#imageLiteral(resourceName: "favoriteButtonColored"), for: .normal)
+        }else {
+            numberOfFavoriteLabel.textColor = .white
+            favoriteButton.setBackgroundImage(#imageLiteral(resourceName: "favoriteButton"), for: .normal)
         }
     }
 

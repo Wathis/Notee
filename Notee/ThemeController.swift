@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ThemeController : UIViewController, UITableViewDataSource,UITableViewDelegate,AddingThemeDelegate {
+class ThemeController : UIViewController, UITableViewDataSource,UITableViewDelegate,AddingThemeDelegate, UIGestureRecognizerDelegate {
     
 /*------------------------------------ CONSTANTS ---------------------------------------------*/
     
@@ -63,6 +63,24 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handleAddButton))
         view.addSubview(themeTableView)
         setupTableView()
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        addSwipeRecognizer()
+    }
+    
+    func addSwipeRecognizer() {
+        let direction: UISwipeGestureRecognizerDirection = .right
+        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe))
+        gesture.direction = direction
+        self.view.addGestureRecognizer(gesture)
+    }
+    
+    func handleSwipe() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
     
 /*---------------------------------- BACK END FUNCTIONS -------------------------------------------*/

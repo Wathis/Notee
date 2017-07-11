@@ -130,7 +130,9 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
             }else{
                 self.finishLoad()
             }
-        })
+        }) { (error) in
+            print(error.localizedDescription)
+        }
     }
     
     func finishLoad() {
