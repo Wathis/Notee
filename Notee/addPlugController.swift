@@ -16,6 +16,7 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
     var discipline : String?
     var theme : Theme?
     var urlSheet : URL?
+    var member : Member?
     
     lazy var pickerViewDiscipline : UIPickerView = {
         let picker = UIPickerView()
@@ -81,6 +82,7 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         themeTextField.text = theme?.name
         hideKeyboardWhenTappedAround()
         setupTextField()
+        loadUser()
         setupButtonValidate()
         buttonPhoto.addTarget(self, action: #selector(takePhoto), for: .touchUpInside)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
@@ -125,9 +127,11 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         }
         dismiss(animated: true, completion: nil)
     }
+    
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
+    
     var newPlug : Plug?
     func handleCreate() {
         guard let title = titleTextField.textField.text ,let descriptionData =  self.descriptionTextField.textField.text, let photo = sheet else {
@@ -135,6 +139,7 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         }
         if title.characters.count > 0 && descriptionData.characters.count > 0 {
             newPlug = Plug(title: title, description: descriptionData,photo: photo, starsCount : 0)
+            newPlug?.member = self.member
             self.activityIndicor.startAnimating()
             self.titleTextField.textField.isEnabled = false
             self.descriptionTextField.textField.isEnabled = false
@@ -151,8 +156,19 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             }
         }
     }
+    
+    func loadUser() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let ref = Database.database().reference().child("members/\(uid)")
+        ref.observeSingleEvent(of: .value ,with: { (snapshot) in
+            guard let values = snapshot.value as? NSDictionary else {return}
+            guard let pseudo = values["pseudo"] as? String else {return}
+            self.member = Member(id: uid, pseudo: pseudo)
+        })
+    }
+    
     func addNewSheet() {
-        guard let plug = newPlug, let photo = self.sheet, let disciplineName = self.disciplineTextField.textField.text else {
+        guard let plug = newPlug, let memberPseudo = plug.member?.pseudo , let photo = self.sheet, let disciplineName = self.disciplineTextField.textField.text else {
             return
         }
         
@@ -177,12 +193,16 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
                 return
             }
             
-            let newPlugValues = ["title" : plug.title, "theme" : theme, "discipline" : disciplineName ,"memberUID": uid, "description" : plug.description, "urlDownload" : downloadURL?.absoluteString,"starsCount" : "\(0)", "date" : "\(NSDate().timeIntervalSince1970)"]
+            let newPlugValues = ["title" : plug.title, "theme" : theme, "discipline" : disciplineName ,"memberUID": uid, "description" : plug.description, "urlDownload" : downloadURL?.absoluteString,"starsCount" : "\(0)", "date" : "\(NSDate().timeIntervalSince1970)", "pseudo" : memberPseudo]
             
-            let childUpdates = ["/sheets/\(key)": newPlugValues,
+            var childUpdates = ["/sheets/\(key)": newPlugValues,
                                 "/theme-sheets/\(idOfTheme)/\(key)/": "true"] as [String : Any]
             
-            ref.updateChildValues(childUpdates)
+            ref.updateChildValues(childUpdates, withCompletionBlock: { (error, dataReference) in
+                childUpdates = ["/sheets/\(key)/members/\(uid)": true] as [String : Any]
+                ref.updateChildValues(childUpdates)
+            })
+            
             self.newPlug?.id = key
             self.newPlug?.urlImage = downloadURL?.absoluteString
             self.delegate.sendPlug(plug: self.newPlug!)
@@ -213,7 +233,6 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return disciplineAvailables.count
     }
-    
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1

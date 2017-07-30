@@ -70,7 +70,9 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     }
     
     func handleProfil() {
-        
+        let controller = ProfilController()
+        let navController = UINavigationController(rootViewController: controller)
+        present(navController, animated: true, completion: nil)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -78,8 +80,6 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             self.timerForPagging?.invalidate()
         }
     }
-    
-    
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if scrollView == self.newsOfPlugScrollView {
@@ -117,28 +117,118 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     }
     
     func loadSheets() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         self.plugs.removeAll()
         self.navigationItem.leftBarButtonItem?.isEnabled = false
         self.newPlugCarousel.reloadData()
         let ref = Database.database().reference().child("sheets").queryLimited(toFirst: 20)
+        ref.observeSingleEvent(of: .value, with: {(snapshot) in
+            if !snapshot.hasChildren() {
+                self.navigationItem.leftBarButtonItem?.isEnabled = true
+            }
+        })
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let values = snapshot.value as? NSDictionary else {
                 return
             }
             for value in values {
                 if let keyPlug = value.key as? String, let informationOfSheet = value.value as? NSDictionary  {
-                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? String, let interval = informationOfSheet["date"] as? String else {
+                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? String, let interval = informationOfSheet["date"] as? String, let pseudo = informationOfSheet["pseudo"] as? String else {
                         return
                     }
                     let date = NSDate(timeIntervalSince1970: Double(interval)!)
-                    self.plugs.append(Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID), urlPhoto :url, starsCount : Int(starsCount)!, date: date))
+                    let plugToAdd = Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID, pseudo: pseudo), urlPhoto :url, starsCount : Int(starsCount)!, date: date)
+                    self.plugs.append(plugToAdd)
+                    let refOfSheet = Database.database().reference().child("sheets/\(keyPlug)/members")
+                    refOfSheet.observeSingleEvent(of: .value, with: { (snapshot) in
+                        guard let members = snapshot.value as? NSDictionary else {
+                            self.finishLoad()
+                            return
+                        }
+                        guard let _ = members[uid] as? Bool else {
+                            self.finishLoad()
+                            return
+                        }
+                        let index = self.findIndexOfSheet(plugToAdd)
+                        if index != -1 {
+                            self.plugs[index].isAdded = true
+                            self.finishLoad()
+                        }
+                    })
                 }
             }
-            self.sortSheets()
-            self.plugs.reverse()
-            self.newPlugCarousel.reloadData()
-            self.navigationItem.leftBarButtonItem?.isEnabled = true
         })
+    }
+    
+    func finishLoad() {
+        self.newPlugCarousel.reloadData()
+        self.sortSheets()
+        self.plugs.reverse()
+        self.navigationItem.leftBarButtonItem?.isEnabled = true
+    }
+    
+    func findIndexOfSheet(_ sheetToFind : Plug) -> Int {
+        var i = 0
+        for sheet in plugs {
+            if sheet.id == sheetToFind.id {
+                return i
+            }
+            i += 1
+        }
+        return -1
+    }
+    
+    
+    func addNewSheet(_ sender : ButtonAddSheet) {
+        guard let sheet = sender.sheet, let uid = Auth.auth().currentUser?.uid, let idOfSheet = sheet.id else {return}
+        if (sheet.isAdded == false){
+            sender.sheet?.isAdded = true
+            sender.changeColorOfButton()
+            let membersDisciplineValue = [sheet.discipline : true ]
+            let membersThemesValue = [sheet.theme : true]
+            let themeSheetValue = [String(describing: idOfSheet) : true]
+            let sheetValue = [uid : true]
+            let refMembersDiscipline = Database.database().reference().child("members-discipline/\(uid)")
+            var refMembersTheme = Database.database().reference().child("members-themes/\(uid)/\(sheet.discipline)").childByAutoId()
+            let keyOfTheme = refMembersTheme.key
+            var refThemeSheets = Database.database().reference().child("theme-sheets/\(keyOfTheme)")
+            let refSheet = Database.database().reference().child("sheets/\(String(describing: idOfSheet))/members")
+            //Check if theme already exists
+            Database.database().reference().child("members-themes/\(uid)/\(sheet.discipline)").observeSingleEvent(of: .value, with: { (snapshot) in
+                if let values = snapshot.value as? NSDictionary {
+                    for value in values {
+                        guard let themeKey = value.key as? String, let themeDictionary = value.value as? NSDictionary else {return}
+                        if let _ = themeDictionary[sheet.theme]  {
+                            refMembersTheme = Database.database().reference().child("members-themes/\(uid)/\(sheet.discipline)/\(themeKey)")
+                            refThemeSheets = Database.database().reference().child("theme-sheets/\(themeKey)")
+                            break
+                        }
+                    }
+                }
+
+                refMembersDiscipline.updateChildValues(membersDisciplineValue , withCompletionBlock: { (error, databaseReference) in
+                    if error != nil {
+                        return
+                    }
+                    refMembersTheme.updateChildValues(membersThemesValue, withCompletionBlock: { (error, dataReference) in
+                        if error != nil {
+                            return
+                        }
+                        refThemeSheets.updateChildValues(themeSheetValue, withCompletionBlock: { (error, dataReference) in
+                            if error != nil {
+                                return
+                            }
+                            refSheet.updateChildValues(sheetValue, withCompletionBlock: { (error, dataReference) in
+                                if error != nil {
+                                    return
+                                }
+                            })
+                        })
+                    })
+                })
+                
+            })
+        }
     }
     
     func setupScrollView() {
@@ -179,21 +269,30 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         view.descriptionText = plugs[index].description
         view.sheet = plugs[index]
         view.isUserInteractionEnabled = true
-        view.titleOfNewPlug.text = plugs[index].title
+        if let title = plugs[index].member?.pseudo, let datePosted = plugs[index].date {
+            view.titleOfNewPlug.text = "\(title) " + NSDate().getTimeFrom(date: datePosted)
+        }
         view.themeText = plugs[index].theme
+        view.titleText = plugs[index].title
+        view.buttonAdd.changeColorOfButton()
         if plugs[index].starsCount != nil {
             view.numberOfFavoriteLabel.text = String(describing: plugs[index].starsCount!)
         }
         view.disciplineText = plugs[index].discipline
         view.buttonReport.addTarget(self, action: #selector(handleReport), for: .touchUpInside)
+        view.buttonAdd.addTarget(self, action: #selector(addNewSheet(_:)), for: .touchUpInside)
         return view
     }
     
     func carousel(_ carousel: iCarousel, didSelectItemAt index: Int) {
-        let controller = viewerController()
-        controller.plug = plugs[index]
-        let navController = UINavigationController(rootViewController: controller)
-        self.present(navController, animated: true, completion: nil)
+        let controller = SeePlugAlertModalView()
+        controller.modalPresentationStyle = .overFullScreen
+        self.present(controller, animated: true, completion: nil)
+//        self.present(SeePlugAlertModalView(), animated: true, completion: nil)
+//        let controller = viewerController()
+//        controller.plug = plugs[index]
+//        let navController = UINavigationController(rootViewController: controller)
+//        self.present(navController, animated: true, completion: nil)
     }
     
     func carousel(_ carousel: iCarousel, valueFor option: iCarouselOption, withDefault value: CGFloat) -> CGFloat {

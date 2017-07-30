@@ -46,6 +46,29 @@ class ButtonInMenus : UIButton {
     }
 }
 
+class ButtonAddSheet : UIButton {
+    var sheet : Plug?
+    init() {
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        
+    }
+    
+    func changeColorOfButton() {
+        guard let isAdded = self.sheet?.isAdded else {return}
+        if isAdded {
+            self.backgroundColor = UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
+            self.setAttributedTitle( NSAttributedString(string: "Ajouté", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 13) as Any,NSForegroundColorAttributeName : UIColor.white]), for: .normal)
+        } else {
+            self.backgroundColor = UIColor(r: 152, g: 152, b: 152)
+            self.setAttributedTitle( NSAttributedString(string: "Ajouter", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 13) as Any,NSForegroundColorAttributeName : UIColor.white]), for: .normal)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class ButtonReport : UIButton {
     
     init(text : String ){

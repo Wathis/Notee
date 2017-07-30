@@ -73,6 +73,7 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
                     self.disciplineAvailables.append(key)
                 }
             }
+            self.textField.text = self.disciplineAvailables.first
             self.pickerViewDiscipline.reloadAllComponents()
         }) { (error) in
             print(error.localizedDescription)

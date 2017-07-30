@@ -10,24 +10,29 @@ import Foundation
 
 class newPlugView: UIView {
     
-    var sheet : Plug?
+    var sheet : Plug? {
+        didSet {
+            self.buttonAdd.sheet = sheet
+        }
+    }
     
-    var versionText : String = "Papier" {
+    var titleText : String = "" {
         didSet {
             self.refreshAttributeString()
         }
     }
-    var disciplineText: String = "Histoire\n\n" {
+    
+    var disciplineText: String = "" {
         didSet {
             self.refreshAttributeString()
         }
     }
-    var themeText : String = "La bataille de verdun\n\n" {
+    var themeText : String = "" {
         didSet {
             self.refreshAttributeString()
         }
     }
-    var descriptionText : String = "Ce plug est une prise de note de mon cours sur la bataille de Verdun." {
+    var descriptionText : String = "" {
         didSet {
             self.refreshAttributeString()
         }
@@ -41,8 +46,8 @@ class newPlugView: UIView {
         return tv
     }()
     
-    let buttonAdd : UIButton = {
-        let button = UIButton()
+    var buttonAdd : ButtonAddSheet = {
+        let button = ButtonAddSheet()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor(r: 152, g: 152, b: 152)
         button.clipsToBounds = true
@@ -65,11 +70,9 @@ class newPlugView: UIView {
     
     var titleOfNewPlug : UILabel = {
         let label = UILabel()
-        var attributedText = NSMutableAttributedString(string: "@MathisDelaunay", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium", size: 14) as Any])
-        attributedText.append(NSAttributedString(string: " à ajouté un Plug.", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light", size: 13) as Any]))
-        label.attributedText = attributedText
         label.textColor = .white
         label.textAlignment = .center
+        label.font = UIFont(name: "HelveticaNeue-Medium", size: 15)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -130,8 +133,9 @@ class newPlugView: UIView {
     }
     
     func loadAttributedString() -> NSMutableAttributedString {
-        let attributedString = NSMutableAttributedString(string: "Version : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any])
-        attributedString.append(NSAttributedString(string: versionText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
+        
+        let attributedString = NSMutableAttributedString(string: "Title : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any])
+        attributedString.append(NSAttributedString(string: titleText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
         attributedString.append(NSAttributedString(string: "\n\nMatière : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
         attributedString.append(NSAttributedString(string: disciplineText, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))
         attributedString.append(NSAttributedString(string: "\n\nThème : ", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Medium",size : 13 ) as Any, NSForegroundColorAttributeName : UIColor(r:86, g:90, b: 98 ) as Any]))

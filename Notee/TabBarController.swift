@@ -15,10 +15,9 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         let controller = NewsController()
         controller.tabBarItem.image = #imageLiteral(resourceName: "IconeTabBar")
-        var arrayViews : [UIViewController] = [createAViewController(controller: NewsController(), image: #imageLiteral(resourceName: "IconeTabBar"))]
-//        createAViewController(controller: NewsController(), image: #imageLiteral(resourceName: "IconeTabBar"))
-        arrayViews.append(createAViewController(controller: HomeController(), image: #imageLiteral(resourceName: "IconeTabBar")))
-        arrayViews.append(createAViewController(controller: TopController(), image: #imageLiteral(resourceName: "IconeTabBar")))
+        var arrayViews : [UIViewController] = [createAViewController(controller: NewsController(), image: #imageLiteral(resourceName: "plane"))]
+        arrayViews.append(createAViewController(controller: HomeController(), image: #imageLiteral(resourceName: "home")))
+        arrayViews.append(createAViewController(controller: TopController(), image: #imageLiteral(resourceName: "podium")))
         
         viewControllers = arrayViews
         self.selectedIndex = 1

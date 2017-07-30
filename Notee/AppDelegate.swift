@@ -34,7 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Modify KeyBoard color 
         UITextField.appearance().keyboardAppearance = .dark
-        
+        guard let _ = Auth.auth().currentUser?.uid else {
+            window?.rootViewController = ConnectionController()
+            return true
+        }
         window?.rootViewController = TabBarController()
         return true
     }

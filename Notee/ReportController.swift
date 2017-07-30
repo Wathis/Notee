@@ -23,6 +23,7 @@ class ReportController: UIViewController {
     }()
     
     let buttonCancel = ButtonInMenus(text: "ANNULER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
+    let buttonOk = ButtonInMenus(text: "OK", backgroundColor: UIColor(r: 152, g: 152, b: 152))
     
     let confirmationMessage : UILabel = {
         let label = UILabel()
@@ -53,6 +54,17 @@ class ReportController: UIViewController {
         buttonCancel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 8/10).isActive = true
         buttonCancel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
+        buttonOk.addTarget(self, action: #selector(handleCancel), for:.touchUpInside)
+        
+        self.view.addSubview(buttonOk)
+        
+        buttonOk.topAnchor.constraint(equalTo: buttonsReport[i - 1].bottomAnchor, constant:60).isActive = true
+        buttonOk.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        buttonOk.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 8/10).isActive = true
+        buttonOk.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        buttonOk.isHidden = true
+        
     }
     
     func handlePattern() {
@@ -64,7 +76,7 @@ class ReportController: UIViewController {
             self.buttonCancel.alpha = 0.0
         })
         
-        _ = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(handleCancel), userInfo: nil, repeats: false)
+        buttonOk.isHidden = false
         
         self.view.addSubview(confirmationMessage)
         self.confirmationMessage.alpha = 0

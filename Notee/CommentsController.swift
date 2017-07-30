@@ -150,14 +150,24 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : CommentCell = commentsTableView.dequeueReusableCell(withIdentifier: cellId) as! CommentCell
         cell.commentLabel.text = comments[indexPath.row].commentText
-        let member = comments[indexPath.row].member
-        cell.profilImage.image = #imageLiteral(resourceName: "defaultProfilImage")
-        cell.nameLabel.text = member?.pseudo
+        let memberTableView = comments[indexPath.row].member
+        cell.profilImage.image = memberTableView?.profilImage
+        if let checkedUrl = URL(string: (memberTableView?.profilImageUrl)!) {
+            if (cell.profilImage.image == nil){
+                DownloadFromUrl().downloadImage(url: checkedUrl,  completion: { (image) in
+                    cell.profilImage.image = image
+                    memberTableView?.profilImage = image
+                })
+            }
+        }
+        cell.nameLabel.text = memberTableView?.pseudo
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
+    
+    
     
      /*---------------------------------- FUNCTIONS BACKEND ----------------------------------------*/
 
@@ -174,25 +184,30 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
     }
     
     func loadComments() {
-//        var interval = NSDate().timeIntervalSince1970
-        guard let idOfPlug = self.plug?.id , let uid = Auth.auth().currentUser?.uid else {return}
+        self.comments.removeAll()
+        guard let idOfPlug = self.plug?.id else {return}
         let ref = Database.database().reference().child("comments-sheets/\(idOfPlug)")
         ref.observe(.value, with: { (snapshot) in
-            self.comments.removeAll()
             guard let values = snapshot.value as? NSDictionary else {return}
             for value in values {
-                guard let dataOfComment = value.value as? NSDictionary ,  let pseudo = dataOfComment["pseudo"] as? String, let comment = dataOfComment["comment"] as? String, let interval = dataOfComment["date"] as? String else {
+                guard let idComment = value.key as? String, let dataOfComment = value.value as? NSDictionary ,let comment = dataOfComment["comment"] as? String, let interval = dataOfComment["date"] as? String, let uid = dataOfComment["uid"] as? String else {
                     return
                 }
                 let date = NSDate(timeIntervalSince1970: Double(interval)!)
-                self.comments.append(Comment(member: Member(id: uid,pseudo: pseudo), date : date, commentText: comment))
+                Database.database().reference().child("members/\(uid)").observeSingleEvent(of: .value, with: { (snapshot) in
+                    guard let values = snapshot.value as? NSDictionary else {return}
+                    guard let pseudo = values["pseudo"] as? String, let imageUrl = values["imageUrl"] as? String else {return}
+                    if !self.commentContains(id: idComment) {
+                        let commentToAdd = Comment(id: idComment,member: Member(id: uid,pseudo: pseudo,urlImage : imageUrl), date : date, commentText: comment)
+                        self.comments.append(commentToAdd)
+                    }
+                    self.sortComments()
+                    self.commentsTableView.reloadData()
+                })
             }
-            self.sortComments()
-            self.commentsTableView.reloadData()
-            return
         })
     }
-    
+
     func sortComments() {
         comments = comments.sorted(by: {$0.date!.timeIntervalSinceNow < $1.date!.timeIntervalSinceNow})
     }
@@ -202,26 +217,36 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
         let date = NSDate(timeIntervalSince1970: interval)
         guard let member = self.member, let commentText = self.commentTextField.text else {return}
         if commentText.characters.count > 0 {
-            let comment = Comment(member: member, date : date, commentText: commentText)
-            comments.append(comment)
-            self.newComment(comment : comment)
-            let indexPath = IndexPath(row: comments.count - 1, section: 0)
-            commentsTableView.insertRows(at: [indexPath], with: .automatic)
+            var comment = Comment(member: member, date : date, commentText: commentText)
+            self.newComment(comment : comment, completion: {(key) in
+                comment.id = key
+            })
             commentTextField.text = nil
             view.endEditing(true)
         }
     }
     
-    func newComment(comment : Comment) {
-        guard let idOfPlug = self.plug?.id, let pseudo = comment.member?.pseudo, let imageUrl = comment.member?.profilImageUrl, let commentText = comment.commentText, let date = comment.date else {return}
+    func commentContains(id : String) -> Bool {
+        for comment in comments {
+            if comment.id == id {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func newComment(comment : Comment, completion: @escaping (String) -> Void) {
+        guard let idOfPlug = self.plug?.id, let commentText = comment.commentText, let date = comment.date, let uid = Auth.auth().currentUser?.uid else {return}
         let refComments = Database.database().reference().child("comments-sheets/\(idOfPlug)/").childByAutoId()
-        let values : [String : String] = ["comment" : commentText,"pseudo": pseudo,"imageUrl" : imageUrl, "date" : "\(date.timeIntervalSince1970)"]
+        let key = refComments.key
+        let values : [String : String] = ["comment" : commentText, "date" : "\(date.timeIntervalSince1970)", "uid": uid]
         
         refComments.updateChildValues(values, withCompletionBlock: { (error,refDatabase) in
             if error != nil {
                 print(error!.localizedDescription)
                 return
             }
+            completion(key)
         })
     }
     

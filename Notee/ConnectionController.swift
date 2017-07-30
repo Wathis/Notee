@@ -76,7 +76,7 @@ class ConnectionController : UIViewController, UITextFieldDelegate {
                     return
                 }
                 self.delegate?.refreshPage()
-                self.dismiss(animated: true, completion: nil)
+                self.present(TabBarController(), animated: true, completion: nil)
             })
             
         } else if (emailTextField.text != nil && passwordVerificationTextField.text != nil && passwordTextField.text != nil)  {

@@ -19,15 +19,17 @@ struct Plug {
     var member : Member?
     var urlImage : String?
     var starsCount : Int?
+    var isAdded : Bool?
     
     init() {
-        
+        isAdded = false
     }
     init(title : String, description : String, photo : UIImage, starsCount : Int ) {
         self.title = title
         self.description = description
         self.photo = photo
         self.starsCount = starsCount
+        isAdded = false
     }
     init(id : String,discipline : String, description : String, theme : String, title : String , member : Member, urlPhoto: String, starsCount: Int, date : NSDate) {
         self.id =  id
@@ -39,13 +41,26 @@ struct Plug {
         self.urlImage = urlPhoto
         self.starsCount = starsCount
         self.date = date
+        isAdded = false
     }
 }
 
 struct Comment {
+    var id : String?
     var member : Member?
     var date :  NSDate?
     var commentText : String?
+    init(member : Member, date : NSDate, commentText : String) {
+        self.member = member
+        self.date = date
+        self.commentText = commentText
+    }
+    init(id: String,member : Member, date : NSDate, commentText : String) {
+        self.member = member
+        self.date = date
+        self.commentText = commentText
+        self.id = id
+    }
 }
 
 struct Theme {

@@ -12,10 +12,10 @@ class CommentCell: UITableViewCell {
     
     /*--------------------------------------- VARIABLES ---------------------------------------------*/
     
-    let profilImage : UIImageView = {
+    lazy var profilImage : UIImageView = {
         let imgview = UIImageView()
         imgview.image = #imageLiteral(resourceName: "defaultProfilImage")
-        imgview.layer.cornerRadius = 10
+        imgview.layer.cornerRadius = self.heightWidthOfProfilImage / 2
         imgview.translatesAutoresizingMaskIntoConstraints = false
         imgview.layer.masksToBounds = false
         imgview.clipsToBounds = true
@@ -80,11 +80,13 @@ class CommentCell: UITableViewCell {
         nameLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 1/5).isActive = true
     }
     
+    let heightWidthOfProfilImage = CGFloat(30)
+    
     func setupProfilImage() {
-        profilImage.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
+        profilImage.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
         profilImage.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 10).isActive = true
-        profilImage.widthAnchor.constraint(equalTo: self.heightAnchor, multiplier: 2/5).isActive = true
-        profilImage.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 2/5).isActive = true
+        profilImage.widthAnchor.constraint(equalToConstant: heightWidthOfProfilImage).isActive = true
+        profilImage.heightAnchor.constraint(equalToConstant: heightWidthOfProfilImage).isActive = true
     }
     
     func setupSeparatorLine(){

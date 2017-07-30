@@ -69,22 +69,26 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        self.navigationItem.title = "Plug"
+        self.navigationItem.title = self.plug?.title ?? "Fiche"
         self.view.addSubview(imageView)
         self.view.addSubview(tabBar)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "BackButton"), style: .plain, target: self, action: #selector(handleBack))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handlePlus))
         loadFavorite()
         setupTabBar()
         setupImage()
         loadCommentsNumber()
         tabBar.favoriteButton.addTarget(self, action: #selector(handleFavorite), for: .touchUpInside)
         tabBar.commentButton.addTarget(self, action: #selector(handleComment), for: .touchUpInside)
+        addSwipeRecognizer()
         guard let checkedUrl = URL(string: (plug?.urlImage!)!) else {
             return
         }
-        downloadImage(url: checkedUrl)
-        addSwipeRecognizer()
+        let download = DownloadFromUrl()
+        download.downloadImage(url: checkedUrl, completion: { (image) in
+            self.activityIndicor.stopAnimating()
+            self.activityIndicor.removeFromSuperview()
+            self.plug?.photo = image
+        })
     }
     
     func addSwipeRecognizer() {
@@ -157,10 +161,6 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
         dismiss(animated: true, completion: nil)
     }
     
-    func handlePlus() {
-        print("Handle plus")
-    }
-    
     func handleComment() {
         let controller = CommentsController()
         controller.plug = self.plug
@@ -169,22 +169,6 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
     }
     
 /*------------------------------------ DOWNLOAD --------------------------------------------------*/
-    func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
-        URLSession.shared.dataTask(with: url) {
-            (data, response, error) in
-            completion(data, response, error)
-            }.resume()
-    }
-    func downloadImage(url: URL) {
-        getDataFromUrl(url: url) { (data, response, error)  in
-            guard let data = data, error == nil else { return }
-            DispatchQueue.main.async() { () -> Void in
-                self.activityIndicor.stopAnimating()
-                self.activityIndicor.removeFromSuperview()
-                self.plug?.photo = UIImage(data: data)
-            }
-        }
-    }
 
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

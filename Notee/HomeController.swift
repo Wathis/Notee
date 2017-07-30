@@ -58,7 +58,6 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "Matières"
         self.refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "LogoutButton"), style: .plain, target: self, action: #selector(handleLogout))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handlePlus))
         view.addSubview(disciplineTableView)
         setupTableView()
