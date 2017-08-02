@@ -15,6 +15,10 @@ protocol AddingPlugDelegate {
     func sendPlug(plug : Plug)
 }
 
+protocol DelegateAlertViewer {
+    func presentViewer(plug : Plug)
+}
+
 protocol AddingThemeDelegate {
     func sendTheme(theme : String)
 }
@@ -66,6 +70,33 @@ extension NSDate {
         
         
         return data
+    }
+}
+
+extension UIButton {
+    
+    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        userClicked()
+    }
+    
+    override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        userTapped()
+    }
+    
+    func userClicked() {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.transform = CGAffineTransform(scaleX: 1, y: 1)
+        })
+    }
+    
+    func userTapped() {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        }) { (finish) in
+           
+        }
     }
 }
 

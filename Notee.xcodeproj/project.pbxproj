@@ -21,6 +21,7 @@
 		6A3599E21E7D88D300D313DE /* PlugsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599E11E7D88D300D313DE /* PlugsCell.swift */; };
 		6A3599E41E7DA6C100D313DE /* Structures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599E31E7DA6C100D313DE /* Structures.swift */; };
 		6A3599E61E7DC65C00D313DE /* addPlugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3599E51E7DC65C00D313DE /* addPlugController.swift */; };
+		6A51FE461F328A460073C361 /* cellsForParametersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A51FE451F328A460073C361 /* cellsForParametersTableView.swift */; };
 		6A6CDF631EFF0D48005F1194 /* ForgottenPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6CDF621EFF0D48005F1194 /* ForgottenPasswordController.swift */; };
 		6A6CDF651EFF11E7005F1194 /* MailSendController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6CDF641EFF11E7005F1194 /* MailSendController.swift */; };
 		6A75D64E1E75655100AD92C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A75D64D1E75655100AD92C5 /* AppDelegate.swift */; };
@@ -67,6 +68,7 @@
 		6A3599E11E7D88D300D313DE /* PlugsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlugsCell.swift; sourceTree = "<group>"; };
 		6A3599E31E7DA6C100D313DE /* Structures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Structures.swift; sourceTree = "<group>"; };
 		6A3599E51E7DC65C00D313DE /* addPlugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = addPlugController.swift; sourceTree = "<group>"; };
+		6A51FE451F328A460073C361 /* cellsForParametersTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = cellsForParametersTableView.swift; sourceTree = "<group>"; };
 		6A6CDF621EFF0D48005F1194 /* ForgottenPasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForgottenPasswordController.swift; sourceTree = "<group>"; };
 		6A6CDF641EFF11E7005F1194 /* MailSendController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailSendController.swift; sourceTree = "<group>"; };
 		6A75D64A1E75655100AD92C5 /* Notee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notee.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -230,6 +232,7 @@
 				6A292EE41E79F73400A1BDFB /* SectionsCell.swift */,
 				6A95CF211E86F3FC0030672F /* TopNewsCell.swift */,
 				6AE56D031F2E53C9000AEF94 /* SeePlugAlertModalView.swift */,
+				6A51FE451F328A460073C361 /* cellsForParametersTableView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 				6A84B2361E8069710081F219 /* CommentCell.swift in Sources */,
 				6AFA698B1E9C142100EAF036 /* WelcomeScreenController.swift in Sources */,
 				6A3599D41E7D6CD400D313DE /* TabBarController.swift in Sources */,
+				6A51FE461F328A460073C361 /* cellsForParametersTableView.swift in Sources */,
 				6AF162671E9A7CEA00225B42 /* EnterNameController.swift in Sources */,
 				6A75D64E1E75655100AD92C5 /* AppDelegate.swift in Sources */,
 				6A2C7A6B1E7ED05700E3FB0C /* viewerController.swift in Sources */,

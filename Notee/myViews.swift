@@ -8,6 +8,62 @@
 
 import UIKit
 
+class NoteeCoinsIndicator : UIView {
+    
+    var noteeCoins : Int  = 0 {
+        didSet {
+            self.noteeCoinsLabel.text = "\(noteeCoins)"
+        }
+    }
+    
+    var noteeCoinsLabel : UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.textAlignment = .center
+        label.font = UIFont(name: "HelveticaNeue-CondensedBold", size: 20)
+        label.textColor = UIColor(r: 86, g: 90, b: 98)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    var imageNoteeCoins : UIImageView = {
+        let image = UIImageView()
+        image.image = #imageLiteral(resourceName: "noteeCoins")
+        image.contentMode = .scaleAspectFit
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
+    }()
+    
+    init() {
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        setupViews()
+    }
+    
+    func setupViews() {
+        
+        addSubview(imageNoteeCoins)
+        addSubview(noteeCoinsLabel)
+        
+        NSLayoutConstraint.activate([
+            noteeCoinsLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            noteeCoinsLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -17),
+            noteeCoinsLabel.widthAnchor.constraint(equalToConstant: 50),
+            noteeCoinsLabel.heightAnchor.constraint(equalTo: self.heightAnchor),
+            
+            imageNoteeCoins.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            imageNoteeCoins.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 17),
+            imageNoteeCoins.widthAnchor.constraint(equalToConstant: 30),
+            imageNoteeCoins.heightAnchor.constraint(equalToConstant: 30)
+            
+        ])
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
 class PLTabBar : UIView {
     
     var isFavorite = false

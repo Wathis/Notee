@@ -157,7 +157,6 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
 }

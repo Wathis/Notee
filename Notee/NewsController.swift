@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSource, iCarouselDelegate {
+class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSource, iCarouselDelegate, DelegateAlertViewer {
 
     
     let screenSize = UIScreen.main.bounds
@@ -66,11 +66,13 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     
     override func viewWillAppear(_ animated: Bool) {
         loadMessages()
+        loadCoins()
         loadSheets()
     }
     
     func handleProfil() {
         let controller = ProfilController()
+        controller.noteeCoinsIndicator.noteeCoins = self.noteeCoinsAvailables
         let navController = UINavigationController(rootViewController: controller)
         present(navController, animated: true, completion: nil)
     }
@@ -178,10 +180,11 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         return -1
     }
     
-    
     func addNewSheet(_ sender : ButtonAddSheet) {
+        
         guard let sheet = sender.sheet, let uid = Auth.auth().currentUser?.uid, let idOfSheet = sheet.id else {return}
         if (sheet.isAdded == false){
+            sender.userClicked()
             sender.sheet?.isAdded = true
             sender.changeColorOfButton()
             let membersDisciplineValue = [sheet.discipline : true ]
@@ -254,8 +257,9 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         newPlugCarousel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -heightOfTabBar!).isActive = true
     }
     
-    func handleReport(myPlug : newPlugView) {
+    func handleReport(_ sender : ButtonAddSheet) {
         let navigationController = UINavigationController(rootViewController: ReportController())
+        sender.userClicked()
         present(navigationController, animated: true, completion: nil)
     }
     
@@ -279,7 +283,7 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             view.numberOfFavoriteLabel.text = String(describing: plugs[index].starsCount!)
         }
         view.disciplineText = plugs[index].discipline
-        view.buttonReport.addTarget(self, action: #selector(handleReport), for: .touchUpInside)
+        view.buttonReport.addTarget(self, action: #selector(handleReport(_:)), for: .touchUpInside)
         view.buttonAdd.addTarget(self, action: #selector(addNewSheet(_:)), for: .touchUpInside)
         return view
     }
@@ -287,12 +291,30 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     func carousel(_ carousel: iCarousel, didSelectItemAt index: Int) {
         let controller = SeePlugAlertModalView()
         controller.modalPresentationStyle = .overFullScreen
-        self.present(controller, animated: true, completion: nil)
-//        self.present(SeePlugAlertModalView(), animated: true, completion: nil)
-//        let controller = viewerController()
-//        controller.plug = plugs[index]
-//        let navController = UINavigationController(rootViewController: controller)
-//        self.present(navController, animated: true, completion: nil)
+        controller.delegate = self
+        controller.currentPlug = plugs[index]
+        controller.noteeCoinsAvailables = noteeCoinsAvailables
+        self.present(controller, animated: false, completion: nil)
+    }
+    
+    var noteeCoinsAvailables : Int = 0
+    
+    func loadCoins() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        let refMember = Database.database().reference().child("members/\(uid)")
+        
+        refMember.observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let values = snapshot.value as? NSDictionary, let noteeCoins = values["noteeCoins"] as? Int else {return}
+            self.noteeCoinsAvailables = noteeCoins
+        })
+    }
+    
+    func presentViewer(plug: Plug) {
+        let controller = viewerController()
+        controller.plug = plug
+        let navController = UINavigationController(rootViewController: controller)
+        self.present(navController, animated: true, completion: nil)
     }
     
     func carousel(_ carousel: iCarousel, valueFor option: iCarouselOption, withDefault value: CGFloat) -> CGFloat {

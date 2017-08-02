@@ -64,13 +64,13 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
     let themeTextField  = TextFieldAdding(placeholderText: "Theme")
     let disciplineTextField  = TextFieldAdding(placeholderText: "Matière")
     
-    let buttonValidate = ButtonInMenus(text: "AJOUTER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
+    let buttonValidate = ButtonInMenus(text: "PARTAGER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
     
 /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleBack))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Retour", style: .plain, target: self, action: #selector(handleBack))
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.title = "Ajouter"
         self.view.addSubview(titleTextField)
@@ -200,7 +200,15 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             
             ref.updateChildValues(childUpdates, withCompletionBlock: { (error, dataReference) in
                 childUpdates = ["/sheets/\(key)/members/\(uid)": true] as [String : Any]
-                ref.updateChildValues(childUpdates)
+                ref.updateChildValues(childUpdates, withCompletionBlock: { (error, refDatabase) in
+                    if error == nil {
+                        let refMember =  Database.database().reference().child("members/\(uid)")
+                        refMember.observeSingleEvent(of: .value, with: { (snapshot) in
+                            guard let values = snapshot.value as? NSDictionary, let noteeCoins = values["noteeCoins"] as? Int else {return}
+                            refMember.updateChildValues(["noteeCoins" : noteeCoins + 10])
+                        })
+                    }
+                })
             })
             
             self.newPlug?.id = key
