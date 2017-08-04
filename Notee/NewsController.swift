@@ -19,6 +19,8 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     var myPlugs = [1,2,3,4]
     let timeBeforeSwitchNews : TimeInterval = 7
     
+    var heightOfNewPlug : CGFloat = 0
+    
     
     var plugs : [Plug] = []
     
@@ -64,14 +66,53 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         timerForPagging = Timer.scheduledTimer(timeInterval: self.timeBeforeSwitchNews, target: self, selector: #selector(nextMessage), userInfo: nil, repeats: false)
     }
     
+     let KEY_OF_SWITCH_NEWS = "enableNewsInfo"
+    
     override func viewWillAppear(_ animated: Bool) {
         loadMessages()
         loadCoins()
         loadSheets()
+        loadSettings()
+        loadUser()
+    }
+    
+    var memberConnected : Member!
+    
+    func loadUser() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let ref = Database.database().reference().child("members/\(uid)")
+        ref.observe(.value ,with: { (snapshot) in
+            guard let values = snapshot.value as? NSDictionary else {return}
+            guard let pseudo = values["pseudo"] as? String, let urlImage = values["imageUrl"] as? String else {return}
+            self.memberConnected = Member(id: uid, pseudo: pseudo, urlImage : urlImage)
+            guard let checkedUrl = URL(string: urlImage) else {
+                return
+            }
+            let download = DownloadFromUrl()
+            download.downloadImage(url: checkedUrl, completion: { (image) in
+                self.memberConnected.profilImage = image
+            })
+        })
+    }
+    
+    func loadSettings() {
+        guard let enableNews = UserDefaults.standard.value(forKey: KEY_OF_SWITCH_NEWS) as? Bool else {return}
+        if (enableNews) {
+            newsOfPlugScrollView.isHidden = false
+            constraintTopNewsPlugCarousel.constant = 20 + heightOfNewsCell
+            heightOfNewPlug = (self.view.frame.height) - heightOfNavBar! - heightOfTabBar! - heightOfNewsCell
+            
+        } else {
+            newsOfPlugScrollView.isHidden = true
+            constraintTopNewsPlugCarousel.constant = 0
+            heightOfNewPlug = (self.view.frame.height) - heightOfNavBar! - heightOfTabBar!
+        }
+        newPlugCarousel.updateConstraints()
     }
     
     func handleProfil() {
         let controller = ProfilController()
+        controller.memberConnected = memberConnected
         controller.noteeCoinsIndicator.noteeCoins = self.noteeCoinsAvailables
         let navController = UINavigationController(rootViewController: controller)
         present(navController, animated: true, completion: nil)
@@ -245,12 +286,15 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         newsOfPlugScrollView.heightAnchor.constraint(equalToConstant: heightOfNewsCell).isActive = true
     }
     
+    var constraintTopNewsPlugCarousel : NSLayoutConstraint!
+    
     func setupMyViews() {
         
         setupScrollView()
         
         self.view.addSubview(newPlugCarousel)
-        newPlugCarousel.topAnchor.constraint(equalTo: self.view.topAnchor,constant : 20 + heightOfNewsCell).isActive = true
+        constraintTopNewsPlugCarousel = newPlugCarousel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 20 + heightOfNewsCell)
+        constraintTopNewsPlugCarousel.isActive = true
         newPlugCarousel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         newPlugCarousel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         heightOfTabBar = CGFloat((self.tabBarController?.tabBar.frame.height)!) + 10
@@ -268,7 +312,6 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     }
     
     func carousel(_ carousel: iCarousel, viewForItemAt index: Int, reusing view: UIView?) -> UIView {
-        let heightOfNewPlug = (self.view.frame.height) - heightOfNavBar! - heightOfTabBar! - heightOfNewsCell
         let view = newPlugView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width * 8 / 10, height: heightOfNewPlug))
         view.descriptionText = plugs[index].description
         view.sheet = plugs[index]

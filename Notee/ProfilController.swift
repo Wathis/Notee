@@ -13,15 +13,19 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
     
     
     let cellSignOut = "cellSignOut"
-    let cellNewsActivate = "cellNewsActivate"
+    let CELL_NEWS_ACTIVATE = "cellNewsActivate"
+    let KEY_OF_SWITCH_NEWS = "enableNewsInfo"
 
-
-
-    let widthHeightOfProfilImage = CGFloat(100)
     
-    var member : Member? {
+    var newsParameterIsOn = true
+
+
+    let DIMENSION_OF_PROFIL_IMAGE = CGFloat(100)
+    
+    var memberConnected : Member? {
         didSet {
-            self.pseudoLabel.text = self.member?.pseudo
+            self.pseudoLabel.text = self.memberConnected?.pseudo
+            self.profilImageView.image = self.memberConnected?.profilImage
         }
     }
     
@@ -49,7 +53,7 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         let imgView = UIImageView()
         imgView.isUserInteractionEnabled = true
         imgView.translatesAutoresizingMaskIntoConstraints = false
-        imgView.layer.cornerRadius = CGFloat(self.widthHeightOfProfilImage / 2)
+        imgView.layer.cornerRadius = CGFloat(self.DIMENSION_OF_PROFIL_IMAGE / 2)
         imgView.image = #imageLiteral(resourceName: "backgroundProfilImage")
         imgView.clipsToBounds = true
         imgView.layer.borderColor = UIColor(r: 86, g: 90, b: 98).cgColor
@@ -83,10 +87,9 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         self.view.backgroundColor =  UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Retour", style: .plain, target: self, action: #selector(handleBack))
         setupViews()
-        loadUser()
         loadSettings()
         pickerImage.delegate = self
-        self.parametersCollectionView.register(ParameterNewsOffOnCell.self, forCellReuseIdentifier: cellNewsActivate)
+        self.parametersCollectionView.register(ParameterNewsOffOnCell.self, forCellReuseIdentifier: CELL_NEWS_ACTIVATE)
         self.parametersCollectionView.register(SignOutCell.self, forCellReuseIdentifier: cellSignOut)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         profilImageView.isUserInteractionEnabled = true
@@ -94,33 +97,22 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         self.navigationItem.title = "Mon profil"
     }
     
-    func loadSettings() {
+    func changeSettingNewsOnOff(_ sender : UISwitch) {
+        let valueOfSwitch = sender.isOn
         let userDefaults = UserDefaults.standard
-        userDefaults.setValue(false, forKey: "enableNewsInfo")
+        userDefaults.setValue(valueOfSwitch, forKey: KEY_OF_SWITCH_NEWS)
         userDefaults.synchronize()
-        
-        if let enableNews = userDefaults.value(forKey: "enableNewsInfo") as? Bool {
-            if (enableNews) {
-                
-            }
-        }
     }
     
-    func loadUser() {
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        let ref = Database.database().reference().child("members/\(uid)")
-        ref.observe(.value ,with: { (snapshot) in
-            guard let values = snapshot.value as? NSDictionary else {return}
-            guard let pseudo = values["pseudo"] as? String, let urlImage = values["imageUrl"] as? String else {return}
-            self.member = Member(id: uid, pseudo: pseudo, urlImage : urlImage)
-            guard let checkedUrl = URL(string: urlImage) else {
-                return
-            }
-            let download = DownloadFromUrl()
-            download.downloadImage(url: checkedUrl, completion: { (image) in
-                self.profilImageView.image = image
-            })
-        })
+    func loadSettings() {
+        guard let enableNews = UserDefaults.standard.value(forKey: KEY_OF_SWITCH_NEWS) as? Bool else {
+            return
+        }
+        if (enableNews) {
+            newsParameterIsOn = true
+        } else {
+            newsParameterIsOn = false
+        }
     }
     
     func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
@@ -203,7 +195,11 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         switch indexPath.section {
             case 0:
                 if indexPath.row == 0 {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: cellNewsActivate) as! ParameterNewsOffOnCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_NEWS_ACTIVATE) as! ParameterNewsOffOnCell
+                    if newsParameterIsOn {
+                        cell.enableNews.setOn(true, animated: true)
+                    }
+                    cell.enableNews.addTarget(self, action: #selector(changeSettingNewsOnOff(_:)), for: .valueChanged)
                     return cell
                 }
             case 1:
@@ -243,8 +239,8 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
             
             profilImageView.topAnchor.constraint(equalTo: self.backgroundProfilView.topAnchor, constant : 20),
             profilImageView.centerXAnchor.constraint(equalTo: self.backgroundProfilView.centerXAnchor),
-            profilImageView.widthAnchor.constraint(equalToConstant: widthHeightOfProfilImage),
-            profilImageView.heightAnchor.constraint(equalToConstant: widthHeightOfProfilImage),
+            profilImageView.widthAnchor.constraint(equalToConstant: DIMENSION_OF_PROFIL_IMAGE),
+            profilImageView.heightAnchor.constraint(equalToConstant: DIMENSION_OF_PROFIL_IMAGE),
             
             pseudoLabel.topAnchor.constraint(equalTo: self.profilImageView.bottomAnchor, constant: 10),
             pseudoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
