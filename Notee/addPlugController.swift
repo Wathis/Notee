@@ -10,19 +10,23 @@ import UIKit
 import Firebase
 import UITextField_Shake
 
-class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate , UIImagePickerControllerDelegate , UINavigationControllerDelegate {
+class addPlugController: UIViewController , UITextFieldDelegate, UIImagePickerControllerDelegate , UINavigationControllerDelegate, SendTagsDelegate {
+
     
     var delegate:AddingPlugDelegate!
     var discipline : String?
     var theme : Theme?
     var urlSheet : URL?
     var member : Member?
-    
-    lazy var pickerViewDiscipline : UIPickerView = {
-        let picker = UIPickerView()
-        picker.delegate = self
-        return picker
-    }()
+    var tagsList : [String] = [] {
+        didSet {
+            var content = ""
+            for tag in tagsList {
+                content += "\(tag), "
+            }
+            self.tagsTextField.textField.text = content
+        }
+    }
     
     var sheet : UIImage? {
         didSet {
@@ -61,8 +65,8 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
     
     let titleTextField = TextFieldAdding(placeholderText: "Titre")
     let descriptionTextField = TextFieldAdding(placeholderText: "Description")
-    let themeTextField  = TextFieldAdding(placeholderText: "Theme")
-    let disciplineTextField  = TextFieldAdding(placeholderText: "Matière")
+    let locationSheetTextField  = TextFieldAdding(placeholderText: "Emplacement")
+    let tagsTextField = TextFieldAdding(placeholderText: "Tags")
     
     let buttonValidate = ButtonInMenus(text: "PARTAGER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
     
@@ -75,19 +79,35 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         self.title = "Ajouter"
         self.view.addSubview(titleTextField)
         self.view.addSubview(buttonValidate)
-        loadDiscipline()
         pickerImage.delegate = self
-        disciplineTextField.textField.inputView = pickerViewDiscipline
-        disciplineTextField.text = discipline
-        themeTextField.text = theme?.name
+        locationSheetTextField.text = discipline! + " > " + (theme?.name)!
         hideKeyboardWhenTappedAround()
         setupTextField()
         loadUser()
+        tagsTextField.textField.delegate = self
         setupButtonValidate()
         buttonPhoto.addTarget(self, action: #selector(takePhoto), for: .touchUpInside)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         sheetImage.isUserInteractionEnabled = true
         sheetImage.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == self.tagsTextField.textField {
+            handleTags()
+        }
+    }
+    
+    func sendTags(tags: [String]) {
+        self.tagsList = tags
+    }
+    
+    func handleTags() {
+        let controller  = TagsController(collectionViewLayout: UICollectionViewLayout())
+        controller.keywords = self.tagsList
+        controller.delegate = self
+        present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
     }
 
     func takePhoto() {
@@ -137,17 +157,20 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         guard let title = titleTextField.textField.text ,let descriptionData =  self.descriptionTextField.textField.text, let photo = sheet else {
             return
         }
-        if title.characters.count > 0 && descriptionData.characters.count > 0 {
+        if title.characters.count > 0 && descriptionData.characters.count > 0 && tagsList.count > 0 {
             newPlug = Plug(title: title, description: descriptionData,photo: photo, starsCount : 0)
             newPlug?.member = self.member
             self.activityIndicor.startAnimating()
             self.titleTextField.textField.isEnabled = false
             self.descriptionTextField.textField.isEnabled = false
-            self.themeTextField.textField.isEnabled = false
-            self.disciplineTextField.textField.isEnabled = false
+            self.tagsTextField.textField.isEnabled = false
+            self.locationSheetTextField.textField.isEnabled = false
             self.buttonValidate.isEnabled = false
             addNewSheet()
         } else {
+            if tagsList.count == 0 {
+                tagsTextField.textField.shake()
+            }
             if (title.characters.count == 0){
                 titleTextField.textField.shake()
             }
@@ -168,8 +191,13 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
     }
     
     func addNewSheet() {
-        guard let plug = newPlug, let memberPseudo = plug.member?.pseudo , let photo = self.sheet, let disciplineName = self.disciplineTextField.textField.text else {
+        guard let plug = newPlug, let memberPseudo = plug.member?.pseudo , let photo = self.sheet, let disciplineName = self.discipline else {
             return
+        }
+        
+        var tagsDictinary : [String : Bool] = [:]
+        for tag in self.tagsList {
+            tagsDictinary[tag] = true
         }
         
         let ref = Database.database().reference()
@@ -189,7 +217,7 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
                 return
             }
             let downloadURL = metadata!.downloadURL()
-            guard let idOfTheme = self.theme?.id, let uid = Auth.auth().currentUser?.uid, let theme = self.themeTextField.text else {
+            guard let idOfTheme = self.theme?.id, let uid = Auth.auth().currentUser?.uid, let theme = self.theme?.name else {
                 return
             }
             
@@ -198,8 +226,17 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             var childUpdates = ["/sheets/\(key)": newPlugValues,
                                 "/theme-sheets/\(idOfTheme)/\(key)/": "true"] as [String : Any]
             
+            
+            
             ref.updateChildValues(childUpdates, withCompletionBlock: { (error, dataReference) in
                 childUpdates = ["/sheets/\(key)/members/\(uid)": true] as [String : Any]
+            
+                ref.child("sheets/\(key)/tags").updateChildValues(tagsDictinary)
+                
+                for tag in self.tagsList {
+                     ref.child("tags/\(tag.lowercased())/\(key)").setValue(true)
+                }
+                
                 ref.updateChildValues(childUpdates, withCompletionBlock: { (error, refDatabase) in
                     if error == nil {
                         let refMember =  Database.database().reference().child("members/\(uid)")
@@ -216,42 +253,6 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             self.delegate.sendPlug(plug: self.newPlug!)
             self.dismiss(animated: true, completion: nil)
         }
-    }
-    
-    var disciplineAvailables : [String] = []
-    func loadDiscipline()  {
-        let ref = Database.database().reference().child("discipline")
-        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let values = snapshot.value as? NSDictionary else {
-                return
-            }
-            for value in values {
-                if let key = value.key as? String {
-                    self.disciplineAvailables.append(key)
-                }
-            }
-            self.pickerViewDiscipline.reloadAllComponents()
-        }) { (error) in
-            print(error.localizedDescription)
-        }
-    }
-
-
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return disciplineAvailables.count
-    }
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return disciplineAvailables[row]
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.disciplineTextField.text = disciplineAvailables[row]
     }
 
     
@@ -283,20 +284,20 @@ class addPlugController: UIViewController, UIPickerViewDataSource, UIPickerViewD
         descriptionTextField.widthAnchor.constraint(equalToConstant: self.view.frame.size.width - 60).isActive = true
         descriptionTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        self.view.addSubview(disciplineTextField)
-        disciplineTextField.topAnchor.constraint(equalTo: descriptionTextField.bottomAnchor, constant: 30).isActive = true
-        disciplineTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
-        disciplineTextField.widthAnchor.constraint(equalToConstant: self.view.frame.size.width - 60).isActive = true
-        disciplineTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.view.addSubview(locationSheetTextField)
+        locationSheetTextField.topAnchor.constraint(equalTo: descriptionTextField.bottomAnchor, constant: 30).isActive = true
+        locationSheetTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
+        locationSheetTextField.widthAnchor.constraint(equalToConstant: self.view.frame.size.width - 60).isActive = true
+        locationSheetTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        self.view.addSubview(themeTextField)
-        themeTextField.topAnchor.constraint(equalTo: disciplineTextField.bottomAnchor, constant: 30).isActive = true
-        themeTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
-        themeTextField.widthAnchor.constraint(equalToConstant: self.view.frame.size.width - 60).isActive = true
-        themeTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.view.addSubview(tagsTextField)
+        tagsTextField.topAnchor.constraint(equalTo: locationSheetTextField.bottomAnchor, constant: 30).isActive = true
+        tagsTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
+        tagsTextField.widthAnchor.constraint(equalToConstant: self.view.frame.size.width - 60).isActive = true
+        tagsTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         self.view.addSubview(sheetImage)
-        sheetImage.topAnchor.constraint(equalTo: themeTextField.bottomAnchor, constant: 30).isActive = true
+        sheetImage.topAnchor.constraint(equalTo: tagsTextField.bottomAnchor, constant: 30).isActive = true
         sheetImage.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: -60).isActive = true
         sheetImage.widthAnchor.constraint(equalToConstant: 50).isActive = true
         sheetImage.heightAnchor.constraint(equalToConstant: 50).isActive = true

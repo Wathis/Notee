@@ -73,6 +73,11 @@ extension NSDate {
     }
 }
 
+protocol SendTagsDelegate {
+    func sendTags(tags : [String])
+    
+}
+
 extension UIButton {
     
     override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -97,6 +102,28 @@ extension UIButton {
         }) { (finish) in
            
         }
+    }
+}
+
+extension String {
+    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        
+        return ceil(boundingBox.height)
+    }
+    
+    func width(withConstraintedHeight height: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        
+        return ceil(boundingBox.width)
+    }
+}
+
+extension String {
+    func size(OfFont font: UIFont) -> CGSize {
+        return (self as NSString).size(attributes: [NSFontAttributeName: font])
     }
 }
 

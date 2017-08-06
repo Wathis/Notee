@@ -18,6 +18,7 @@ class TabBarController: UITabBarController {
         var arrayViews : [UIViewController] = [createAViewController(controller: NewsController(), image: #imageLiteral(resourceName: "plane"))]
         arrayViews.append(createAViewController(controller: HomeController(), image: #imageLiteral(resourceName: "home")))
         arrayViews.append(createAViewController(controller: TopController(), image: #imageLiteral(resourceName: "podium")))
+        arrayViews.append(createAViewController(controller: ShopController(collectionViewLayout: UICollectionViewLayout()), image: #imageLiteral(resourceName: "podium")))
         
         viewControllers = arrayViews
         self.selectedIndex = 1

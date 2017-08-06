@@ -20,6 +20,7 @@ struct Plug {
     var urlImage : String?
     var starsCount : Int?
     var isAdded : Bool?
+    var tags : [String]?
     
     init() {
         isAdded = false
@@ -42,6 +43,19 @@ struct Plug {
         self.starsCount = starsCount
         self.date = date
         isAdded = false
+    }
+    init(id : String,discipline : String, description : String, theme : String, title : String , member : Member, urlPhoto: String, starsCount: Int, date : NSDate, tags : [String]) {
+        self.id =  id
+        self.discipline = discipline
+        self.description = description
+        self.theme = theme
+        self.title = title
+        self.member = member
+        self.urlImage = urlPhoto
+        self.starsCount = starsCount
+        self.date = date
+        isAdded = false
+        self.tags = tags
     }
 }
 

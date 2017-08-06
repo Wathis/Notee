@@ -64,7 +64,6 @@ class ReportController: UIViewController {
         buttonOk.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         buttonOk.isHidden = true
-        
     }
     
     func handlePattern() {

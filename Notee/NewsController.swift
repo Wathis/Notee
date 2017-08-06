@@ -20,6 +20,7 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     let timeBeforeSwitchNews : TimeInterval = 7
     
     var heightOfNewPlug : CGFloat = 0
+    var keywords : [String] = []
     
     
     var plugs : [Plug] = []
@@ -54,13 +55,19 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         return carousel
     }()
     
+    let messsageInformationNoNews = InformationMessage(information: "Pas de nouvelle fiche")
+    
+    var observorMessageFromNotee : ObservorNoteeMessage!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "News"
         //Important for the scrollView
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(handleRefresh))
+        observorMessageFromNotee = ObservorNoteeMessage(parent: self)
+        observorMessageFromNotee.beginObserve()
+        self.navigationItem.leftBarButtonItems = [ UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(handleRefresh)), UIBarButtonItem(image: #imageLiteral(resourceName: "key"), style: .plain, target: self, action: #selector(handleKeywords))]
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "profil"), style: .plain, target: self, action: #selector(handleProfil))
         setupMyViews()
         timerForPagging = Timer.scheduledTimer(timeInterval: self.timeBeforeSwitchNews, target: self, selector: #selector(nextMessage), userInfo: nil, repeats: false)
@@ -69,10 +76,12 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
      let KEY_OF_SWITCH_NEWS = "enableNewsInfo"
     
     override func viewWillAppear(_ animated: Bool) {
+        loadTags()
         loadMessages()
         loadCoins()
         loadSheets()
         loadSettings()
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
         loadUser()
     }
     
@@ -85,13 +94,19 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             guard let values = snapshot.value as? NSDictionary else {return}
             guard let pseudo = values["pseudo"] as? String, let urlImage = values["imageUrl"] as? String else {return}
             self.memberConnected = Member(id: uid, pseudo: pseudo, urlImage : urlImage)
-            guard let checkedUrl = URL(string: urlImage) else {
-                return
+            if (urlImage != ""){
+                guard let checkedUrl = URL(string: urlImage) else {
+                    return
+                }
+                let download = DownloadFromUrl()
+                download.downloadImage(url: checkedUrl, completion: { (image) in
+                    self.memberConnected.profilImage = image
+                    self.navigationItem.rightBarButtonItem?.isEnabled = true
+                })
+            } else {
+                self.memberConnected.profilImage = #imageLiteral(resourceName: "defaultProfilImage")
+                self.navigationItem.rightBarButtonItem?.isEnabled = true
             }
-            let download = DownloadFromUrl()
-            download.downloadImage(url: checkedUrl, completion: { (image) in
-                self.memberConnected.profilImage = image
-            })
         })
     }
     
@@ -108,6 +123,13 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             heightOfNewPlug = (self.view.frame.height) - heightOfNavBar! - heightOfTabBar!
         }
         newPlugCarousel.updateConstraints()
+    }
+    
+    func handleKeywords() {
+        let controller = TagsViewController(collectionViewLayout: UICollectionViewLayout())
+        controller.keywords = self.keywords
+        let navController = UINavigationController(rootViewController: controller)
+        present(navController, animated: true, completion: nil)
     }
     
     func handleProfil() {
@@ -130,6 +152,19 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             self.iteratorForPagging = indexOfScroll
             self.timerForPagging = Timer.scheduledTimer(timeInterval: timeBeforeSwitchNews, target: self, selector: #selector(nextMessage), userInfo: nil, repeats: false)
         }
+    }
+    
+    func loadTags() {
+        self.keywords.removeAll()
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        Database.database().reference().child("members/\(uid)/tags").observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let values = snapshot.value as? NSDictionary else {return}
+            for val in values {
+                if let word = val.key as? String {
+                    self.keywords.append(word.lowercased())
+                }
+            }
+        })
     }
 
     func loadMessages() {
@@ -159,15 +194,22 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         plugs = plugs.sorted(by: {$0.date!.timeIntervalSinceNow < $1.date!.timeIntervalSinceNow})
     }
     
+    func enableNavigationButtons(_ enable : Bool){
+        guard let buttonsLeft = navigationItem.leftBarButtonItems else {return}
+        for button in buttonsLeft {
+            button.isEnabled = enable
+        }
+    }
+    
     func loadSheets() {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         self.plugs.removeAll()
-        self.navigationItem.leftBarButtonItem?.isEnabled = false
+        enableNavigationButtons(false)
         self.newPlugCarousel.reloadData()
-        let ref = Database.database().reference().child("sheets").queryLimited(toFirst: 20)
+        let ref = Database.database().reference().child("sheets").queryLimited(toFirst: 100)
         ref.observeSingleEvent(of: .value, with: {(snapshot) in
             if !snapshot.hasChildren() {
-                self.navigationItem.leftBarButtonItem?.isEnabled = true
+                self.finishLoad()
             }
         })
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -176,11 +218,15 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             }
             for value in values {
                 if let keyPlug = value.key as? String, let informationOfSheet = value.value as? NSDictionary  {
-                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? String, let interval = informationOfSheet["date"] as? String, let pseudo = informationOfSheet["pseudo"] as? String else {
+                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? String, let interval = informationOfSheet["date"] as? String, let pseudo = informationOfSheet["pseudo"] as? String, let tagsDictionnary = informationOfSheet["tags"] as? [String:Bool] else {
                         return
                     }
+                    var tags : [String] = []
+                    for tag in tagsDictionnary {
+                        tags.append(tag.key)
+                    }
                     let date = NSDate(timeIntervalSince1970: Double(interval)!)
-                    let plugToAdd = Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID, pseudo: pseudo), urlPhoto :url, starsCount : Int(starsCount)!, date: date)
+                    let plugToAdd = Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID, pseudo: pseudo), urlPhoto :url, starsCount : Int(starsCount)!, date: date, tags :tags)
                     self.plugs.append(plugToAdd)
                     let refOfSheet = Database.database().reference().child("sheets/\(keyPlug)/members")
                     refOfSheet.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -203,11 +249,43 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         })
     }
     
+    func removeSheet(sheet : Plug){
+        var i  = 0
+        for plug in plugs {
+            if plug.id == sheet.id {
+                self.plugs.remove(at: i)
+            }
+            i = i + 1
+        }
+    }
+    
     func finishLoad() {
-        self.newPlugCarousel.reloadData()
+        self.messsageInformationNoNews.isHidden = true
+        var numberOfKeywords = 0
+        for sheet in self.plugs {
+            guard let tags = sheet.tags else {return}
+            for tag in tags {
+                if keywords.contains(tag) {
+                    numberOfKeywords += 1
+                }
+            }
+            if numberOfKeywords == 0 {
+                removeSheet(sheet: sheet)
+            }
+            numberOfKeywords = 0
+        }
+        if self.plugs.count == 0 {
+            appearMessageInformation("Pas de nouvelles fiches")
+        }
         self.sortSheets()
         self.plugs.reverse()
-        self.navigationItem.leftBarButtonItem?.isEnabled = true
+        enableNavigationButtons(true)
+        self.newPlugCarousel.reloadData()
+    }
+    
+    func appearMessageInformation(_ information : String) {
+        messsageInformationNoNews.message = information
+        messsageInformationNoNews.isHidden = false
     }
     
     func findIndexOfSheet(_ sheetToFind : Plug) -> Int {
@@ -299,6 +377,16 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         newPlugCarousel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         heightOfTabBar = CGFloat((self.tabBarController?.tabBar.frame.height)!) + 10
         newPlugCarousel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -heightOfTabBar!).isActive = true
+        
+        messsageInformationNoNews.isHidden = true
+        
+        self.view.addSubview(messsageInformationNoNews)
+        NSLayoutConstraint.activate([
+            messsageInformationNoNews.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+            messsageInformationNoNews.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0),
+            messsageInformationNoNews.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+            messsageInformationNoNews.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
     
     func handleReport(_ sender : ButtonAddSheet) {
@@ -332,12 +420,14 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     }
     
     func carousel(_ carousel: iCarousel, didSelectItemAt index: Int) {
-        let controller = SeePlugAlertModalView()
+        let controller = PlugAlertModalView()
         controller.modalPresentationStyle = .overFullScreen
         controller.delegate = self
         controller.currentPlug = plugs[index]
         controller.noteeCoinsAvailables = noteeCoinsAvailables
-        self.present(controller, animated: false, completion: nil)
+        self.present(controller, animated: false, completion: {
+            controller.addTargetForPlugViewer()
+        })
     }
     
     var noteeCoinsAvailables : Int = 0

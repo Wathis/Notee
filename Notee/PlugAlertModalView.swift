@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class SeePlugAlertModalView : UIViewController {
+class PlugAlertModalView : UIViewController {
     
     var currentPlug : Plug?
     var delegate : DelegateAlertViewer?
@@ -69,8 +69,13 @@ class SeePlugAlertModalView : UIViewController {
         cost = 1
         self.view.layer.opacity = 0
         self.buttonCancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
-        self.buttonConfirmation.addTarget(self, action: #selector(handlePay), for: .touchUpInside)
+        self.buttonConfirmation.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
         view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+    }
+    
+    func addTargetForPlugViewer() {
+        self.buttonCancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+        self.buttonConfirmation.addTarget(self, action: #selector(handlePay), for: .touchUpInside)
     }
     
     override func viewDidAppear(_ animated: Bool) {

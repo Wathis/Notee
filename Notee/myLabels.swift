@@ -8,6 +8,30 @@
 
 import UIKit
 
+class InformationMessage  : UILabel {
+    
+    var message : String? {
+        didSet {
+            self.text = message
+        }
+    }
+    
+    init(information : String) {
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        self.text = information
+        self.font = UIFont(name: "Helvetica", size: 20)
+        self.isHidden = true
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.textColor = UIColor(r: 86, g: 90, b: 97)
+        self.textAlignment = .center
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
 class LabelTitleFolder : UILabel {
     init(myText text : String) {
         super.init(frame: CGRect(x: 12, y: 12, width: 12, height: 12))

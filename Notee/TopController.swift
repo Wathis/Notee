@@ -42,6 +42,8 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
     }()
     
     
+    var observorMessageFromNotee : ObservorNoteeMessage!
+    
     /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
     override func viewDidLoad() {
@@ -49,15 +51,16 @@ class TopController: UIViewController,UITableViewDataSource,UITableViewDelegate 
         //Setup back ground color
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "Notee top"
+        var observorMessage = ObservorNoteeMessage(parent: self)
+        observorMessage.beginObserve()
         self.view.addSubview(commingSoon)
         isAdmin()
+        observorMessage = ObservorNoteeMessage(parent: self)
+        observorMessage.beginObserve()
         commingSoon.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         commingSoon.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -50).isActive = true
         commingSoon.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
         commingSoon.heightAnchor.constraint(equalToConstant: 50).isActive = true
-//        view.addSubview(themeTableView)
-//        themeTableView.register(ClassCell.self, forCellReuseIdentifier: reuseIdentifier)
-//        setupTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {

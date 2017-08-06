@@ -217,8 +217,6 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         controller.starActive = starActive
         controller.plug = plugs[indexPath.row]
         let navController = UINavigationController(rootViewController: controller)
-//        let myModalStyleTransition = UIModalTransitionStyle.flipHorizontal
-//        navController.modalTransitionStyle = myModalStyleTransition
         present(navController, animated: true, completion: nil)
     }
     

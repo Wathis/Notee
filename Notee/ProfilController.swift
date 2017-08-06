@@ -205,6 +205,7 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
             case 1:
                 if indexPath.row == 0 {
                     let cell = tableView.dequeueReusableCell(withIdentifier: cellSignOut) as! SignOutCell
+                    cell.buttonSignOut.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
                     return cell
                 }
             default:

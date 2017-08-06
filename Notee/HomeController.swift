@@ -50,6 +50,8 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         return indicator
     }()
     
+    var observorMessageFromNotee : ObservorNoteeMessage!
+    
 /*------------------------------------ VIEW DID LOAD ---------------------------------------------*/
     
     override func viewDidLoad() {
@@ -60,6 +62,9 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handlePlus))
         view.addSubview(disciplineTableView)
+        observorMessageFromNotee = ObservorNoteeMessage(parent: self)
+        observorMessageFromNotee.beginObserve()
+        loadNewUserOrNot()
         setupTableView()
         setupIndicator()
         loadDiscipline()
@@ -67,6 +72,25 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
 /*---------------------------------- FUNCTIONS BACKEND ------------------------------------------*/
+    
+    func loadNewUserOrNot() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        Database.database().reference().child("members/\(uid)/new").observeSingleEvent(of:  .value, with: { (snaphot) in
+            guard let _ = snaphot.value as? Bool else {return}
+            self.presentMessageOfNewUser()
+            Database.database().reference().child("members/\(uid)/new").removeValue()
+        })
+    }
+    
+    func presentMessageOfNewUser() {
+        let alert = PlugAlertModalView()
+        alert.titleOfAlert = "Bonne nouvelle !"
+        alert.descriptionOfAlert = "Vous venez de recevoir 50 Notee coins de bienvenue !"
+        alert.titleCancelButton = "Annuler"
+        present(alert, animated: false, completion: {
+            alert.titleConfirmationButton = "Parfait"
+        })
+    }
     
     func refreshPage() {
         setupIndicator()
@@ -99,7 +123,6 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 self.finishLoad()
             }
         })
-        
     }
     
     func loadDiscipline() {
