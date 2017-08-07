@@ -23,7 +23,20 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AE9-Ly-5qC">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logoFirstScreen" translatesAutoresizingMaskIntoConstraints="NO" id="T3U-Cm-uu7">
+                                        <rect key="frame" x="112.5" y="258.5" width="150" height="150"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="150" id="1qh-kA-N28"/>
+                                            <constraint firstAttribute="width" constant="150" id="ggC-Hf-goF"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
                                 <color key="backgroundColor" red="0.33790460228919983" green="0.35241353511810303" blue="0.38319742679595947" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="T3U-Cm-uu7" firstAttribute="centerY" secondItem="AE9-Ly-5qC" secondAttribute="centerY" id="0bi-eu-V5g"/>
+                                    <constraint firstItem="T3U-Cm-uu7" firstAttribute="centerX" secondItem="AE9-Ly-5qC" secondAttribute="centerX" id="tRk-BJ-Hwr"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -40,5 +53,8 @@
             <point key="canvasLocation" x="-216.80000000000001" y="372.86356821589209"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="logoFirstScreen" width="419" height="492"/>
+    </resources>
     <color key="tintColor" red="0.33418136835098267" green="0.35239243507385254" blue="0.38322973251342773" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

@@ -218,7 +218,7 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             }
             for value in values {
                 if let keyPlug = value.key as? String, let informationOfSheet = value.value as? NSDictionary  {
-                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? String, let interval = informationOfSheet["date"] as? String, let pseudo = informationOfSheet["pseudo"] as? String, let tagsDictionnary = informationOfSheet["tags"] as? [String:Bool] else {
+                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? Int, let interval = informationOfSheet["date"] as? String, let pseudo = informationOfSheet["pseudo"] as? String, let tagsDictionnary = informationOfSheet["tags"] as? [String:Bool] else {
                         return
                     }
                     var tags : [String] = []
@@ -226,7 +226,7 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
                         tags.append(tag.key)
                     }
                     let date = NSDate(timeIntervalSince1970: Double(interval)!)
-                    let plugToAdd = Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID, pseudo: pseudo), urlPhoto :url, starsCount : Int(starsCount)!, date: date, tags :tags)
+                    let plugToAdd = Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID, pseudo: pseudo), urlPhoto :url, starsCount : starsCount, date: date, tags :tags)
                     self.plugs.append(plugToAdd)
                     let refOfSheet = Database.database().reference().child("sheets/\(keyPlug)/members")
                     refOfSheet.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -420,13 +420,14 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
     }
     
     func carousel(_ carousel: iCarousel, didSelectItemAt index: Int) {
-        let controller = PlugAlertModalView()
+        let controller = PlugAlertModalView(title: "Consulter la fiche", description: "Il vous reste \(noteeCoinsAvailables) coins")
         controller.modalPresentationStyle = .overFullScreen
         controller.delegate = self
         controller.currentPlug = plugs[index]
         controller.noteeCoinsAvailables = noteeCoinsAvailables
         self.present(controller, animated: false, completion: {
             controller.addTargetForPlugViewer()
+            controller.delegateForBuy = self
         })
     }
     

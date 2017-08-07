@@ -10,4 +10,5 @@ target 'Notee' do
   pod 'Firebase/Auth'
   pod 'Firebase/Storage' 
   pod 'UITextField+Shake'
+  pod 'Google-Mobile-Ads-SDK'
 end

@@ -51,11 +51,22 @@ class PlugAlertModalView : UIViewController {
         }
     }
     
+    var delegateForBuy : NewsController?
     
     init() {
         super.init(nibName: nil, bundle: nil)
         self.modalPresentationStyle = .overFullScreen
         self.modalTransitionStyle = .crossDissolve
+    }
+    
+    init(title : String, description : String) {
+        super.init(nibName: nil, bundle: nil)
+        self.modalPresentationStyle = .overFullScreen
+        self.modalTransitionStyle = .crossDissolve
+        self.titleOfAlert = title
+        self.descriptionOfAlert = description
+        self.titleCancelButton = "Retour"
+        self.titleConfirmationButton = "D'accord"
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -66,15 +77,19 @@ class PlugAlertModalView : UIViewController {
         super.viewDidLoad()
         setupViews()
         self.view.isOpaque = false
-        cost = 1
         self.view.layer.opacity = 0
+        buttonCancel.setAttributedTitle(NSAttributedString(string: titleCancelButton, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-CondensedBold", size: 18) as Any,NSForegroundColorAttributeName : UIColor.white]), for: .normal)
+        buttonConfirmation.setAttributedTitle(NSAttributedString(string: titleConfirmationButton, attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-CondensedBold", size: 18) as Any,NSForegroundColorAttributeName : UIColor.white]), for: .normal)
+        self.titleLabel.text = self.titleOfAlert
+        self.descriptionTextView.text = self.descriptionOfAlert
         self.buttonCancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
         self.buttonConfirmation.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
         view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
     }
     
     func addTargetForPlugViewer() {
-        self.buttonCancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+        cost = 1
+        self.buttonConfirmation.removeTarget(self, action: #selector(handleCancel), for: .touchUpInside)
         self.buttonConfirmation.addTarget(self, action: #selector(handlePay), for: .touchUpInside)
     }
     
@@ -141,7 +156,8 @@ class PlugAlertModalView : UIViewController {
     }
     
     func handleBuy() {
-        
+        self.handleCancel()
+        delegateForBuy?.tabBarController?.selectedIndex = 3
     }
     
     func setupViews() {
@@ -154,8 +170,8 @@ class PlugAlertModalView : UIViewController {
         NSLayoutConstraint.activate([
             containerView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-            containerView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 85/100),
-            containerView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 1/3),
+            containerView.widthAnchor.constraint(equalToConstant: 250),
+            containerView.heightAnchor.constraint(equalToConstant: 220),
             
             titleLabel.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 20),
             titleLabel.centerXAnchor.constraint(equalTo: self.containerView.centerXAnchor),

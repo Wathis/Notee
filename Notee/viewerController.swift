@@ -77,6 +77,7 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
         setupTabBar()
         setupImage()
         loadCommentsNumber()
+        observeStarsCount()
         tabBar.favoriteButton.addTarget(self, action: #selector(handleFavorite), for: .touchUpInside)
         tabBar.commentButton.addTarget(self, action: #selector(handleComment), for: .touchUpInside)
         addSwipeRecognizer()
@@ -105,12 +106,10 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
     func handleFavorite() {
         if self.plug?.starsCount != nil {
             if (starActive){
-                self.plug!.starsCount! -= 1
                 self.updateFavorite()
                 self.tabBar.handleFavorite()
                 starActive = false
             } else {
-                self.plug!.starsCount! += 1
                 self.updateFavorite()
                 self.tabBar.handleFavorite()
                 starActive = true
@@ -118,7 +117,7 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
         }
     }
     
-    func loadCommentsNumber () {
+    func loadCommentsNumber() {
         self.tabBar.numberOfCommentLabel.text = "0"
         guard let idOfPlug = self.plug?.id else {return}
         let ref = Database.database().reference().child("comments-sheets/\(idOfPlug)")
@@ -133,7 +132,6 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
         })
     }
     
-    
     func loadFavorite() {
         guard let uid = Auth.auth().currentUser?.uid, let sheetId = self.plug?.id else {return}
         let refSheets = Database.database().reference().child("sheets").child(sheetId)
@@ -146,14 +144,23 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
         })
     }
     
+    func observeStarsCount() {
+        guard let idOfPlug = self.plug?.id else {return}
+        Database.database().reference().child("sheets/\(idOfPlug)/starsCount").observe(.value, with: { (snapshot) in
+            guard let count = snapshot.value as? Int else {return}
+            self.plug?.starsCount = count
+            self.tabBar.nbrOfStars = count
+        })
+    }
+    
     func updateFavorite(){
         guard let idOfPlug = self.plug?.id ,let uid = Auth.auth().currentUser?.uid, let starCount = self.plug?.starsCount else {return}
-        let values = ["starsCount" : "\(starCount)", "star/\(uid)" : true] as [String : Any]
-        Database.database().reference().child("sheets/\(idOfPlug)").updateChildValues(values)
         if starActive {
              Database.database().reference().child("sheets/\(idOfPlug)/star/\(uid)").removeValue()
+             Database.database().reference().child("sheets/\(idOfPlug)/starsCount").setValue(starCount - 1)
         } else {
             Database.database().reference().child("sheets/\(idOfPlug)/star/\(uid)").setValue(true)
+            Database.database().reference().child("sheets/\(idOfPlug)/starsCount").setValue(starCount + 1)
         }
     }
     

@@ -24,6 +24,18 @@ class ShopCell: UICollectionViewCell {
         }
     }
     
+    var isEnable = false {
+        didSet {
+            UIView.animate(withDuration: 0.1) {
+                if self.isEnable  {
+                   self.disableCellView.layer.opacity = 0
+                }else {
+                    self.disableCellView.layer.opacity = 1
+                }
+            }
+        }
+    }
+    
     var titleOfNewPlug : UILabel = {
         let label = UILabel()
         label.textColor = .white
@@ -63,6 +75,13 @@ class ShopCell: UICollectionViewCell {
         return view
     }()
     
+    let disableCellView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor(red: 86/255, green: 90/255, blue: 98/255, alpha: 0.5)
+        return view
+    }()
+    
     let labelNumberNoteeCoins : UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
@@ -75,6 +94,7 @@ class ShopCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clear
+        self.isEnable = true
         setupViews()
         setShadowToView()
     }
@@ -92,6 +112,7 @@ class ShopCell: UICollectionViewCell {
     }
     
     func setupViews() {
+        
         
         self.addSubview(headerView)
         
@@ -113,6 +134,13 @@ class ShopCell: UICollectionViewCell {
         containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         containerView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         containerView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier : 8/10).isActive = true
+        
+        self.addSubview(disableCellView)
+        
+        disableCellView.widthAnchor.constraint(equalTo: self.containerView.widthAnchor).isActive = true
+        disableCellView.topAnchor.constraint(equalTo: self.underHeaderView.topAnchor).isActive = true
+        disableCellView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor).isActive = true
+        disableCellView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
         self.addSubview(titleOfNewPlug)
         
@@ -140,11 +168,6 @@ class ShopCell: UICollectionViewCell {
 
 extension ShopCell {
     
-    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        userClicked()
-    }
-    
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         userTapped()
@@ -160,7 +183,7 @@ extension ShopCell {
         UIView.animate(withDuration: 0.1, animations: {
             self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }) { (finish) in
-            
+            self.userClicked()
         }
     }
 }
