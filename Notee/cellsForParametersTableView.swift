@@ -8,6 +8,58 @@
 
 import UIKit
 
+class ParameterCellEmail : UITableViewCell {
+    
+    let modifyAddressButton : UIButton = {
+        let view = UIButton()
+        view.setImage(#imageLiteral(resourceName: "pencil"), for: .normal)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    let labelMailAddress : UILabel = {
+        let label = UILabel()
+        label.text = "adresse mail"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont(name: "Helvetica-Neue", size: 20)
+        label.textColor = UIColor(r: 86, g: 90, b: 98)
+        label.textAlignment = .left
+        return label
+    }()
+    
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.selectionStyle = .none
+        setupViews()
+    }
+    
+    func setupViews() {
+        
+        self.addSubview(labelMailAddress)
+        self.addSubview(modifyAddressButton)
+        
+        
+        NSLayoutConstraint.activate([
+            
+            modifyAddressButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            modifyAddressButton.widthAnchor.constraint(equalToConstant: 50),
+            modifyAddressButton.heightAnchor.constraint(equalToConstant: 35),
+            modifyAddressButton.rightAnchor.constraint(equalTo: self.rightAnchor,constant: -10),
+            
+            labelMailAddress.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            labelMailAddress.leftAnchor.constraint(equalTo: self.leftAnchor,constant: 10),
+            labelMailAddress.rightAnchor.constraint(equalTo: self.modifyAddressButton.leftAnchor),
+            labelMailAddress.heightAnchor.constraint(equalTo: self.heightAnchor)
+            
+            ])
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+
 class ParameterNewsOffOnCell: UITableViewCell {
 
     override func awakeFromNib() {

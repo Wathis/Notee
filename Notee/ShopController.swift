@@ -134,7 +134,7 @@ class ShopController: UICollectionViewController, SKPaymentTransactionObserver, 
             ref.updateChildValues(["noteeCoins" : coins + number])
             
             ref.updateChildValues(["noteeCoins" : coins + number], withCompletionBlock: { (eroor, refData) in
-                let alert = PlugAlertModalView(title: "Félicitations indisponible", description: "Votre compte à bien été rechargé de \(number) Notee Coins")
+                let alert = PlugAlertModalView(title: "Félicitations", description: "Votre compte à bien été rechargé de \(number) Notee Coins")
                 self.present(alert, animated: true, completion: nil)
             })
             

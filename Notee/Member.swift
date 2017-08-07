@@ -33,6 +33,13 @@ class Member: NSObject {
         self.profilImageUrl = urlImage
     }
     
+    init(id : String,email : String, pseudo : String, urlImage : String ) {
+        self.id = id
+        self.pseudo = pseudo
+        self.email = email
+        self.profilImageUrl = urlImage
+    }
+    
     init(id : String, email : String) {
         self.email = email
         self.id = id

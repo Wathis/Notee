@@ -9,11 +9,12 @@
 import UIKit
 import Firebase
 
-class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate , UITableViewDelegate, UITableViewDataSource {
+class ProfilController: UIViewController, ChangeMailDelegate , UIImagePickerControllerDelegate, UINavigationControllerDelegate , UITableViewDelegate, UITableViewDataSource {
     
     
     let cellSignOut = "cellSignOut"
     let CELL_NEWS_ACTIVATE = "cellNewsActivate"
+    let CELL_MAIL_ADDRESS = "cellAddressMail"
     let KEY_OF_SWITCH_NEWS = "enableNewsInfo"
 
     
@@ -29,7 +30,7 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         }
     }
     
-    lazy var parametersCollectionView : UITableView = {
+    lazy var parametersTableView : UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         tv.delegate = self
@@ -89,8 +90,9 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         setupViews()
         loadSettings()
         pickerImage.delegate = self
-        self.parametersCollectionView.register(ParameterNewsOffOnCell.self, forCellReuseIdentifier: CELL_NEWS_ACTIVATE)
-        self.parametersCollectionView.register(SignOutCell.self, forCellReuseIdentifier: cellSignOut)
+        self.parametersTableView.register(ParameterNewsOffOnCell.self, forCellReuseIdentifier: CELL_NEWS_ACTIVATE)
+        self.parametersTableView.register(SignOutCell.self, forCellReuseIdentifier: cellSignOut)
+        self.parametersTableView.register(ParameterCellEmail.self, forCellReuseIdentifier: CELL_MAIL_ADDRESS)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         profilImageView.isUserInteractionEnabled = true
         profilImageView.addGestureRecognizer(tapGestureRecognizer)
@@ -168,7 +170,7 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return section == 0 ? 2 : 1
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -201,6 +203,11 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
                     }
                     cell.enableNews.addTarget(self, action: #selector(changeSettingNewsOnOff(_:)), for: .valueChanged)
                     return cell
+                } else if (indexPath.row == 1) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCellEmail
+                    cell.modifyAddressButton.addTarget(self, action: #selector(handleModifyAddress), for: .touchUpInside)
+                    cell.labelMailAddress.text = self.memberConnected?.email
+                    return cell
                 }
             case 1:
                 if indexPath.row == 0 {
@@ -215,7 +222,18 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         return UITableViewCell()
         
     }
-
+    func handleModifyAddress() {
+        let controller = ChangeMailAddressController()
+        controller.memberConnected = self.memberConnected
+        controller.delegate = self
+        present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+    }
+    
+    func receiveMailChanged(email : String) {
+        self.memberConnected?.email = email
+        self.parametersTableView.reloadData()
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 1 {
             return 80
@@ -230,7 +248,7 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
         self.backgroundProfilView.addSubview(profilImageView)
         self.view.addSubview(pseudoLabel)
         self.backgroundProfilView.addSubview(noteeCoinsIndicator)
-        self.view.addSubview(parametersCollectionView)
+        self.view.addSubview(parametersTableView)
         
         NSLayoutConstraint.activate([
             backgroundProfilView.topAnchor.constraint(equalTo: self.view.topAnchor, constant : 0),
@@ -253,10 +271,10 @@ class ProfilController: UIViewController, UIImagePickerControllerDelegate, UINav
             noteeCoinsIndicator.heightAnchor.constraint(equalToConstant: 50),
             noteeCoinsIndicator.widthAnchor.constraint(equalToConstant: 80),
             
-            parametersCollectionView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
-            parametersCollectionView.topAnchor.constraint(equalTo: self.backgroundProfilView.bottomAnchor, constant: 5),
-            parametersCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            parametersCollectionView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+            parametersTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+            parametersTableView.topAnchor.constraint(equalTo: self.backgroundProfilView.bottomAnchor, constant: 5),
+            parametersTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            parametersTableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
             
         ])
     }

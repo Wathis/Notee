@@ -112,12 +112,12 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
                 let refSheets = Database.database().reference().child("sheets").child(idOfSheet)
                 refSheets.observeSingleEvent(of: .value, with: { (snapshot) in
                     guard let informationOfSheet = snapshot.value as? NSDictionary else {return}
-                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? String, let interval = informationOfSheet["date"] as? String else {
+                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? Int, let interval = informationOfSheet["date"] as? Double else {
                         self.finishLoad()
                         return
                     }
-                    let date = NSDate(timeIntervalSince1970: Double(interval)!)
-                    self.plugs.append(Plug(id: idOfSheet, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID), urlPhoto :url , starsCount : Int(starsCount)!, date: date))
+                    let date = NSDate(timeIntervalSince1970: interval)
+                    self.plugs.append(Plug(id: idOfSheet, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID), urlPhoto :url , starsCount : starsCount, date: date))
                     self.finishLoad()
                 })
             }

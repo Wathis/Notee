@@ -221,7 +221,7 @@ class addPlugController: UIViewController , UITextFieldDelegate, UIImagePickerCo
                 return
             }
             
-            let newPlugValues = ["title" : plug.title, "theme" : theme, "discipline" : disciplineName ,"memberUID": uid, "description" : plug.description, "urlDownload" : downloadURL?.absoluteString,"starsCount" : "\(0)", "date" : "\(NSDate().timeIntervalSince1970)", "pseudo" : memberPseudo]
+            let newPlugValues = ["title" : plug.title, "theme" : theme, "discipline" : disciplineName ,"memberUID": uid, "description" : plug.description, "urlDownload" : downloadURL?.absoluteString as Any,"starsCount" : 0, "date" : NSDate().timeIntervalSince1970, "pseudo" : memberPseudo] as [String : Any]
             
             var childUpdates = ["/sheets/\(key)": newPlugValues,
                                 "/theme-sheets/\(idOfTheme)/\(key)/": "true"] as [String : Any]

@@ -21,7 +21,7 @@ class TagsViewController: UICollectionViewController, UITextFieldDelegate, UICol
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
-        self.navigationItem.title = "Mots clés"
+        self.navigationItem.title = "Tags"
         self.collectionView?.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 15, left: 15, bottom:5, right: 15)

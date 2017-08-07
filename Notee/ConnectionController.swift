@@ -61,10 +61,7 @@ class ConnectionController : UIViewController, UITextFieldDelegate {
                 if error != nil {
                     print(error!)
                     if let errCode = AuthErrorCode(rawValue: error!._code) {
-                        
                         switch errCode {
-                        case .emailAlreadyInUse :
-                            errorDescription += "Email déjà utilisé"
                         case .wrongPassword :
                             self.passwordTextField.textField.shake()
                             AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
@@ -81,27 +78,59 @@ class ConnectionController : UIViewController, UITextFieldDelegate {
             
         } else if (emailTextField.text != nil && passwordVerificationTextField.text != nil && passwordTextField.text != nil)  {
             
-            let values = ["email" : email, "pseudo" : "Undefined","admin": false] as [String : Any]
-            
-            Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
-                if error != nil {
-                    print(error!)
-                    return
-                }
+            if (passwordVerificationTextField.text == passwordTextField.text){
+                let values = ["email" : email, "pseudo" : "@undefined","admin": false, "noteeCoins" : 50,"new": true,"imageUrl" : ""] as [String : Any]
                 
-                guard let uid = user?.uid else {
-                    return
-                }
-                
-                let storageRef = Database.database().reference().child("members").child(uid)
-                storageRef.updateChildValues(values, withCompletionBlock: { (error, ref) in
+                Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
                     if error != nil {
                         print(error!)
+                        if let errCode = AuthErrorCode(rawValue: error!._code) {
+                            
+                            switch errCode {
+                            case .emailAlreadyInUse :
+                                errorDescription += "\(email) est une adresse mail déjà utilisée"
+                                AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                            case .weakPassword :
+                                errorDescription += "Votre mot de passe doit faire au moins 6 caractères"
+                                AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                            case .invalidEmail :
+                                self.emailTextField.textField.shake()
+                                AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+                            default:
+                                print("")
+                            }
+                            if errorDescription != "" {
+                                let alert = PlugAlertModalView(title: "Attention", description: errorDescription)
+                                self.present(alert, animated: false, completion: nil)
+                                errorDescription = ""
+                            }
+                        }
                         return
                     }
-                    self.selectUsername(member: Member(id : uid, email: email))
+                    
+                    guard let uid = user?.uid else {
+                        return
+                    }
+                    
+                    user?.sendEmailVerification(completion: { (error) in
+                        if error != nil {
+                            return
+                        }
+                    })
+                    
+                    let storageRef = Database.database().reference().child("members").child(uid)
+                    storageRef.updateChildValues(values, withCompletionBlock: { (error, ref) in
+                        if error != nil {
+                            print(error!)
+                            return
+                        }
+                        self.selectUsername(member: Member(id : uid, email: email))
+                    })
                 })
-            })
+            } else {
+                passwordVerificationTextField.textField.shake()
+                passwordTextField.textField.shake()
+            }
         }
     }
     

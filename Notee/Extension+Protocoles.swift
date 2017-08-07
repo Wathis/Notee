@@ -78,6 +78,22 @@ protocol SendTagsDelegate {
     
 }
 
+protocol ChangeMailDelegate {
+    func receiveMailChanged(email : String)
+}
+
+extension String {
+    var first: String {
+        return String(characters.prefix(1))
+    }
+    var last: String {
+        return String(characters.suffix(1))
+    }
+    var uppercaseFirst: String {
+        return first.uppercased() + String(characters.dropFirst())
+    }
+}
+
 extension UIButton {
     
     override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

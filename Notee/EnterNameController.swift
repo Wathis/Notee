@@ -38,7 +38,7 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
             return
         }
         if (pseudo != "@"){
-            let values = ["pseudo" : pseudo, "noteeCoins" : 50,"new": true,"imageUrl" : ""] as [String : Any]
+            let values = ["pseudo" : pseudo] as [String : Any]
             let refData = Database.database().reference().child("members").child(uid)
             refData.updateChildValues(values) { (error, ref) in
                 if error != nil {

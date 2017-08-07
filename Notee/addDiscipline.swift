@@ -41,13 +41,13 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
     }()
     
     let buttonValidate = ButtonInMenus(text: "AJOUTER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
+    let buttonSubmit = ButtonInMenus(text: "PROPOSITION", backgroundColor: UIColor(r: 152, g: 152, b: 152))
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleBack))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Retour", style: .plain, target: self, action: #selector(handleBack))
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.title = "Ajouter"
-        laodDiscipline()
         textField.inputView = pickerViewDiscipline
         self.view.addSubview(labelNew)
         self.view.addSubview(textField)
@@ -61,7 +61,13 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
         setupButtonValidate()
     }
     
-    func laodDiscipline()  {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadDiscipline()
+    }
+    
+    func loadDiscipline()  {
+        self.disciplineAvailables.removeAll()
         let ref = Database.database().reference().child("discipline")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
@@ -90,9 +96,6 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
         ]
         
         ref.updateChildValues(values)
-        
-        
-        
     }
     
     
@@ -111,6 +114,17 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
         buttonValidate.widthAnchor.constraint(equalTo: textField.widthAnchor).isActive = true
         buttonValidate.heightAnchor.constraint(equalToConstant: 50).isActive = true
         buttonValidate.addTarget(self, action: #selector(handleCreate), for: .touchUpInside)
+        
+        view.addSubview(buttonSubmit)
+        buttonSubmit.topAnchor.constraint(equalTo: buttonValidate.bottomAnchor, constant: 15).isActive = true
+        buttonSubmit.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        buttonSubmit.widthAnchor.constraint(equalTo: textField.widthAnchor).isActive = true
+        buttonSubmit.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        buttonSubmit.addTarget(self, action: #selector(handleProposition), for: .touchUpInside)
+    }
+    
+    func handleProposition() {
+        present(UINavigationController(rootViewController: SubmitDiscipline()), animated: true, completion: nil)
     }
     
     func setupBottomLineTextField() {

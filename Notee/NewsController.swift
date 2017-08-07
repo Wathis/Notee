@@ -67,7 +67,7 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         self.automaticallyAdjustsScrollViewInsets = false
         observorMessageFromNotee = ObservorNoteeMessage(parent: self)
         observorMessageFromNotee.beginObserve()
-        self.navigationItem.leftBarButtonItems = [ UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(handleRefresh)), UIBarButtonItem(image: #imageLiteral(resourceName: "key"), style: .plain, target: self, action: #selector(handleKeywords))]
+        self.navigationItem.leftBarButtonItems = [ UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(handleRefresh)), UIBarButtonItem(image: #imageLiteral(resourceName: "search"), style: .plain, target: self, action: #selector(handleKeywords))]
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "profil"), style: .plain, target: self, action: #selector(handleProfil))
         setupMyViews()
         timerForPagging = Timer.scheduledTimer(timeInterval: self.timeBeforeSwitchNews, target: self, selector: #selector(nextMessage), userInfo: nil, repeats: false)
@@ -80,9 +80,27 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         loadMessages()
         loadCoins()
         loadSheets()
+        loadNewUserOrNot()
         loadSettings()
-        self.navigationItem.rightBarButtonItem?.isEnabled = false
         loadUser()
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { (timer) in
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        })
+    }
+    
+    func loadNewUserOrNot() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        Database.database().reference().child("members/\(uid)/new").observeSingleEvent(of:  .value, with: { (snaphot) in
+            guard let _ = snaphot.value as? Bool else {return}
+            self.presentMessageOfNewUser()
+            Database.database().reference().child("members/\(uid)/new").removeValue()
+        })
+    }
+    
+    func presentMessageOfNewUser() {
+        let alert = PlugAlertModalView(title: "Bonne nouvelle !", description: "Vous venez de recevoir 50 Notee coins de bienvenue !")
+        self.present(alert, animated: false, completion: nil)
     }
     
     var memberConnected : Member!
@@ -92,8 +110,8 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         let ref = Database.database().reference().child("members/\(uid)")
         ref.observe(.value ,with: { (snapshot) in
             guard let values = snapshot.value as? NSDictionary else {return}
-            guard let pseudo = values["pseudo"] as? String, let urlImage = values["imageUrl"] as? String else {return}
-            self.memberConnected = Member(id: uid, pseudo: pseudo, urlImage : urlImage)
+            guard let pseudo = values["pseudo"] as? String,let email = values["email"] as? String, let urlImage = values["imageUrl"] as? String else {return}
+            self.memberConnected = Member(id: uid, email: email, pseudo: pseudo, urlImage : urlImage)
             if (urlImage != ""){
                 guard let checkedUrl = URL(string: urlImage) else {
                     return
@@ -101,11 +119,9 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
                 let download = DownloadFromUrl()
                 download.downloadImage(url: checkedUrl, completion: { (image) in
                     self.memberConnected.profilImage = image
-                    self.navigationItem.rightBarButtonItem?.isEnabled = true
                 })
             } else {
                 self.memberConnected.profilImage = #imageLiteral(resourceName: "defaultProfilImage")
-                self.navigationItem.rightBarButtonItem?.isEnabled = true
             }
         })
     }
@@ -218,14 +234,14 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
             }
             for value in values {
                 if let keyPlug = value.key as? String, let informationOfSheet = value.value as? NSDictionary  {
-                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? Int, let interval = informationOfSheet["date"] as? String, let pseudo = informationOfSheet["pseudo"] as? String, let tagsDictionnary = informationOfSheet["tags"] as? [String:Bool] else {
+                    guard let description = informationOfSheet["description"] as? String,let discipline = informationOfSheet["discipline"] as? String , let title = informationOfSheet["title"] as? String, let theme = informationOfSheet["theme"] as? String ,let memberUID = informationOfSheet["memberUID"] as? String, let url = informationOfSheet["urlDownload"] as? String, let starsCount = informationOfSheet["starsCount"] as? Int, let interval = informationOfSheet["date"] as? Double, let pseudo = informationOfSheet["pseudo"] as? String, let tagsDictionnary = informationOfSheet["tags"] as? [String:Bool] else {
                         return
                     }
                     var tags : [String] = []
                     for tag in tagsDictionnary {
                         tags.append(tag.key)
                     }
-                    let date = NSDate(timeIntervalSince1970: Double(interval)!)
+                    let date = NSDate(timeIntervalSince1970: interval)
                     let plugToAdd = Plug(id: keyPlug, discipline: discipline, description: description, theme: theme, title: title, member: Member(id: memberUID, pseudo: pseudo), urlPhoto :url, starsCount : starsCount, date: date, tags :tags)
                     self.plugs.append(plugToAdd)
                     let refOfSheet = Database.database().reference().child("sheets/\(keyPlug)/members")

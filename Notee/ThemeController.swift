@@ -127,7 +127,6 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
             noTheme.isHidden = true
         }
         self.themeTableView.reloadData()
-//        self.refreshControl.endRefreshing()
         activityIndicor.stopAnimating()
         activityIndicor.removeFromSuperview()
     }
@@ -140,7 +139,7 @@ class ThemeController : UIViewController, UITableViewDataSource,UITableViewDeleg
         let ref = Database.database().reference()
         let key = ref.childByAutoId().key
         
-        let value = [themeName : "true"]
+        let value = [themeName : true]
         
         let childUpdates = ["/themes/\(key)": value,
                             "/members-themes/\(uid)/\(disciplineData)/\(key)/": value]

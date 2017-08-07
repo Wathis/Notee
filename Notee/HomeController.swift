@@ -64,7 +64,6 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         view.addSubview(disciplineTableView)
         observorMessageFromNotee = ObservorNoteeMessage(parent: self)
         observorMessageFromNotee.beginObserve()
-        loadNewUserOrNot()
         setupTableView()
         setupIndicator()
         loadDiscipline()
@@ -72,25 +71,6 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
 /*---------------------------------- FUNCTIONS BACKEND ------------------------------------------*/
-    
-    func loadNewUserOrNot() {
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        Database.database().reference().child("members/\(uid)/new").observeSingleEvent(of:  .value, with: { (snaphot) in
-            guard let _ = snaphot.value as? Bool else {return}
-            self.presentMessageOfNewUser()
-            Database.database().reference().child("members/\(uid)/new").removeValue()
-        })
-    }
-    
-    func presentMessageOfNewUser() {
-        let alert = PlugAlertModalView()
-        alert.titleOfAlert = "Bonne nouvelle !"
-        alert.descriptionOfAlert = "Vous venez de recevoir 50 Notee coins de bienvenue !"
-        alert.titleCancelButton = "Annuler"
-        present(alert, animated: false, completion: {
-            alert.titleConfirmationButton = "Parfait"
-        })
-    }
     
     func refreshPage() {
         setupIndicator()
@@ -178,9 +158,24 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
     func checkIfUserConnected() {
-        if Auth.auth().currentUser?.uid == nil {
-            handleLogout()
-        }
+        Auth.auth().currentUser?.reload(completion: { (error) in
+            if error == nil {
+                if Auth.auth().currentUser?.uid == nil {
+                    self.handleLogout()
+                }
+                if !(Auth.auth().currentUser?.isEmailVerified)! {
+                    let alert = PlugAlertModalView(title: "Attention", description: "Veuillez confirmer votre adresse mail avec le lien reçu dans votre boite mail")
+                    alert.titleConfirmationButton = "D'accord"
+                    alert.titleCancelButton = "Renvoyer"
+                    alert.buttonCancel.addTarget(self, action: #selector(self.sendNewEmail), for: .touchUpInside)
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        })
+    }
+    
+    func sendNewEmail() {
+        Auth.auth().currentUser?.sendEmailVerification(completion: nil)
     }
     
 /*---------------------------------- PROTOCOLS FUNCTIONS ------------------------------------------*/
@@ -199,9 +194,11 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 print(error!)
                 return
             }
-            self.discipline.append(disciplineName)
-            let indexPath = IndexPath(row: self.discipline.count - 1, section: 0)
-            self.timerAdd = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.insertRow), userInfo: indexPath, repeats: false)
+            if (!self.discipline.contains(disciplineName)) {
+                self.discipline.append(disciplineName)
+                let indexPath = IndexPath(row: self.discipline.count - 1, section: 0)
+                self.timerAdd = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.insertRow), userInfo: indexPath, repeats: false)
+            }
         }
     }
     
