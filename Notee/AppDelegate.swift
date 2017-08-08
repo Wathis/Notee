@@ -19,6 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        let pageControl: UIPageControl = UIPageControl.appearance(whenContainedInInstancesOf: [TutorialController.self])
+        pageControl.pageIndicatorTintColor = UIColor(r: 86, g: 90, b: 98)
+        pageControl.currentPageIndicatorTintColor =  UIColor(red: 98 / 255, green: 216 / 255, blue: 201 / 255, alpha: 1)
+        
         FirebaseApp.configure()
         GADMobileAds.configure(withApplicationID: appIdApplication)
         

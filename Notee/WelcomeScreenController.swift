@@ -27,7 +27,7 @@ class WelcomeScreenController: UIViewController {
     
     func  handleContinue(){
         if Auth.auth().currentUser?.uid != nil {
-            present(TabBarController(), animated: true, completion: nil)
+            present(TutorialController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil),animated: true,completion: nil)
         } else {
             present(ConnectionController(), animated: true, completion: nil)
         }
