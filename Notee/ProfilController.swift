@@ -9,27 +9,18 @@
 import UIKit
 import Firebase
 
-class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePickerControllerDelegate, UINavigationControllerDelegate , UITableViewDelegate, UITableViewDataSource {
-    
-    
-    let cellSignOut = "cellSignOut"
-    let CELL_NEWS_ACTIVATE = "cellNewsActivate"
-    let CELL_MAIL_ADDRESS = "cellAddressMail"
-    let KEY_OF_SWITCH_NEWS = "enableNewsInfo"
 
+class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePickerControllerDelegate, UINavigationControllerDelegate , UITableViewDelegate, UITableViewDataSource {
+
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
     
     var newsParameterIsOn = true
-
-
-    let DIMENSION_OF_PROFIL_IMAGE = CGFloat(100)
-    
     var memberConnected : Member? {
         didSet {
             self.pseudoLabel.text = self.memberConnected?.pseudo
             self.profilImageView.image = self.memberConnected?.profilImage
         }
     }
-    
     lazy var parametersTableView : UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
@@ -38,18 +29,6 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
         tv.separatorStyle = .none
         return tv
     }()
-    
-    let backgroundProfilView : UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.shadowColor = UIColor(r: 0, g: 0, b: 0).cgColor
-        view.layer.shadowOffset = CGSize(width: 0, height: 2)
-        view.layer.shadowOpacity = 0.4
-        view.layer.shadowRadius = 1
-        return view
-    }()
-    
     lazy var profilImageView : UIImageView = {
         let imgView = UIImageView()
         imgView.isUserInteractionEnabled = true
@@ -62,6 +41,23 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
         return imgView
     }()
     
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
+    
+    let CELL_SIGN_OUT = "cellSignOut"
+    let CELL_NEWS_ACTIVATE = "cellNewsActivate"
+    let CELL_MAIL_ADDRESS = "cellAddressMail"
+    let KEY_OF_SWITCH_NEWS = "enableNewsInfo"
+    let DIMENSION_OF_PROFIL_IMAGE = CGFloat(100)
+    let backgroundProfilView : UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.shadowColor = UIColor(r: 0, g: 0, b: 0).cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 2)
+        view.layer.shadowOpacity = 0.4
+        view.layer.shadowRadius = 1
+        return view
+    }()
     let pseudoLabel : UILabel = {
         let label = UILabel()
         label.text = "@    "
@@ -71,17 +67,15 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    
-    
-    
     let noteeCoinsIndicator : NoteeCoinsIndicator = {
         let noteeCoinsIndicator  = NoteeCoinsIndicator()
         noteeCoinsIndicator.translatesAutoresizingMaskIntoConstraints = false
         return noteeCoinsIndicator
     }()
-    
     let pickerImage = UIImagePickerController()
+    
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,36 +85,24 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
         loadSettings()
         pickerImage.delegate = self
         self.parametersTableView.register(ParameterNewsOffOnCell.self, forCellReuseIdentifier: CELL_NEWS_ACTIVATE)
-        self.parametersTableView.register(SignOutCell.self, forCellReuseIdentifier: cellSignOut)
+        self.parametersTableView.register(SignOutCell.self, forCellReuseIdentifier: CELL_SIGN_OUT)
         self.parametersTableView.register(ParameterCell.self, forCellReuseIdentifier: CELL_MAIL_ADDRESS)
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleImage(tapGestureRecognizer:)))
         profilImageView.isUserInteractionEnabled = true
         profilImageView.addGestureRecognizer(tapGestureRecognizer)
         self.navigationItem.title = "Mon profil"
     }
     
-    func changeSettingNewsOnOff(_ sender : UISwitch) {
-        let valueOfSwitch = sender.isOn
-        let userDefaults = UserDefaults.standard
-        userDefaults.setValue(valueOfSwitch, forKey: KEY_OF_SWITCH_NEWS)
-        userDefaults.synchronize()
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    
+    func receiveMailChanged(email : String) {
+        self.memberConnected?.email = email
+        self.parametersTableView.reloadData()
     }
     
-    func loadSettings() {
-        guard let enableNews = UserDefaults.standard.value(forKey: KEY_OF_SWITCH_NEWS) as? Bool else {
-            return
-        }
-        if (enableNews) {
-            newsParameterIsOn = true
-        } else {
-            newsParameterIsOn = false
-        }
-    }
-    
-    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
-        pickerImage.sourceType = .photoLibrary
-        pickerImage.allowsEditing = true
-        present(pickerImage, animated: true, completion: nil)
+    func receivePseudoChanded(pseudo : String) {
+        self.memberConnected?.pseudo = pseudo
+        self.pseudoLabel.text = pseudo
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -133,6 +115,93 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return section == 0 ? 5 : 1
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Parametres"
+        } else if (section == 1) {
+            return ""
+        } else {
+            return ""
+        }
+    }
+    
+    
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        switch indexPath.section {
+        case 0:
+            if indexPath.row == 0 {
+                let cell = tableView.dequeueReusableCell(withIdentifier: CELL_NEWS_ACTIVATE) as! ParameterNewsOffOnCell
+                if newsParameterIsOn {
+                    cell.enableNews.setOn(true, animated: true)
+                }
+                cell.enableNews.addTarget(self, action: #selector(changeSettingNewsOnOff(_:)), for: .valueChanged)
+                return cell
+            } else if (indexPath.row == 1) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                cell.rightButton.addTarget(self, action: #selector(handleModifyAddress), for: .touchUpInside)
+                cell.labelLeft.text = self.memberConnected?.email
+                return cell
+            }  else if (indexPath.row == 2) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                cell.rightButton.addTarget(self, action: #selector(handleShowTutorial), for: .touchUpInside)
+                cell.rightButton.setImage(#imageLiteral(resourceName: "eye"), for: .normal)
+                cell.labelLeft.text = "Voir le tutoriel"
+                return cell
+            } else if (indexPath.row == 3) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                cell.rightButton.addTarget(self, action: #selector(handleModifyPseudo), for: .touchUpInside)
+                cell.labelLeft.text = "Modifier mon pseudo"
+                return cell
+            } else if (indexPath.row == 4) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                cell.rightButton.addTarget(self, action: #selector(handleImage), for: .touchUpInside)
+                cell.labelLeft.text = "Modifier ma photo"
+                return cell
+            }
+        case 1:
+            if indexPath.row == 0 {
+                let cell = tableView.dequeueReusableCell(withIdentifier: CELL_SIGN_OUT) as! SignOutCell
+                cell.buttonSignOut.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
+                return cell
+            }
+        default:
+            return UITableViewCell()
+        }
+        
+        return UITableViewCell()
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 1 {
+            return 80
+        } else {
+            return 45
+        }
+    }
+    
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    
+    func changeSettingNewsOnOff(_ sender : UISwitch) {
+        let valueOfSwitch = sender.isOn
+        let userDefaults = UserDefaults.standard
+        userDefaults.setValue(valueOfSwitch, forKey: KEY_OF_SWITCH_NEWS)
+        userDefaults.synchronize()
     }
     
     func uploadProfilImageChosen() {
@@ -164,24 +233,18 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
         }
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 5 : 1
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Parametres"
-        } else if (section == 1) {
-            return ""
+    func loadSettings() {
+        guard let enableNews = UserDefaults.standard.value(forKey: KEY_OF_SWITCH_NEWS) as? Bool else {
+            return
+        }
+        if (enableNews) {
+            newsParameterIsOn = true
         } else {
-            return ""
+            newsParameterIsOn = false
         }
     }
+    
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
     
     func handleLogout () {
         do {
@@ -191,88 +254,31 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
         }
         present(ConnectionController(), animated: true, completion: nil)
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        switch indexPath.section {
-            case 0:
-                if indexPath.row == 0 {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_NEWS_ACTIVATE) as! ParameterNewsOffOnCell
-                    if newsParameterIsOn {
-                        cell.enableNews.setOn(true, animated: true)
-                    }
-                    cell.enableNews.addTarget(self, action: #selector(changeSettingNewsOnOff(_:)), for: .valueChanged)
-                    return cell
-                } else if (indexPath.row == 1) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
-                    cell.rightButton.addTarget(self, action: #selector(handleModifyAddress), for: .touchUpInside)
-                    cell.labelLeft.text = self.memberConnected?.email
-                    return cell
-                }  else if (indexPath.row == 2) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
-                    cell.rightButton.addTarget(self, action: #selector(handleShowTutorial), for: .touchUpInside)
-                    cell.rightButton.setImage(#imageLiteral(resourceName: "eye"), for: .normal)
-                    cell.labelLeft.text = "Voir le tutoriel"
-                    return cell
-                } else if (indexPath.row == 3) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
-                    cell.rightButton.addTarget(self, action: #selector(handleModifyPseudo), for: .touchUpInside)
-                    cell.labelLeft.text = "Modifier mon pseudo"
-                    return cell
-                } else if (indexPath.row == 4) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
-                    cell.rightButton.addTarget(self, action: #selector(imageTapped), for: .touchUpInside)
-                    cell.labelLeft.text = "Modifier ma photo"
-                    return cell
-                }
-            case 1:
-                if indexPath.row == 0 {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: cellSignOut) as! SignOutCell
-                    cell.buttonSignOut.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
-                    return cell
-                }
-            default:
-                return UITableViewCell()
-        }
-        
-        return UITableViewCell()
-        
-    }
-    
     func handleModifyPseudo() {
         let controller = ChangeUserDataController(title: "Modification pseudo", placeholder: "Nouveau pseudo", type: .pseudo)
         controller.delegate = self
         self.present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
     }
-    
     func handleShowTutorial() {
         self.present(TutorialController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil), animated: true, completion: nil)
     }
-    
     func handleModifyAddress() {
         let controller = ChangeUserDataController(title: "Modification e-mail", placeholder: "Nouvelle adresse", type: .email)
         controller.memberConnected = self.memberConnected
         controller.delegate = self
         present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
     }
-    
-    func receiveMailChanged(email : String) {
-        self.memberConnected?.email = email
-        self.parametersTableView.reloadData()
+    func handleBack() {
+        dismiss(animated: true, completion: nil)
+    }
+    func handleImage(tapGestureRecognizer: UITapGestureRecognizer) {
+        pickerImage.sourceType = .photoLibrary
+        pickerImage.allowsEditing = true
+        present(pickerImage, animated: true, completion: nil)
     }
     
-    func receivePseudoChanded(pseudo : String) {
-        self.memberConnected?.pseudo = pseudo
-        self.pseudoLabel.text = pseudo
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 1 {
-            return 80
-        } else {
-            return 45
-        }
-    }
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
 
     func setupViews() {
         
@@ -309,9 +315,5 @@ class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePicker
             parametersTableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
             
         ])
-    }
-    
-    func handleBack() {
-        dismiss(animated: true, completion: nil)
     }
 }

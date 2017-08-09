@@ -22,6 +22,7 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var isConnected = false
     var refreshControl = UIRefreshControl()
     
+    @available(iOS 10.0, *)
     lazy var disciplineTableView : UITableView = {
         var tv = UITableView()
         tv.delegate = self
@@ -61,13 +62,30 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.navigationItem.title = "Matières"
         self.refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "PlusButton"), style: .plain, target: self, action: #selector(handlePlus))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera_white"), style: .plain, target: self, action: #selector(handlePhoto))
         view.addSubview(disciplineTableView)
         observorMessageFromNotee = ObservorNoteeMessage(parent: self)
         observorMessageFromNotee.beginObserve()
         setupTableView()
-        setupIndicator()
-        loadDiscipline()
         checkIfUserConnected()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        refreshPage()
+    }
+    
+    
+    func handlePhoto() {
+        self.present(UINavigationController(rootViewController: addPlugController(foldersAlreadyCreated: false)), animated: true, completion: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        observorMessageFromNotee = ObservorNoteeMessage(parent: self)
+        observorMessageFromNotee.beginObserve()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        observorMessageFromNotee.stopObserve()
     }
     
 /*---------------------------------- FUNCTIONS BACKEND ------------------------------------------*/

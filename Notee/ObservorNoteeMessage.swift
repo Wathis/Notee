@@ -28,6 +28,10 @@ class ObservorNoteeMessage  {
         })
     }
     
+    func stopObserve() {
+        
+    }
+    
     func presentMessageFromNotee(message: String) {
         let alert = PlugAlertModalView()
         alert.titleOfAlert = "Message de Notee"

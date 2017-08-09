@@ -10,7 +10,7 @@ import UIKit
 
 class ReportController: UIViewController {
 
-    let heightOfButtonReport = 35
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
     
     var buttonsReport : [ButtonReport] = {
         var buttons = [ButtonReport]()
@@ -22,9 +22,11 @@ class ReportController: UIViewController {
         return buttons
     }()
     
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
+    
+    let heightOfButtonReport = 35
     let buttonCancel = ButtonInMenus(text: "ANNULER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
     let buttonOk = ButtonInMenus(text: "OK", backgroundColor: UIColor(r: 152, g: 152, b: 152))
-    
     let confirmationMessage : UILabel = {
         let label = UILabel()
         label.attributedText = NSAttributedString(string: "Votre signalement à été envoyé", attributes: [NSFontAttributeName : UIFont(name: "HelveticaNeue-Light", size: 15) as Any,
@@ -34,37 +36,23 @@ class ReportController: UIViewController {
         return label
     }()
     
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(r: 227, g: 228, b: 231)
         self.navigationItem.title = "Motif signalement"
-        var i = 0
-        for button in buttonsReport {
-            addConstraintsToButton(button: button, yPosition: i == 0 ? 30 : i * ( heightOfButtonReport + 15 ) + 30)
-            button.addTarget(self, action: #selector(handlePattern), for: .touchUpInside)
-            i += 1
-        }
         
         buttonCancel.addTarget(self, action: #selector(handleCancel), for:.touchUpInside)
         
-        self.view.addSubview(buttonCancel)
-        
-        buttonCancel.topAnchor.constraint(equalTo: buttonsReport[i - 1].bottomAnchor, constant:60).isActive = true
-        buttonCancel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        buttonCancel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 8/10).isActive = true
-        buttonCancel.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        buttonOk.addTarget(self, action: #selector(handleCancel), for:.touchUpInside)
-        
-        self.view.addSubview(buttonOk)
-        
-        buttonOk.topAnchor.constraint(equalTo: buttonsReport[i - 1].bottomAnchor, constant:60).isActive = true
-        buttonOk.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        buttonOk.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 8/10).isActive = true
-        buttonOk.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        buttonOk.isHidden = true
+        setupViews()
     }
+    
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
     
     func handlePattern() {
         
@@ -90,9 +78,38 @@ class ReportController: UIViewController {
         })
         
     }
-    
     func handleCancel() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
+    
+    func setupViews() {
+        var i = 0
+        for button in buttonsReport {
+            addConstraintsToButton(button: button, yPosition: i == 0 ? 30 : i * ( heightOfButtonReport + 15 ) + 30)
+            button.addTarget(self, action: #selector(handlePattern), for: .touchUpInside)
+            i += 1
+        }
+        
+        self.view.addSubview(buttonCancel)
+        
+        buttonCancel.topAnchor.constraint(equalTo: buttonsReport[i - 1].bottomAnchor, constant:60).isActive = true
+        buttonCancel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        buttonCancel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 8/10).isActive = true
+        buttonCancel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        buttonOk.addTarget(self, action: #selector(handleCancel), for:.touchUpInside)
+        
+        self.view.addSubview(buttonOk)
+        
+        buttonOk.topAnchor.constraint(equalTo: buttonsReport[i - 1].bottomAnchor, constant:60).isActive = true
+        buttonOk.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        buttonOk.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 8/10).isActive = true
+        buttonOk.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        buttonOk.isHidden = true
     }
     
     func addConstraintsToButton(button : ButtonReport,yPosition : Int) {

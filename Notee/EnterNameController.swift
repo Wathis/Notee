@@ -11,16 +11,22 @@ import UIKit
 import UITextField_Shake
 
 class EnterNameController: UIViewController, UITextFieldDelegate {
-
+    
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
+    
     var copyrightLabel = CopyrightWathisLabel()
     var member : Member?
-    
     var labelOnTop = LabelTitleConnectionScreen(text: "Notee",size: 70)
+
+    
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
     
     let nameTextField = TextFieldLoginRegister(placeholderText: "@Username", isSecureEntry: false)
-    
     let continueButton = ButtonLoginRegister(text: "CONTINUER", backgroundColor: UIColor(r: 75, g: 214, b: 199),textColor: .white)
     let connectionButton = ButtonLoginRegister(text: "CONNEXION",backgroundColor: .white, textColor: .gray)
+    
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,21 +38,31 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
         setupViews()
     }
     
+
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    
+    func updatePseudo(forUID: String, pseudo : String) {
+        let values = ["pseudo" : pseudo] as [String : Any]
+        let refData = Database.database().reference().child("members").child(forUID)
+        refData.updateChildValues(values) { (error, ref) in
+            if error != nil {
+                print(error!)
+                return
+            }
+            self.goToWelcomeScreen()
+        }
+    }
+    
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
+    
     func handleContinue() {
-        
         guard let uid = member?.id, let pseudo = nameTextField.text else {
             return
         }
         if (pseudo != "@" && pseudo != "" && pseudo.characters.count < 14){
-            let values = ["pseudo" : pseudo] as [String : Any]
-            let refData = Database.database().reference().child("members").child(uid)
-            refData.updateChildValues(values) { (error, ref) in
-                if error != nil {
-                    print(error!)
-                    return
-                }
-                self.goToWelcomeScreen()
-            }
+            updatePseudo(forUID: uid,pseudo : pseudo)
         } else {
             if pseudo.characters.count >= 14 {
                 self.present(PlugAlertModalView(title: "Oups !", description: "Votre pseudo doit faire moins de 14 caractères"), animated: false, completion: nil)
@@ -55,6 +71,8 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
             nameTextField.textField.shake()
         }
     }
+    
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
     
     func goToWelcomeScreen() {
         let transition = CATransition()
@@ -80,6 +98,9 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
             nameTextField.textField.text = "@" + nameTextField.textField.text!
         }
     }
+
+    
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
     
     func setupViews() {
         self.view.addSubview(copyrightLabel)

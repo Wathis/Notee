@@ -10,13 +10,18 @@ import UIKit
 import Firebase
 
 class WelcomeScreenController: UIViewController {
-
-    var copyrightLabel = CopyrightWathisLabel()
     
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
+    
+    var copyrightLabel = CopyrightWathisLabel()
     var welcomeLabel = LabelTitleConnectionScreen(text: "Bienvenue",size: 65)
+    
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
     
     let continueButton = ButtonLoginRegister(text: "CONTINUER", backgroundColor: UIColor(r: 75, g: 214, b: 199),textColor: .white)
     
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +30,11 @@ class WelcomeScreenController: UIViewController {
         setupViews()
     }
     
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
+    
     func  handleContinue(){
         if Auth.auth().currentUser?.uid != nil {
             present(TutorialController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil),animated: true,completion: nil)
@@ -32,6 +42,9 @@ class WelcomeScreenController: UIViewController {
             present(ConnectionController(), animated: true, completion: nil)
         }
     }
+    
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
     
     func setupViews() {
         self.view.addSubview(copyrightLabel)

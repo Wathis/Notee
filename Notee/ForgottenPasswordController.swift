@@ -11,17 +11,23 @@ import Foundation
 import Firebase
 import UIKit
 
+
 class ForgottenPasswordController : UIViewController, UITextFieldDelegate {
     
-    var copyrightLabel = CopyrightWathisLabel()
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
+
     var member : Member?
     
-    var labelOnTop = LabelTitleConnectionScreen(text: "Notee",size: 70)
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
     
     let mailAddressTextField = TextFieldLoginRegister(placeholderText: "Adresse mail de récuperation", isSecureEntry: false)
-    
     let continueButton = ButtonLoginRegister(text: "CONTINUER", backgroundColor: UIColor(r: 75, g: 214, b: 199),textColor: .white)
     let cancelButton = ButtonLoginRegister(text: "ANNULER",backgroundColor: .white, textColor: .gray)
+    let labelOnTop = LabelTitleConnectionScreen(text: "Notee",size: 70)
+    let copyrightLabel = CopyrightWathisLabel()
+    
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +37,17 @@ class ForgottenPasswordController : UIViewController, UITextFieldDelegate {
         continueButton.addTarget(self, action: #selector(handleContinue), for: .touchUpInside)
         setupViews()
     }
+    
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        handleContinue()
+        return true
+    }
+    
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
     
     func handleContinue() {
         let controller = MailSendController()
@@ -52,10 +69,8 @@ class ForgottenPasswordController : UIViewController, UITextFieldDelegate {
         dismiss(animated: true, completion: nil)
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        handleContinue()
-        return true
-    }
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
     
     func setupViews() {
         self.view.addSubview(copyrightLabel)

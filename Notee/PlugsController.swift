@@ -166,7 +166,7 @@ class PlugsController: UIViewController, UITableViewDelegate, UITableViewDataSou
         guard let path = info[UIImagePickerControllerReferenceURL] as? URL else {
             return
         }
-        let controller = addPlugController()
+        let controller = addPlugController(foldersAlreadyCreated: true)
         controller.sheet = chosenImage
         controller.theme = self.theme
         controller.urlSheet = path

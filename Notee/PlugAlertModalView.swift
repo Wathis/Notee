@@ -87,8 +87,12 @@ class PlugAlertModalView : UIViewController {
         view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
     }
     
+    func addTargetForAddSheet() {
+        self.buttonConfirmation.removeTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+        self.buttonConfirmation.addTarget(self, action: #selector(handleAdd), for: .touchUpInside)
+    }
+    
     func addTargetForPlugViewer() {
-        cost = 1
         self.buttonConfirmation.removeTarget(self, action: #selector(handleCancel), for: .touchUpInside)
         self.buttonConfirmation.addTarget(self, action: #selector(handlePay), for: .touchUpInside)
     }
@@ -111,6 +115,27 @@ class PlugAlertModalView : UIViewController {
         }
     }
     
+    func handleAdd() {
+        
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        let refMember = Database.database().reference().child("members/\(uid)")
+        
+        refMember.observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let values = snapshot.value as? NSDictionary, var noteeCoins = values["noteeCoins"] as? Int else {
+                
+                return
+            }
+            if noteeCoins - self.cost >= 0 {
+                noteeCoins = noteeCoins - self.cost
+                refMember.updateChildValues(["noteeCoins" : noteeCoins])
+                self.delegate?.userCansAddSheet()
+                self.handleCancel()
+            } else {
+                self.notEnoughCoins()
+            }
+        })
+    }
     
     func handlePay() {
         

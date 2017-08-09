@@ -17,6 +17,7 @@ protocol AddingPlugDelegate {
 
 protocol DelegateAlertViewer {
     func presentViewer(plug : Plug)
+    func userCansAddSheet()
 }
 
 protocol AddingThemeDelegate {

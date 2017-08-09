@@ -8,10 +8,15 @@
 
 import UIKit
 
-class TutorialController: UIPageViewController,UIPageViewControllerDelegate {
+class TutorialController: UIPageViewController,UIPageViewControllerDelegate, UIPageViewControllerDataSource {
 
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
     
-    lazy var controllers : [UIViewController] = [self.createViewController(backgroundImage : #imageLiteral(resourceName: "organize_appstore")),self.createViewController(backgroundImage: #imageLiteral(resourceName: "news_appstore")),self.createViewController(backgroundImage : #imageLiteral(resourceName: "tags_appstore")),self.createViewController(backgroundImage: #imageLiteral(resourceName: "comments_appstore"))]
+     lazy var controllers : [UIViewController] = [self.createViewController(backgroundImage : #imageLiteral(resourceName: "organize_appstore")),self.createViewController(backgroundImage: #imageLiteral(resourceName: "news_appstore")),self.createViewController(backgroundImage : #imageLiteral(resourceName: "tags_appstore")),self.createViewController(backgroundImage: #imageLiteral(resourceName: "comments_appstore"))]
+    
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,29 +24,9 @@ class TutorialController: UIPageViewController,UIPageViewControllerDelegate {
         self.dataSource = self
         self.setViewControllers([controllers[0]], direction: .forward, animated: true, completion: nil)
     }
-
-    func  goTabBarController(){
-        present(TabBarController(), animated: true, completion: nil)
-    }
     
-    
-    func createViewController(backgroundImage: UIImage) -> UIViewController {
-        let controller = UIViewController()
-        let imageBackground = UIImageView()
-        imageBackground.translatesAutoresizingMaskIntoConstraints = false
-        imageBackground.image = backgroundImage
-        controller.view.addSubview(imageBackground)
-        NSLayoutConstraint.activate([
-            imageBackground.widthAnchor.constraint(equalTo: controller.view.widthAnchor),
-            imageBackground.heightAnchor.constraint(equalTo: controller.view.heightAnchor,constant: 0),
-            imageBackground.centerXAnchor.constraint(equalTo: controller.view.centerXAnchor),
-            imageBackground.centerYAnchor.constraint(equalTo: controller.view.centerYAnchor, constant : 0)
-            ])
-        return controller
-    }
-}
-
-extension TutorialController : UIPageViewControllerDataSource {
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
     
     func presentationCount(for pageViewController: UIPageViewController) -> Int {
         return controllers.count
@@ -82,5 +67,30 @@ extension TutorialController : UIPageViewControllerDataSource {
             return nil
         }
     }
+    
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    
+    func createViewController(backgroundImage: UIImage) -> UIViewController {
+        let controller = UIViewController()
+        let imageBackground = UIImageView()
+        imageBackground.translatesAutoresizingMaskIntoConstraints = false
+        imageBackground.image = backgroundImage
+        controller.view.addSubview(imageBackground)
+        NSLayoutConstraint.activate([
+            imageBackground.widthAnchor.constraint(equalTo: controller.view.widthAnchor),
+            imageBackground.heightAnchor.constraint(equalTo: controller.view.heightAnchor,constant: 0),
+            imageBackground.centerXAnchor.constraint(equalTo: controller.view.centerXAnchor),
+            imageBackground.centerYAnchor.constraint(equalTo: controller.view.centerYAnchor, constant : 0)
+            ])
+        return controller
+    }
+    
+    func  goTabBarController(){
+        present(TabBarController(), animated: true, completion: nil)
+    }
+    
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
     
 }

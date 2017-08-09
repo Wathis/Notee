@@ -9,14 +9,22 @@
 import UIKit
 import Firebase
 
-private let reuseIdentifier = "Cell"
+
 
 class TagsViewController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
     
-    let ID_CELL_KEYWORD = "cellId"
-    let ID_FOOTER_KEYWORK = "cellFooterId"
     
-    var keywords : [String] = []
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
+    
+     var keywords : [String] = []
+    
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
+    
+    private let ID_CELL_KEYWORD = "cellId"
+    private let ID_FOOTER_KEYWORK = "cellFooterId"
+    
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,9 +43,7 @@ class TagsViewController: UICollectionViewController, UITextFieldDelegate, UICol
         self.collectionView?.register(FooterTagsTextField.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: ID_FOOTER_KEYWORK)
     }
     
-    func handleBack() {
-        self.dismiss(animated: true, completion: nil)
-    }
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let word = textField.text else {return false}
@@ -46,18 +52,6 @@ class TagsViewController: UICollectionViewController, UITextFieldDelegate, UICol
             addNewKeyword(word)
         }
         return false
-    }
-    
-    func addNewKeyword(_ keyword : String) {
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        keywords.append(keyword)
-        collectionView?.performBatchUpdates({
-            self.collectionView?.insertItems(at: [IndexPath(row: self.keywords.count - 1, section: 0)])
-        }, completion: { (finish) in
-            if (finish) {
-                Database.database().reference().child("members/\(uid)/tags").updateChildValues([keyword.lowercased(): true])
-            }
-        })
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -85,14 +79,12 @@ class TagsViewController: UICollectionViewController, UITextFieldDelegate, UICol
         }
     }
     
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = keywords[indexPath.row].width(withConstraintedHeight: 40, font: UIFont(name: "HelveticaNeue-Light", size: 15)!)
         return CGSize(width: width + 50, height: 40)
     }
-    
-    
-    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var view : UICollectionReusableView!
         if (kind == UICollectionElementKindSectionFooter) {
@@ -104,9 +96,35 @@ class TagsViewController: UICollectionViewController, UITextFieldDelegate, UICol
         }
         return view
     }
-    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return keywords.count
+    }
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ID_CELL_KEYWORD, for: indexPath) as! TagsCell
+        cell.deleteButton.tag = indexPath.row
+        cell.label.text = keywords[indexPath.row]
+        cell.deleteButton.addTarget(self, action: #selector(handleDelete), for: .touchUpInside)
+        return cell
+    }
+    
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    
+    func addNewKeyword(_ keyword : String) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        keywords.append(keyword)
+        collectionView?.performBatchUpdates({
+            self.collectionView?.insertItems(at: [IndexPath(row: self.keywords.count - 1, section: 0)])
+        }, completion: { (finish) in
+            if (finish) {
+                Database.database().reference().child("members/\(uid)/tags").updateChildValues([keyword.lowercased(): true])
+            }
+        })
+    }
+    
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
+    
+    func handleBack() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     func handleDelete(_ sender: UIButton) {
@@ -122,11 +140,8 @@ class TagsViewController: UICollectionViewController, UITextFieldDelegate, UICol
         })
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ID_CELL_KEYWORD, for: indexPath) as! TagsCell
-        cell.deleteButton.tag = indexPath.row
-        cell.label.text = keywords[indexPath.row]
-        cell.deleteButton.addTarget(self, action: #selector(handleDelete), for: .touchUpInside)
-        return cell
-    }
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
+    
+    
 }

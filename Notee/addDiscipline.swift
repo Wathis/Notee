@@ -108,6 +108,8 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
         dismiss(animated: true, completion: nil)
     }
     
+    
+    
     func setupButtonValidate() {
         buttonValidate.topAnchor.constraint(equalTo: bottomLineTextField.bottomAnchor, constant: 60).isActive = true
         buttonValidate.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true

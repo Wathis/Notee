@@ -8,13 +8,20 @@
 
 import Foundation
 
+
 class MailSendController: UIViewController {
-    var copyrightLabel = CopyrightWathisLabel()
     
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
+    
+    var copyrightLabel = CopyrightWathisLabel()
     var emailMessage = LabelTitleConnectionScreen(text: "Email envoyé",size: 40)
+    
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
     
     let continueButton = ButtonLoginRegister(text: "CONTINUER", backgroundColor: UIColor(r: 75, g: 214, b: 199),textColor: .white)
     
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,13 +30,22 @@ class MailSendController: UIViewController {
         setupViews()
     }
     
-    func setText(text : String){
-        emailMessage.text = text
-    }
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
     
     func  handleContinue(){
         present(TabBarController(), animated: false, completion: nil)
     }
+    
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    
+    func setText(text : String){
+        emailMessage.text = text
+    }
+    
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
     
     func setupViews() {
         self.view.addSubview(copyrightLabel)

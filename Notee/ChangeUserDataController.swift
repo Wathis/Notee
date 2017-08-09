@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 import AVFoundation
 
+
+
 enum TypeModifyData {
     case email
     case pseudo
@@ -17,8 +19,18 @@ enum TypeModifyData {
 
 class ChangeUserDataController : UIViewController {
     
+    
+    /*------------------------------------ VARIABLES ----------------------------------------------*/
+    
     var memberConnected : Member?
     var delegate : ChangeUserDataDelegate?
+    var titleNav : String?
+    var placeholder : String?
+    var type : TypeModifyData?
+    var credential : AuthCredential!
+    var connectionController : AlertTextFieldModalView!
+    
+    /*------------------------------------ CONSTANTS ----------------------------------------------*/
     
     let textField : UITextField = {
         let tf = UITextField()
@@ -27,19 +39,15 @@ class ChangeUserDataController : UIViewController {
         tf.placeholder = "exemple@notee.fr"
         return tf
     }()
-    
     let bottomLineTextField : UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(r: 86, g: 90, b: 98)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
     let buttonSubmit = ButtonInMenus(text: "CHANGER", backgroundColor: UIColor(r: 152, g: 152, b: 152))
     
-    var titleNav : String?
-    var placeholder : String?
-    var type : TypeModifyData?
+    /*------------------------------------ CONSTRUCTORS -------------------------------------------*/
     
     init(title : String, placeholder : String, type : TypeModifyData ) {
         super.init(nibName: nil, bundle: nil)
@@ -52,6 +60,8 @@ class ChangeUserDataController : UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /*------------------------------------ VIEW DID SOMETHING -------------------------------------*/
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Retour", style: .plain, target: self, action: #selector(handleBack))
@@ -62,12 +72,12 @@ class ChangeUserDataController : UIViewController {
         self.view.addSubview(buttonSubmit)
         guard let typeValue = type else {return}
         switch typeValue {
-            case .email:
-                buttonSubmit.addTarget(self, action: #selector(handleSubmitEmail), for: .touchUpInside)
-                break
-            case .pseudo:
-                buttonSubmit.addTarget(self, action: #selector(handleSubmitPseudo), for: .touchUpInside)
-                break
+        case .email:
+            buttonSubmit.addTarget(self, action: #selector(handleSubmitEmail), for: .touchUpInside)
+            break
+        case .pseudo:
+            buttonSubmit.addTarget(self, action: #selector(handleSubmitPseudo), for: .touchUpInside)
+            break
         }
         self.textField.placeholder = placeholder
         hideKeyboardWhenTappedAround()
@@ -76,8 +86,9 @@ class ChangeUserDataController : UIViewController {
         setupButtonValidate()
     }
     
-    var credential : AuthCredential!
-    var connectionController : AlertTextFieldModalView!
+    /*------------------------------------ FUNCTIONS DELEGATE -------------------------------------*/
+    /*------------------------------------ FUNCTIONS DATASOURCE -----------------------------------*/
+    /*------------------------------------ BACK-END FUNCTIONS -------------------------------------*/
     
     func enterPassword() {
         guard let email = self.memberConnected?.email, let password = connectionController.textField.text else {return}
@@ -112,6 +123,8 @@ class ChangeUserDataController : UIViewController {
         })
     }
     
+    /*------------------------------------ HANDLE FUNCTIONS ---------------------------------------*/
+    
     func handleSubmitPseudo() {
         guard let uid = Auth.auth().currentUser?.uid, var pseudo = self.textField.text else {return}
         if pseudo.characters.count > 0 && pseudo.characters.count < 14 {
@@ -128,13 +141,22 @@ class ChangeUserDataController : UIViewController {
             self.textField.shake()
         }
     }
-    
     func handleSubmitEmail() {
         connectionController = AlertTextFieldModalView(title: "Mot de passe", secureEntry: true)
         connectionController.buttonConfirmation.addTarget(self, action: #selector(enterPassword), for: .touchUpInside)
         present(connectionController, animated: false, completion: nil)
     }
     
+    func handleBack() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    /*------------------------------------ FRONT-END FUNCTIONS ------------------------------------*/
+    /*------------------------------------ CONSTRAINTS --------------------------------------------*/
+    
+    
+    
+   
     func setupButtonValidate() {
         buttonSubmit.topAnchor.constraint(equalTo: bottomLineTextField.bottomAnchor, constant: 60).isActive = true
         buttonSubmit.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
@@ -155,11 +177,4 @@ class ChangeUserDataController : UIViewController {
         textField.widthAnchor.constraint(equalToConstant: self.view.frame.size.width - 60).isActive = true
         textField.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
-    
-    func handleBack() {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    
-    
 }

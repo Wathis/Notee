@@ -160,6 +160,10 @@ class CommentsController: UIViewController,UITableViewDataSource,UITableViewDele
                 })
             }
         }
+        if memberTableView?.profilImageUrl == "" {
+            memberTableView?.profilImage = #imageLiteral(resourceName: "defaultProfilImage")
+            cell.profilImage.image = #imageLiteral(resourceName: "defaultProfilImage")
+        }
         cell.nameLabel.text = memberTableView?.pseudo
         return cell
     }

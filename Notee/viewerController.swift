@@ -154,13 +154,22 @@ class viewerController: UIViewController, UIScrollViewDelegate  {
     }
     
     func updateFavorite(){
-        guard let idOfPlug = self.plug?.id ,let uid = Auth.auth().currentUser?.uid, let starCount = self.plug?.starsCount else {return}
+        guard let idOfPlug = self.plug?.id ,let uid = Auth.auth().currentUser?.uid, let starCount = self.plug?.starsCount, let uidOfPlug = self.plug?.member?.id else {return}
+        
         if starActive {
              Database.database().reference().child("sheets/\(idOfPlug)/star/\(uid)").removeValue()
              Database.database().reference().child("sheets/\(idOfPlug)/starsCount").setValue(starCount - 1)
+             Database.database().reference().child("members/\(uidOfPlug)/noteeCoins").observeSingleEvent(of: .value, with: { (snapshot) in
+                guard let value = snapshot.value as? Int else {return}
+                Database.database().reference().child("members/\(uidOfPlug)/noteeCoins").setValue(value - 1)
+             })
         } else {
             Database.database().reference().child("sheets/\(idOfPlug)/star/\(uid)").setValue(true)
             Database.database().reference().child("sheets/\(idOfPlug)/starsCount").setValue(starCount + 1)
+            Database.database().reference().child("members/\(uidOfPlug)/noteeCoins").observeSingleEvent(of: .value, with: { (snapshot) in
+                guard let value = snapshot.value as? Int else {return}
+                Database.database().reference().child("members/\(uidOfPlug)/noteeCoins").setValue(value + 1)
+            })
         }
     }
     
