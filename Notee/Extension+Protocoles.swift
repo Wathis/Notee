@@ -78,8 +78,9 @@ protocol SendTagsDelegate {
     
 }
 
-protocol ChangeMailDelegate {
+protocol ChangeUserDataDelegate {
     func receiveMailChanged(email : String)
+    func receivePseudoChanded(pseudo : String) 
 }
 
 extension String {

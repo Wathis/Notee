@@ -37,7 +37,7 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
         guard let uid = member?.id, let pseudo = nameTextField.text else {
             return
         }
-        if (pseudo != "@"){
+        if (pseudo != "@" && pseudo != "" && pseudo.characters.count < 14){
             let values = ["pseudo" : pseudo] as [String : Any]
             let refData = Database.database().reference().child("members").child(uid)
             refData.updateChildValues(values) { (error, ref) in
@@ -48,6 +48,10 @@ class EnterNameController: UIViewController, UITextFieldDelegate {
                 self.goToWelcomeScreen()
             }
         } else {
+            if pseudo.characters.count >= 14 {
+                self.present(PlugAlertModalView(title: "Oups !", description: "Votre pseudo doit faire moins de 14 caractères"), animated: false, completion: nil)
+            }
+            self.nameTextField.text = ""
             nameTextField.textField.shake()
         }
     }

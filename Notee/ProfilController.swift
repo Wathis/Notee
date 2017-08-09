@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ProfilController: UIViewController, ChangeMailDelegate , UIImagePickerControllerDelegate, UINavigationControllerDelegate , UITableViewDelegate, UITableViewDataSource {
+class ProfilController: UIViewController, ChangeUserDataDelegate , UIImagePickerControllerDelegate, UINavigationControllerDelegate , UITableViewDelegate, UITableViewDataSource {
     
     
     let cellSignOut = "cellSignOut"
@@ -92,7 +92,7 @@ class ProfilController: UIViewController, ChangeMailDelegate , UIImagePickerCont
         pickerImage.delegate = self
         self.parametersTableView.register(ParameterNewsOffOnCell.self, forCellReuseIdentifier: CELL_NEWS_ACTIVATE)
         self.parametersTableView.register(SignOutCell.self, forCellReuseIdentifier: cellSignOut)
-        self.parametersTableView.register(ParameterCellEmail.self, forCellReuseIdentifier: CELL_MAIL_ADDRESS)
+        self.parametersTableView.register(ParameterCell.self, forCellReuseIdentifier: CELL_MAIL_ADDRESS)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         profilImageView.isUserInteractionEnabled = true
         profilImageView.addGestureRecognizer(tapGestureRecognizer)
@@ -170,7 +170,7 @@ class ProfilController: UIViewController, ChangeMailDelegate , UIImagePickerCont
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 2 : 1
+        return section == 0 ? 5 : 1
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -204,9 +204,25 @@ class ProfilController: UIViewController, ChangeMailDelegate , UIImagePickerCont
                     cell.enableNews.addTarget(self, action: #selector(changeSettingNewsOnOff(_:)), for: .valueChanged)
                     return cell
                 } else if (indexPath.row == 1) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCellEmail
-                    cell.modifyAddressButton.addTarget(self, action: #selector(handleModifyAddress), for: .touchUpInside)
-                    cell.labelMailAddress.text = self.memberConnected?.email
+                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                    cell.rightButton.addTarget(self, action: #selector(handleModifyAddress), for: .touchUpInside)
+                    cell.labelLeft.text = self.memberConnected?.email
+                    return cell
+                }  else if (indexPath.row == 2) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                    cell.rightButton.addTarget(self, action: #selector(handleShowTutorial), for: .touchUpInside)
+                    cell.rightButton.setImage(#imageLiteral(resourceName: "eye"), for: .normal)
+                    cell.labelLeft.text = "Voir le tutoriel"
+                    return cell
+                } else if (indexPath.row == 3) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                    cell.rightButton.addTarget(self, action: #selector(handleModifyPseudo), for: .touchUpInside)
+                    cell.labelLeft.text = "Modifier mon pseudo"
+                    return cell
+                } else if (indexPath.row == 4) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: CELL_MAIL_ADDRESS) as! ParameterCell
+                    cell.rightButton.addTarget(self, action: #selector(imageTapped), for: .touchUpInside)
+                    cell.labelLeft.text = "Modifier ma photo"
                     return cell
                 }
             case 1:
@@ -222,8 +238,19 @@ class ProfilController: UIViewController, ChangeMailDelegate , UIImagePickerCont
         return UITableViewCell()
         
     }
+    
+    func handleModifyPseudo() {
+        let controller = ChangeUserDataController(title: "Modification pseudo", placeholder: "Nouveau pseudo", type: .pseudo)
+        controller.delegate = self
+        self.present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
+    }
+    
+    func handleShowTutorial() {
+        self.present(TutorialController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil), animated: true, completion: nil)
+    }
+    
     func handleModifyAddress() {
-        let controller = ChangeMailAddressController()
+        let controller = ChangeUserDataController(title: "Modification e-mail", placeholder: "Nouvelle adresse", type: .email)
         controller.memberConnected = self.memberConnected
         controller.delegate = self
         present(UINavigationController(rootViewController: controller), animated: true, completion: nil)
@@ -232,6 +259,11 @@ class ProfilController: UIViewController, ChangeMailDelegate , UIImagePickerCont
     func receiveMailChanged(email : String) {
         self.memberConnected?.email = email
         self.parametersTableView.reloadData()
+    }
+    
+    func receivePseudoChanded(pseudo : String) {
+        self.memberConnected?.pseudo = pseudo
+        self.pseudoLabel.text = pseudo
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

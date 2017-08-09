@@ -170,6 +170,18 @@ class HomeController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     alert.buttonCancel.addTarget(self, action: #selector(self.sendNewEmail), for: .touchUpInside)
                     self.present(alert, animated: true, completion: nil)
                 }
+            } else {
+                if let errCode = AuthErrorCode(rawValue: error!._code) {
+                    switch errCode {
+                    case .userNotFound :
+                        self.handleLogout()
+                        break
+                    default:
+                        print("")
+                    }
+                }
+                
+
             }
         })
     }

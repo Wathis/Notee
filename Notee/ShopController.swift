@@ -79,7 +79,7 @@ class ShopController: UICollectionViewController, SKPaymentTransactionObserver, 
     }
     
     func handleQuestion() {
-        let alert = PlugAlertModalView(title: "Obtenir des Notee Coins", description: "- En partagant des fiches de révisions (10 Notee Coins) \n- En recevant des étoiles sur vos fiches de révisions (1 par étoile)")
+        let alert = PlugAlertModalView(title: "Obtenir des Notee Coins", description: "- En partageant des fiches de révisions (10 Notee Coins) \n- En recevant des étoiles sur vos fiches de révisions (1 par étoile)")
         present(alert, animated: false, completion: nil)
     }
     

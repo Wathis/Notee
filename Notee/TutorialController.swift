@@ -11,7 +11,7 @@ import UIKit
 class TutorialController: UIPageViewController,UIPageViewControllerDelegate {
 
     
-    lazy var controllers : [UIViewController] = [self.createViewController(backgroundImage: #imageLiteral(resourceName: "tags_appstore")),self.createViewController(backgroundImage: #imageLiteral(resourceName: "comments_appstore")),self.createViewController(backgroundImage : #imageLiteral(resourceName: "news_appstore")),self.createViewController(backgroundImage : #imageLiteral(resourceName: "organize_appstore"))]
+    lazy var controllers : [UIViewController] = [self.createViewController(backgroundImage : #imageLiteral(resourceName: "organize_appstore")),self.createViewController(backgroundImage: #imageLiteral(resourceName: "news_appstore")),self.createViewController(backgroundImage : #imageLiteral(resourceName: "tags_appstore")),self.createViewController(backgroundImage: #imageLiteral(resourceName: "comments_appstore"))]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,7 +75,7 @@ extension TutorialController : UIPageViewControllerDataSource {
             return controllers[index + 1]
         } else {
             if index + 1 == controllers.count {
-                _ = Timer.scheduledTimer(withTimeInterval: 4, repeats: true, block: { (timer) in
+                _ = Timer.scheduledTimer(withTimeInterval: 3, repeats: true, block: { (timer) in
                     self.present(TabBarController(), animated: true, completion: nil)
                 })
             }
