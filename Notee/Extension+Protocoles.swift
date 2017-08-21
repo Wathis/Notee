@@ -98,10 +98,10 @@ extension String {
 
 extension UIButton {
     
-    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        userClicked()
-    }
+//    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        super.touchesEnded(touches, with: event)
+//        userClicked()
+//    }
     
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
@@ -118,7 +118,7 @@ extension UIButton {
         UIView.animate(withDuration: 0.1, animations: {
             self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }) { (finish) in
-           
+           self.userClicked()
         }
     }
 }

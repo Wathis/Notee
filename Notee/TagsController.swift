@@ -111,15 +111,12 @@ class TagsController: UICollectionViewController, UITextFieldDelegate, UICollect
         return keywords.count
     }
     
-    func handleDelete(_ sender: UIButton, completion :  @escaping () -> Void) -> String {
+    func handleDelete(_ sender: UIButton) -> String {
         let word = keywords.remove(at: sender.tag)
         collectionView?.performBatchUpdates({
             self.collectionView?.deleteItems(at: [IndexPath(row: sender.tag, section: 0)])
         }, completion: { (finish) in
             self.collectionView?.reloadData()
-            if (finish) {
-                completion()
-            }
         })
         return word
     }
