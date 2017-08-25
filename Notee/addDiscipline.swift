@@ -79,6 +79,12 @@ class addDisciplineController: UIViewController, UIPickerViewDataSource, UIPicke
                     self.disciplineAvailables.append(key)
                 }
             }
+            self.disciplineAvailables = self.disciplineAvailables.sorted { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending }
+            var i = 0
+            for discipline in self.disciplineAvailables {
+                self.disciplineAvailables[i] = discipline.lowercased()
+                i += 1
+            }
             self.textField.text = self.disciplineAvailables.first
             self.pickerViewDiscipline.reloadAllComponents()
         }) { (error) in

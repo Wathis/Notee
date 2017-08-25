@@ -208,7 +208,6 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         if self.plugs.count == 0 {
             appearMessageInformation("Pas de nouvelles fiches")
         }
-        self.sortSheets()
         self.plugs.reverse()
         enableNavigationButtons(true)
         self.newPlugCarousel.reloadData()
@@ -276,7 +275,7 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
         self.plugs.removeAll()
         enableNavigationButtons(false)
         self.newPlugCarousel.reloadData()
-        let ref = Database.database().reference().child("sheets").queryLimited(toFirst: 1000)
+        let ref = Database.database().reference().child("sheets").queryOrdered(byChild: "date")
         ref.observeSingleEvent(of: .value, with: {(snapshot) in
             if !snapshot.hasChildren() {
                 self.finishLoad()
@@ -313,6 +312,8 @@ class NewsController: UIViewController, UIScrollViewDelegate, iCarouselDataSourc
                             let index = self.findIndexOfSheet(plugToAdd)
                             if index != -1 {
                                 self.plugs[index].isAdded = true
+                            }
+                            if index == values.count - 1 {
                                 self.finishLoad()
                             }
                         })
